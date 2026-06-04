@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mattex Invoice Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400&display=swap" rel="stylesheet">
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial;
+}
+
+input{
+    width:300px;
+    padding:8px;
+    margin:5px;
+}
+
+button{
+    padding:10px 20px;
+    background:#f7941d;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+#invoice{
+    display:none;
+}
+
+.invoice-page{
+    width:190mm;
+    background:white;
+    padding:5mm;
+    margin:auto;
+    box-sizing:border-box;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.logo{
+    width:180px;
+}
+
+.company-address{
+    font-size:13px;
+    margin-top:10px;
+}
+
+.right-header h1{
+    color:#f15a24;
+    font-size:42px;
+    text-align:center;
+    font-weight:300;
+    line-height:0.9;
+}
+
+.invoice-details{
+    margin-top:15px;
+    font-size:16px;
+}
+
+.invoice-parties{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+}
+
+.invoice-parties h3{
+    color:#f15a24;
+}
+
+.bank-table,
+.vehicle-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:25px;
+}
+
+.bank-table th,
+.bank-table td,
+.vehicle-table th,
+.vehicle-table td{
+    border:1px solid #444;
+    padding:4px;
+    font-size:13px;
+}
+
+.bank-table th{
+    background:#f4f4f4;
+}
+
+.vehicle-table th{
+    background:#f4f4f4;
+}
+
+.footer-bar{
+    width:100%;
+    height:20px;
+    background:#f7941d;
+    margin-top:30px;
+}
+
+table{
+    page-break-inside: avoid;
+}
+
+.bank-table,
+.vehicle-table{
+    page-break-inside: avoid;
+}
+
+#invoice{
+    page-break-after: avoid;
+}
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+.signature-section{
+    text-align:right;
+    padding-right:40px;
+    margin-top:10px;
+}
+
+.signature-img{
+    width:140px;
+    display:block;
+    margin-left:auto;
+    margin-bottom:-10px;
+}
+
+.signature-line{
+    width:220px;
+    border-top:2px solid black;
+    margin-left:auto;
+    margin-bottom:5px;
+}
+.signature-title{
+    font-size:14px;
+    font-weight:bold;
+}
+
+
+</style>
+
+</head>
+<body>
+
+<h2>MATTEX INVOICE GENERATOR</h2>
+
+<input id="name" placeholder="Customer Name"><br>
+
+<input id="address" placeholder="Address"><br>
+
+<input id="phone" placeholder="Phone"><br>
+
+<input id="make" placeholder="Make"><br>
+
+<input id="model" placeholder="Model"><br>
+
+<input id="year" placeholder="Year"><br>
+
+<input id="engine" placeholder="Engine Size"><br>
+
+<input id="colour" placeholder="Colour"><br>
+
+<input id="mileage" placeholder="Mileage"><br>
+
+<input id="first" placeholder="First Installment"><br>
+
+<input id="second" placeholder="Second Installment"><br>
+
+<input id="total" placeholder="Total Amount"><br><br>
+
+<button onclick="generateInvoice()">
+Generate Invoice
+</button>
+
+<button onclick="downloadPDF()">
+Download PDF
+</button>
+
+<hr>
+
+
+
+
+<div id="invoice" class="invoice-page">
+
+    <div class="header">
+
+        <div class="left-header">
+
+            <img src="mattex-logo.png" class="logo">
+
+            <div class="company-address">
+                Mwenge, Cocacola Road, Josam House<br>
+                4th Floor, Dar es Salaam.<br>
+                mattexcompanyltd@gmail.com
+            </div>
+
+        </div>
+
+        <div class="right-header">
+            <h1>PROFORMA<br>INVOICE</h1>
+        </div>
+
+    </div>
+
+    <div class="invoice-details">
+        <p><strong>Invoice Number:</strong> <span id="invNo"></span></p>
+        <p><strong>Invoice Date:</strong> <span id="invDate"></span></p>
+    </div>
+
+    <div class="invoice-parties">
+
+        <div>
+            <h3>Invoice To:</h3>
+            <p>NAME: <span id="cName"></span></p>
+            <p>ADDRESS: <span id="cAddress"></span></p>
+            <p>PHONE: <span id="cPhone"></span></p>
+        </div>
+
+        <div>
+            <h3>Invoice From:</h3>
+            <p>DIRECTOR: AGUSTINO ABEL</p>
+            <p>CONT: 0699 446 205</p>
+        </div>
+
+    </div>
+
+    <table class="bank-table">
+        <tr>
+            <th colspan="2">BANKING DETAILS</th>
+        </tr>
+        <tr>
+            <td>BANK NAME</td>
+            <td>NMB BANK</td>
+        </tr>
+        <tr>
+            <td>ACCOUNT NUMBER</td>
+            <td>20410078469</td>
+        </tr>
+        <tr>
+            <td>ACCOUNT NAME</td>
+            <td>MATTEX COMPANY LTD</td>
+        </tr>
+        <tr>
+            <td>BRANCH NAME</td>
+            <td>KARIAKOO</td>
+        </tr>
+        <tr>
+            <td>BANK ADDRESS</td>
+            <td>DAR ES SALAAM, TANZANIA</td>
+        </tr>
+    </table>
+
+    <table class="vehicle-table">
+
+        <tr>
+            <th colspan="2">VEHICLE DESCRIPTION</th>
+            <th>FIRST INSTALLMENT</th>
+            <th>SECOND INSTALLMENT</th>
+            <th>TOTAL AMOUNT</th>
+        </tr>
+
+        <tr>
+            <td>Make</td>
+            <td id="vMake"></td>
+            <td rowspan="6" id="vFirst"></td>
+            <td rowspan="6" id="vSecond"></td>
+            <td rowspan="6" id="vTotal"></td>
+        </tr>
+
+        <tr>
+            <td>Model</td>
+            <td id="vModel"></td>
+        </tr>
+
+        <tr>
+            <td>Year</td>
+            <td id="vYear"></td>
+        </tr>
+
+        <tr>
+            <td>Engine Size</td>
+            <td id="vEngine"></td>
+        </tr>
+
+        <tr>
+            <td>Colour</td>
+            <td id="vColour"></td>
+        </tr>
+
+        <tr>
+            <td>Mileage</td>
+            <td id="vMileage"></td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align:center;">
+                <strong>TOTAL</strong>
+            </td>
+            <td></td>
+            <td></td>
+            <td id="vTotalBottom"></td>
+        </tr>
+
+    </table>
+
+  <div class="signature-section">
+
+    <div class="signature-section">
+    <img src="abel-signature-transparent.png" class="signature-img">
+
+    <div class="signature-line"></div>
+
+    <div class="signature-title">
+
+        Authorized Signature
+    </div>
+</div>
+
+</div>
+
+
+    <div class="footer-bar"></div>
+
+</div>
+
+<h2>Customer Records</h2>
+
+<table id="recordsTable" border="1" style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+
+<thead style="background:#f7941d;color:white;">
+<tr>
+<th>Invoice No</th>
+<th>Date</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Make</th>
+<th>Model</th>
+<th>Year</th>
+<th>Total Amount</th>
+</tr>
+</thead>
+
+<tbody id="recordsBody">
+
+</tbody>
+
+</table>
+
+<script>
+
+function saveRecord(record){
+
+let records =
+JSON.parse(localStorage.getItem("mattexRecords")) || [];
+
+records.push(record);
+
+localStorage.setItem(
+"mattexRecords",
+JSON.stringify(records)
+);
+
+loadRecords();
+
+}
+
+function loadRecords(){
+
+let records =
+JSON.parse(localStorage.getItem("mattexRecords")) || [];
+
+let tbody =
+document.getElementById("recordsBody");
+
+tbody.innerHTML="";
+
+records.forEach(record => {
+
+tbody.innerHTML += `
+
+<tr>
+
+<td>${record.invoiceNo}</td>
+
+<td>${record.date}</td>
+
+<td>${record.name}</td>
+
+<td>${record.phone}</td>
+
+<td>${record.make}</td>
+
+<td>${record.model}</td>
+
+<td>${record.year}</td>
+
+<td>${record.total}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+function generateInvoice(){
+
+document.getElementById("invoice").style.display="block";
+
+document.getElementById("cName").innerHTML=
+document.getElementById("name").value;
+
+document.getElementById("cAddress").innerHTML=
+document.getElementById("address").value;
+
+document.getElementById("cPhone").innerHTML=
+document.getElementById("phone").value;
+
+document.getElementById("vMake").innerHTML=
+document.getElementById("make").value;
+
+document.getElementById("vModel").innerHTML=
+document.getElementById("model").value;
+
+document.getElementById("vYear").innerHTML=
+document.getElementById("year").value;
+
+document.getElementById("vEngine").innerHTML=
+document.getElementById("engine").value;
+
+document.getElementById("vColour").innerHTML=
+document.getElementById("colour").value;
+
+document.getElementById("vMileage").innerHTML=
+document.getElementById("mileage").value;
+
+document.getElementById("vFirst").innerHTML=
+document.getElementById("first").value;
+
+document.getElementById("vSecond").innerHTML=
+document.getElementById("second").value;
+
+document.getElementById("vTotal").innerHTML=
+document.getElementById("total").value;
+
+document.getElementById("invDate").innerHTML=
+new Date().toLocaleDateString();
+
+document.getElementById("vTotalBottom").innerHTML =
+document.getElementById("total").value;
+
+let invoiceNumber =
+"MTX-"+Math.floor(Math.random()*100000);
+
+document.getElementById("invNo").innerHTML =
+invoiceNumber;
+
+saveRecord({
+
+invoiceNo: invoiceNumber,
+
+date: document.getElementById("invDate").innerHTML,
+
+name: document.getElementById("name").value,
+
+phone: document.getElementById("phone").value,
+
+make: document.getElementById("make").value,
+
+model: document.getElementById("model").value,
+
+year: document.getElementById("year").value,
+
+total: document.getElementById("total").value
+
+});
+
+}
+
+function downloadPDF(){
+
+    const element = document.getElementById('invoice');
+
+    html2pdf()
+      .set({
+          margin:0,
+          filename:'Mattex-Proforma-Invoice.pdf',
+          image:{type:'jpeg',quality:1},
+          html2canvas:{
+              scale:2
+          },
+          jsPDF:{
+              unit:'mm',
+              format:'a4',
+              orientation:'portrait'
+          }
+      })
+      .from(element)
+      .save();
+}
+
+window.onload = function(){
+
+loadRecords();
+
+}
+
+</script>
+
+</body>
+</html>
