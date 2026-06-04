@@ -462,14 +462,33 @@ document.getElementById("second").value;
 document.getElementById("vTotal").innerHTML=
 document.getElementById("total").value;
 
-document.getElementById("invDate").innerHTML=
-new Date().toLocaleDateString();
+const today = new Date();
+
+const day = String(today.getDate()).padStart(2, '0');
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const year = today.getFullYear();
+
+document.getElementById("invDate").innerHTML =
+`${day}/${month}/${year}`;
 
 document.getElementById("vTotalBottom").innerHTML =
 document.getElementById("total").value;
 
+let lastInvoice =
+parseInt(localStorage.getItem("lastInvoice")) || 51;
+
+lastInvoice++;
+
+localStorage.setItem(
+"lastInvoice",
+lastInvoice
+);
+
 let invoiceNumber =
-"MTX-"+Math.floor(Math.random()*100000);
+"MTX-" + String(lastInvoice).padStart(5,'0');
+
+document.getElementById("invNo").innerHTML =
+invoiceNumber;
 
 document.getElementById("invNo").innerHTML =
 invoiceNumber;
