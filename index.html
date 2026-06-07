@@ -153,33 +153,126 @@ table{
     font-weight:bold;
 }
 
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+
+    background:
+    linear-gradient(
+    135deg,
+    #f7941d 0%,
+    #ffb347 100%);
+
+    min-height:100vh;
+}
+#loginSection{
+    width:420px;
+    margin:80px auto;
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    text-align:center;
+}
+
+.login-logo{
+    width:180px;
+    margin-bottom:20px;
+}
+
+.login-title{
+    color:#f7941d;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.login-subtitle{
+    color:#666;
+    margin-bottom:30px;
+}
+
+.login-input{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+.login-input:focus{
+    outline:none;
+    border-color:#f7941d;
+    box-shadow:0 0 5px rgba(247,148,29,0.4);
+}
+
+.login-btn{
+    width:100%;
+    padding:14px;
+    background:#f7941d;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.login-btn:hover{
+    background:#e8840f;
+}
+
+.footer-text{
+    margin-top:20px;
+    color:#888;
+    font-size:13px;
+}
+
 
 </style>
 
 </head>
 <body>
 
-    <div id="loginSection">
 
-<h2>Mattex Staff Login</h2>
 
-<input
-type="email"
-id="email"
-placeholder="Email">
+<div id="loginSection">
 
-<br><br>
+    <img src="mattex-logo.png" class="login-logo">
 
-<input
-type="password"
-id="password"
-placeholder="Password">
+    <div class="login-title">
+        Mattex Invoice System
+    </div>
 
-<br><br>
+    <div class="login-subtitle">
+        Staff Login Portal
+    </div>
 
-<button onclick="login()">
-Login
-</button>
+    <input
+        type="email"
+        id="email"
+        class="login-input"
+        placeholder="Enter Email">
+
+    <input
+        type="password"
+        id="password"
+        class="login-input"
+        placeholder="Enter Password">
+
+    <button
+        class="login-btn"
+        onclick="login()">
+        LOGIN
+    </button>
+
+    <div class="footer-text">
+        Mattex Company Limited
+    </div>
 
 </div>
 
