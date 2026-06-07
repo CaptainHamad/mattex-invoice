@@ -493,6 +493,8 @@ invoiceNumber;
 document.getElementById("invNo").innerHTML =
 invoiceNumber;
 
+saveInvoiceToSupabase(invoiceNumber);
+
 saveRecord({
 
 invoiceNo: invoiceNumber,
@@ -557,7 +559,47 @@ loadRecords();
 
 }
 
-</script>
+    async function saveInvoiceToSupabase(invoiceNumber){
 
+    const { error } = await supabaseClient
+    .from('invoices')
+    .insert([{
+
+        invoice_no: invoiceNumber,
+        invoice_date: document.getElementById("invDate").innerText,
+
+        customer_name: document.getElementById("name").value,
+        address: document.getElementById("address").value,
+        phone: document.getElementById("phone").value,
+
+        make: document.getElementById("make").value,
+        model: document.getElementById("model").value,
+        year: document.getElementById("year").value,
+
+        engine_size: document.getElementById("engine").value,
+        colour: document.getElementById("colour").value,
+        mileage: document.getElementById("mileage").value,
+
+        first_installment: document.getElementById("first").value,
+        second_installment: document.getElementById("second").value,
+        total_amount: document.getElementById("total").value
+
+    }]);
+
+    if(error){
+        console.error(error);
+        alert("Invoice failed to save");
+    }
+}
+</script>
+const SUPABASE_URL = "https://xpgtietajegnttonthxm.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_Lr18Tvgct5tyYcX5fLHAPg_xC-To0zM";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
