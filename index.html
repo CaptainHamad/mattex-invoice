@@ -373,43 +373,36 @@ const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
-function saveRecord(record){
 
-let records =
-JSON.parse(localStorage.getItem("mattexRecords")) || [];
 
-records.push(record);
+async function loadRecords(){
 
-localStorage.setItem(
-"mattexRecords",
-JSON.stringify(records)
-);
+const { data, error } = await supabaseClient
+.from('invoices')
+.select('*')
+.order('id', { ascending:false });
 
-loadRecords();
-
+if(error){
+    console.error(error);
+    return;
 }
-
-function loadRecords(){
-
-let records =
-JSON.parse(localStorage.getItem("mattexRecords")) || [];
 
 let tbody =
 document.getElementById("recordsBody");
 
 tbody.innerHTML="";
 
-records.forEach(record => {
+data.forEach(record => {
 
 tbody.innerHTML += `
 
 <tr>
 
-<td>${record.invoiceNo}</td>
+<td>${record.invoice_no}</td>
 
-<td>${record.date}</td>
+<td>${record.invoice_date}</td>
 
-<td>${record.name}</td>
+<td>${record.customer_name}</td>
 
 <td>${record.phone}</td>
 
@@ -419,7 +412,7 @@ tbody.innerHTML += `
 
 <td>${record.year}</td>
 
-<td>${record.total}</td>
+<td>${record.total_amount}</td>
 
 </tr>
 
@@ -501,26 +494,9 @@ document.getElementById("invNo").innerHTML =
 invoiceNumber;
 
 saveInvoiceToSupabase(invoiceNumber);
-
-saveRecord({
-
-invoiceNo: invoiceNumber,
-
-date: document.getElementById("invDate").innerHTML,
-
-name: document.getElementById("name").value,
-
-phone: document.getElementById("phone").value,
-
-make: document.getElementById("make").value,
-
-model: document.getElementById("model").value,
-
-year: document.getElementById("year").value,
-
-total: document.getElementById("total").value
-
-});
+setTimeout(() => {
+    loadRecords();
+}, 1000);
 
 }
 
@@ -560,9 +536,9 @@ function downloadPDF(){
         .save();
 }
 
-window.onload = function(){
+window.onload = async function(){
 
-loadRecords();
+await loadRecords();
 
 }
 
