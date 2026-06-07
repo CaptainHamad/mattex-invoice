@@ -422,7 +422,33 @@ tbody.innerHTML += `
 
 }
 
-function generateInvoice(){
+    async function getNextInvoiceNumber(){
+
+    const { data, error } = await supabaseClient
+    .from('invoices')
+    .select('invoice_no')
+    .order('id', { ascending:false })
+    .limit(1);
+
+    if(error){
+        console.error(error);
+        return "MTX-00052";
+    }
+
+    if(data.length === 0){
+        return "MTX-00052";
+    }
+
+    let lastNumber =
+    parseInt(data[0].invoice_no.replace("MTX-",""));
+
+    let nextNumber = lastNumber + 1;
+
+    return "MTX-" +
+    String(nextNumber).padStart(5,'0');
+}
+
+async function generateInvoice(){
 
 document.getElementById("invoice").style.display="block";
 
@@ -474,18 +500,9 @@ document.getElementById("invDate").innerHTML =
 document.getElementById("vTotalBottom").innerHTML =
 document.getElementById("total").value;
 
-let lastInvoice =
-parseInt(localStorage.getItem("lastInvoice")) || 51;
-
-lastInvoice++;
-
-localStorage.setItem(
-"lastInvoice",
-lastInvoice
-);
 
 let invoiceNumber =
-"MTX-" + String(lastInvoice).padStart(5,'0');
+await getNextInvoiceNumber();
 
 document.getElementById("invNo").innerHTML =
 invoiceNumber;
