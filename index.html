@@ -153,10 +153,8 @@ table{
     font-weight:bold;
 }
 
-body{
-    margin:0;
-    padding:0;
-    font-family:Arial,sans-serif;
+#loginPage{
+    min-height:100vh;
 
     background:
     linear-gradient(
@@ -164,7 +162,9 @@ body{
     #f7941d 0%,
     #ffb347 100%);
 
-    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 #loginSection{
     width:420px;
@@ -239,7 +239,7 @@ body{
 <body>
 
 
-
+<div id="loginPage">
 <div id="loginSection">
 
     <img src="mattex-logo.png" class="login-logo">
@@ -275,6 +275,7 @@ body{
     </div>
 
 </div>
+    </div>
 
     <div id="app" style="display:none;">
 <h2>MATTEX INVOICE GENERATOR</h2>
@@ -594,7 +595,7 @@ return;
 
 }
 
-document.getElementById("loginSection")
+document.getElementById("loginPage")
 .style.display = "none";
 
 document.getElementById("app")
@@ -757,7 +758,7 @@ data: { session }
 
 if(session){
 
-document.getElementById("loginSection")
+document.getElementById("loginPage")
 .style.display = "none";
 
 document.getElementById("app")
