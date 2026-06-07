@@ -159,6 +159,31 @@ table{
 </head>
 <body>
 
+    <div id="loginSection">
+
+<h2>Mattex Staff Login</h2>
+
+<input
+type="email"
+id="email"
+placeholder="Email">
+
+<br><br>
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<br><br>
+
+<button onclick="login()">
+Login
+</button>
+
+</div>
+
+    <div id="app" style="display:none;">
 <h2>MATTEX INVOICE GENERATOR</h2>
 
 <input id="name" placeholder="Customer Name"><br>
@@ -336,7 +361,7 @@ Download PDF
 
 </div>
 
-
+</div>
     <div class="footer-bar"></div>
 
 </div>
@@ -359,6 +384,8 @@ Download PDF
 </thead>
 
 <tbody id="recordsBody">
+
+    
 
 </tbody>
 
@@ -446,6 +473,38 @@ tbody.innerHTML += `
 
     return "MTX-" +
     String(nextNumber).padStart(5,'0');
+}
+
+    async function login(){
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+const { data, error } =
+await supabaseClient.auth.signInWithPassword({
+
+email,
+password
+
+});
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+document.getElementById("loginSection")
+.style.display = "none";
+
+document.getElementById("app")
+.style.display = "block";
+
 }
 
 async function generateInvoice(){
@@ -590,6 +649,35 @@ await loadRecords();
         console.error(error);
         alert("Invoice failed to save");
     }
+}
+
+
+    async function checkLogin(){
+
+const {
+
+data: { session }
+
+} = await supabaseClient.auth.getSession();
+
+if(session){
+
+document.getElementById("loginSection")
+.style.display = "none";
+
+document.getElementById("app")
+.style.display = "block";
+
+}
+
+}
+
+window.onload = async function(){
+
+await checkLogin();
+
+await loadRecords();
+
 }
 </script>
 
