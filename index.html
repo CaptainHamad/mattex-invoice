@@ -741,10 +741,15 @@ await loadRecords();
 
     }]);
 
-    if(error){
-        console.error(error);
-        alert("Invoice failed to save");
-    }
+  if(error){
+    console.error(error);
+
+    alert(
+        "Invoice failed to save\n\n" +
+        error.message
+    );
+
+    return;
 }
 
 
