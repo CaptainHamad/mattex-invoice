@@ -708,11 +708,6 @@ function downloadPDF(){
         .save();
 }
 
-window.onload = async function(){
-
-await loadRecords();
-
-}
 
     async function saveInvoiceToSupabase(invoiceNumber){
 
@@ -752,6 +747,7 @@ await loadRecords();
     return;
 }
 
+        }
 
     async function checkLogin(){
 
