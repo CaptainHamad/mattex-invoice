@@ -232,20 +232,23 @@ table{
     font-size:13px;
 }
 
-    .management-btn{
+.management-btn{
     background:#222;
     color:white;
     padding:10px 20px;
     border:none;
     cursor:pointer;
-    margin-left:10px;
     border-radius:5px;
+    margin-left:10px;
 }
 
 .management-btn:hover{
     background:#444;
 }
 
+#managementPage{
+    padding:20px;
+}
 </style>
 
 </head>
@@ -510,8 +513,16 @@ MANAGEMENT
     <h2>Management Dashboard</h2>
 
     <button onclick="backToInvoice()">
-        ← Back
+        ← Back to Invoice
     </button>
+
+    <hr>
+
+    <h3>Management Menu</h3>
+
+    <button>Invoice Records</button>
+    <button>Customers</button>
+    <button>Vehicle Inventory</button>
 
 </div>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -808,6 +819,9 @@ await loadRecords();
 ///MANAGEMENT
 function openManagement(){
 
+    document.getElementById("app")
+    .style.display = "none";
+
     document.getElementById("managementPage")
     .style.display = "block";
 
@@ -817,6 +831,9 @@ function backToInvoice(){
 
     document.getElementById("managementPage")
     .style.display = "none";
+
+    document.getElementById("app")
+    .style.display = "block";
 
 }
 </script>
