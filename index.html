@@ -553,9 +553,9 @@ MANAGEMENT
 
     </thead>
 
-    <tbody id="customersBody">
+  <tbody id="customersBody">
 
-    </tbody>
+</tbody>
 
     </table>
 
@@ -610,6 +610,65 @@ tbody.innerHTML += `
 <td>${record.year}</td>
 
 <td>${record.total_amount}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+    async function loadCustomers(){
+
+const { data, error } = await supabaseClient
+.from('invoices')
+.select('*')
+.order('id', { ascending:false });
+
+if(error){
+    console.error(error);
+    return;
+}
+
+let tbody =
+document.getElementById("customersBody");
+
+tbody.innerHTML = "";
+
+data.forEach(record => {
+
+tbody.innerHTML += `
+
+<tr>
+
+<td>${record.id}</td>
+
+<td>${record.invoice_no}</td>
+
+<td>${record.customer_name}</td>
+
+<td>${record.phone}</td>
+
+<td>-</td>
+
+<td>-</td>
+
+<td>${record.make} ${record.model}</td>
+
+<td>${record.year}</td>
+
+<td>${record.colour}</td>
+
+<td>-</td>
+
+<td>Inquiry</td>
+
+<td>-</td>
+
+<td>-</td>
+
+<td>-</td>
 
 </tr>
 
@@ -859,6 +918,8 @@ function openManagement(){
 
     document.getElementById("managementPage")
     .style.display = "block";
+
+    loadCustomers();
 
 }
 
