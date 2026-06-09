@@ -505,6 +505,15 @@ MANAGEMENT
 </table>
 
  </div>
+<div id="managementPage" style="display:none;">
+
+    <h2>Management Dashboard</h2>
+
+    <button onclick="backToInvoice()">
+        ← Back
+    </button>
+
+</div>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = "https://xpgtietajegnttonthxm.supabase.co";
@@ -793,6 +802,21 @@ window.onload = async function(){
 await checkLogin();
 
 await loadRecords();
+
+}
+
+///MANAGEMENT
+function openManagement(){
+
+    document.getElementById("managementPage")
+    .style.display = "block";
+
+}
+
+function backToInvoice(){
+
+    document.getElementById("managementPage")
+    .style.display = "none";
 
 }
 </script>
