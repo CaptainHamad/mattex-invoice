@@ -523,6 +523,30 @@ MANAGEMENT
     <button>Invoice Records</button>
     <button>Customers</button>
 
+
+    <div id="editCustomerBox" style="display:none;">
+
+<h3>Update Customer Order</h3>
+
+<input id="editTIN" placeholder="TIN"><br>
+
+<input id="editRegion" placeholder="Region"><br>
+
+<input id="editShipper" placeholder="Shipper"><br>
+
+<input id="editStatus" placeholder="Status"><br>
+
+<input id="editDeparture" placeholder="Departure"><br>
+
+<input id="editShipName" placeholder="Ship Name"><br>
+
+<input id="editETA" placeholder="ETA"><br>
+
+<button onclick="updateCustomer()">
+Save Changes
+</button>
+
+</div>
     <hr>
 
     <h3>Customer Orders</h3>
@@ -548,6 +572,7 @@ MANAGEMENT
         <th>DEPARTURE</th>
         <th>SHIP NAME</th>
         <th>ETA</th>
+        <th>ACTION</th>
 
     </tr>
 
@@ -650,9 +675,9 @@ tbody.innerHTML += `
 
 <td>${record.phone}</td>
 
-<td>-</td>
+<td>${record.tin || "-"}</td>
 
-<td>-</td>
+<td>${record.region || "-"}</td>
 
 <td>${record.make} ${record.model}</td>
 
@@ -660,15 +685,21 @@ tbody.innerHTML += `
 
 <td>${record.colour}</td>
 
-<td>-</td>
+<td>${record.shipper || "-"}</td>
 
-<td>Inquiry</td>
+<td>${record.status || "Inquiry"}</td>
 
-<td>-</td>
+<td>${record.departure || "-"}</td>
 
-<td>-</td>
+<td>${record.ship_name || "-"}</td>
 
-<td>-</td>
+<td>${record.eta || "-"}</td>
+
+<td>
+<button onclick="editCustomer(${record.id})">
+Edit
+</button>
+</td>
 
 </tr>
 
@@ -930,6 +961,87 @@ function backToInvoice(){
 
     document.getElementById("app")
     .style.display = "block";
+
+}
+
+    let selectedCustomerId = null;
+
+async function editCustomer(id){
+
+selectedCustomerId = id;
+
+const { data } = await supabaseClient
+.from('invoices')
+.select('*')
+.eq('id', id)
+.single();
+
+document.getElementById("editTIN").value =
+data.tin || "";
+
+document.getElementById("editRegion").value =
+data.region || "";
+
+document.getElementById("editShipper").value =
+data.shipper || "";
+
+document.getElementById("editStatus").value =
+data.status || "";
+
+document.getElementById("editDeparture").value =
+data.departure || "";
+
+document.getElementById("editShipName").value =
+data.ship_name || "";
+
+document.getElementById("editETA").value =
+data.eta || "";
+
+document.getElementById("editCustomerBox")
+.style.display = "block";
+
+}
+async function updateCustomer(){
+
+const { error } = await supabaseClient
+.from('invoices')
+.update({
+
+tin:
+document.getElementById("editTIN").value,
+
+region:
+document.getElementById("editRegion").value,
+
+shipper:
+document.getElementById("editShipper").value,
+
+status:
+document.getElementById("editStatus").value,
+
+departure:
+document.getElementById("editDeparture").value,
+
+ship_name:
+document.getElementById("editShipName").value,
+
+eta:
+document.getElementById("editETA").value
+
+})
+.eq('id', selectedCustomerId);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+alert("Customer Updated");
+
+loadCustomers();
 
 }
 </script>
