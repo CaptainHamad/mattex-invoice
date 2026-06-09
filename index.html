@@ -522,7 +522,42 @@ MANAGEMENT
 
     <button>Invoice Records</button>
     <button>Customers</button>
-    <button>Vehicle Inventory</button>
+
+    <hr>
+
+    <h3>Customer Orders</h3>
+
+    <table border="1"
+    style="width:100%;border-collapse:collapse;">
+
+    <thead style="background:#f7941d;color:white;">
+
+    <tr>
+
+        <th>ID</th>
+        <th>INVOICE NO</th>
+        <th>NAME</th>
+        <th>PHONE</th>
+        <th>TIN</th>
+        <th>REGION</th>
+        <th>CAR NAME</th>
+        <th>YEAR</th>
+        <th>COLOUR</th>
+        <th>SHIPPER</th>
+        <th>STATUS</th>
+        <th>DEPARTURE</th>
+        <th>SHIP NAME</th>
+        <th>ETA</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody id="customersBody">
+
+    </tbody>
+
+    </table>
 
 </div>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
