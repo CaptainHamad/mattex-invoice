@@ -615,22 +615,22 @@ Save Changes
 
 <div class="stat-card">
 <h2 id="totalCustomers">0</h2>
-<p>Total Customers</p>
+<p>👥 Customers</p>
 </div>
 
 <div class="stat-card">
 <h2 id="shippingCount">0</h2>
-<p>Shipping</p>
+<p>🚢 Shipping</p>
 </div>
 
 <div class="stat-card">
 <h2 id="deliveredCount">0</h2>
-<p>Delivered</p>
+<p>✅ Delivered</p>
 </div>
 
 <div class="stat-card">
 <h2 id="pendingCount">0</h2>
-<p>Pending</p>
+<p>⏳ Pending</p>
 </div>
 
 </div>
@@ -926,7 +926,7 @@ tbody.innerHTML += `
 
 <td>${record.shipper || "-"}</td>
 
-<td>${record.status || "Inquiry"}</td>
+<td>${getStatusBadge(record.status)}</td>
 
 <td>${record.departure || "-"}</td>
 
@@ -1308,6 +1308,41 @@ document.getElementById("editETA").value
 
 })
 .eq('id', selectedCustomerId);
+
+function getStatusBadge(status){
+
+switch(status){
+
+case "Inquiry":
+return "🔍 Inquiry";
+
+case "Deposit Paid":
+return "💰 Deposit Paid";
+
+case "Vehicle Found":
+return "🚗 Vehicle Found";
+
+case "Purchased":
+return "🛒 Purchased";
+
+case "Shipping":
+return "🚢 Shipping";
+
+case "At Port":
+return "⚓ At Port";
+
+case "Clearing":
+return "📑 Clearing";
+
+case "Delivered":
+return "✅ Delivered";
+
+default:
+return status || "🔍 Inquiry";
+
+}
+
+}
 
 async function loadActivityLogs(){
 
