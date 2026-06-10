@@ -739,47 +739,7 @@ style="width:100%;border-collapse:collapse;">
 
 </div>
 
-async function loadActivityLogs(){
 
-const { data, error }
-=
-await supabaseClient
-.from('activity_logs')
-.select('*')
-.order('id',
-{ ascending:false });
-
-if(error){
-console.error(error);
-return;
-}
-
-let tbody =
-document.getElementById(
-"activityBody"
-);
-
-tbody.innerHTML="";
-
-data.forEach(log => {
-
-tbody.innerHTML += `
-
-<tr>
-
-<td>${log.activity_time}</td>
-
-<td>${log.user_email}</td>
-
-<td>${log.activity}</td>
-
-</tr>
-
-`;
-
-});
-
-}
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = "https://xpgtietajegnttonthxm.supabase.co";
@@ -1118,7 +1078,7 @@ invoiceNumber
 setTimeout(() => {
     loadRecords();
 }, 1000);
-
+}
 
 
 function downloadPDF(){
@@ -1349,6 +1309,48 @@ document.getElementById("editETA").value
 })
 .eq('id', selectedCustomerId);
 
+async function loadActivityLogs(){
+
+const { data, error }
+=
+await supabaseClient
+.from('activity_logs')
+.select('*')
+.order('id',
+{ ascending:false });
+
+if(error){
+console.error(error);
+return;
+}
+
+let tbody =
+document.getElementById(
+"activityBody"
+);
+
+tbody.innerHTML="";
+
+data.forEach(log => {
+
+tbody.innerHTML += `
+
+<tr>
+
+<td>${log.activity_time}</td>
+
+<td>${log.user_email}</td>
+
+<td>${log.activity}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
 
 async function saveActivity(activityText){
 
@@ -1393,6 +1395,8 @@ document.getElementById("editStatus").value
 alert("Customer Updated");
 
 loadCustomers();
+
+}
 
 </script>
 
