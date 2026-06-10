@@ -648,8 +648,8 @@ Save Changes
 </div>
 
 <div class="stat-card">
-<h2 id="monthlySales">0</h2>
-<p>Monthly Sales (TZS)</p>
+<h2 id="monthlyPending">0</h2>
+<p>Pending</p>
 </div>
 
 <div class="stat-card">
@@ -814,10 +814,6 @@ document.getElementById("customersBody");
 
 tbody.innerHTML = "";
 
-data.forEach(record => {
-
-tbody.innerHTML += `
-
 const currentMonth =
 new Date().getMonth() + 1;
 
@@ -838,25 +834,13 @@ parseInt(parts[1]);
 const year =
 parseInt(parts[2]);
 
-return month === currentMonth
-&& year === currentYear;
+return month === currentMonth &&
+year === currentYear;
 
 });
 
 let monthlyInvoices =
 monthlyRecords.length;
-
-let monthlySales = 0;
-
-monthlyRecords.forEach(record => {
-
-monthlySales +=
-Number(
-(record.total_amount || "0")
-.replace(/,/g,"")
-);
-
-});
 
 let monthlyShipping =
 monthlyRecords.filter(
@@ -868,25 +852,27 @@ monthlyRecords.filter(
 x => x.status === "Delivered"
 ).length;
 
-document.getElementById(
-"monthlyInvoices"
-).innerHTML =
+let monthlyPending =
+monthlyRecords.filter(
+x => x.status !== "Delivered"
+).length;
+
+document.getElementById("monthlyInvoices").innerHTML =
 monthlyInvoices;
 
-document.getElementById(
-"monthlySales"
-).innerHTML =
-monthlySales.toLocaleString();
-
-document.getElementById(
-"monthlyShipping"
-).innerHTML =
+document.getElementById("monthlyShipping").innerHTML =
 monthlyShipping;
 
-document.getElementById(
-"monthlyDelivered"
-).innerHTML =
+document.getElementById("monthlyDelivered").innerHTML =
 monthlyDelivered;
+
+document.getElementById("monthlyPending").innerHTML =
+monthlyPending;
+
+data.forEach(record => {
+
+tbody.innerHTML += `
+
 
 <tr>
 
