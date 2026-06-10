@@ -636,6 +636,34 @@ Save Changes
 </div>
  <hr>
 
+<hr>
+
+<h3>Monthly Report</h3>
+
+<div class="stats-container">
+
+<div class="stat-card">
+<h2 id="monthlyInvoices">0</h2>
+<p>Monthly Invoices</p>
+</div>
+
+<div class="stat-card">
+<h2 id="monthlySales">0</h2>
+<p>Monthly Sales (TZS)</p>
+</div>
+
+<div class="stat-card">
+<h2 id="monthlyShipping">0</h2>
+<p>Shipping</p>
+</div>
+
+<div class="stat-card">
+<h2 id="monthlyDelivered">0</h2>
+<p>Delivered</p>
+</div>
+
+</div>
+
 <h3>Search Customer</h3>
 
 <input
@@ -789,6 +817,76 @@ tbody.innerHTML = "";
 data.forEach(record => {
 
 tbody.innerHTML += `
+
+const currentMonth =
+new Date().getMonth() + 1;
+
+const currentYear =
+new Date().getFullYear();
+
+const monthlyRecords =
+data.filter(record => {
+
+if(!record.invoice_date) return false;
+
+const parts =
+record.invoice_date.split("/");
+
+const month =
+parseInt(parts[1]);
+
+const year =
+parseInt(parts[2]);
+
+return month === currentMonth
+&& year === currentYear;
+
+});
+
+let monthlyInvoices =
+monthlyRecords.length;
+
+let monthlySales = 0;
+
+monthlyRecords.forEach(record => {
+
+monthlySales +=
+Number(
+(record.total_amount || "0")
+.replace(/,/g,"")
+);
+
+});
+
+let monthlyShipping =
+monthlyRecords.filter(
+x => x.status === "Shipping"
+).length;
+
+let monthlyDelivered =
+monthlyRecords.filter(
+x => x.status === "Delivered"
+).length;
+
+document.getElementById(
+"monthlyInvoices"
+).innerHTML =
+monthlyInvoices;
+
+document.getElementById(
+"monthlySales"
+).innerHTML =
+monthlySales.toLocaleString();
+
+document.getElementById(
+"monthlyShipping"
+).innerHTML =
+monthlyShipping;
+
+document.getElementById(
+"monthlyDelivered"
+).innerHTML =
+monthlyDelivered;
 
 <tr>
 
