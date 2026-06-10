@@ -696,8 +696,9 @@ style="width:100%;border-collapse:collapse;">
         <th>STATUS</th>
         <th>DEPARTURE</th>
         <th>SHIP NAME</th>
-        <th>ETA</th>
-        <th>ACTION</th>
+       <th>ETA</th>
+       <th>COUNTDOWN</th>
+       <th>ACTION</th>
 
     </tr>
 
@@ -935,11 +936,14 @@ tbody.innerHTML += `
 <td>${record.eta || "-"}</td>
 
 <td>
+${getETACountdown(record.eta)}
+</td>
+
+<td>
 <button onclick="editCustomer(${record.id})">
 Edit
 </button>
 </td>
-
 </tr>
 
 `;
@@ -1365,6 +1369,50 @@ return "✅ Delivered";
 
 default:
 return status || "🔍 Inquiry";
+
+}
+
+}
+
+function getETACountdown(eta){
+
+if(!eta || eta === "-"){
+return "-";
+}
+
+try{
+
+const today = new Date();
+
+const etaDate = new Date(eta);
+
+const diffTime =
+etaDate - today;
+
+const diffDays =
+Math.ceil(
+diffTime / (1000 * 60 * 60 * 24)
+);
+
+if(diffDays > 0){
+
+return "🚢 " +
+diffDays +
+" Days Remaining";
+
+}
+
+if(diffDays === 0){
+
+return "⚓ Arriving Today";
+
+}
+
+return "✅ Arrived";
+
+}catch{
+
+return eta;
 
 }
 
