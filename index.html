@@ -1309,6 +1309,32 @@ document.getElementById("editETA").value
 })
 .eq('id', selectedCustomerId);
 
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+saveActivity(
+
+"Updated Customer " +
+
+selectedCustomerId +
+
+" Status: " +
+
+document.getElementById("editStatus").value
+
+);
+
+alert("Customer Updated");
+
+loadCustomers();
+
+}
+
 function getStatusBadge(status){
 
 switch(status){
@@ -1407,31 +1433,6 @@ activity: activityText
 
 }
 
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-saveActivity(
-
-"Updated Customer " +
-
-selectedCustomerId +
-
-" Status: " +
-
-document.getElementById("editStatus").value
-
-);
-
-alert("Customer Updated");
-
-loadCustomers();
-
-}
 
 </script>
 
