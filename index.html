@@ -280,6 +280,29 @@ font-size:32px;
 color:#f7941d;
 
 }
+
+.timeline-step{
+
+padding:10px;
+margin:5px 0;
+border-left:4px solid #ddd;
+
+}
+
+.timeline-complete{
+
+border-left:4px solid #28a745;
+background:#f3fff5;
+
+}
+
+.timeline-current{
+
+border-left:4px solid #f7941d;
+background:#fff8ee;
+font-weight:bold;
+
+}
 </style>
 
 </head>
@@ -565,7 +588,9 @@ MANAGEMENT
 
 <input id="editShipper" placeholder="Shipper"><br>
 
-<select id="editStatus">
+<select
+id="editStatus"
+onchange="renderTimeline(this.value)">
 
 <option value="Inquiry">Inquiry</option>
 
@@ -608,6 +633,16 @@ Delivered
 <button onclick="updateCustomer()">
 Save Changes
 </button>
+
+<hr>
+
+<h3>Customer Timeline</h3>
+
+<div id="customerTimeline">
+
+Select customer first
+
+</div>
 
 </div>
     <hr>
@@ -1282,6 +1317,10 @@ data.eta || "";
 document.getElementById("editCustomerBox")
 .style.display = "block";
 
+renderTimeline(
+data.status || "Inquiry"
+);
+
 }
 async function updateCustomer(){
 
@@ -1478,6 +1517,87 @@ user_email: user.email,
 activity: activityText
 
 }]);
+
+}
+
+function renderTimeline(status){
+
+const stages = [
+
+"Inquiry",
+
+"Deposit Paid",
+
+"Vehicle Found",
+
+"Purchased",
+
+"Shipping",
+
+"At Port",
+
+"Clearing",
+
+"Delivered"
+
+];
+
+const icons = {
+
+"Inquiry":"🔍",
+
+"Deposit Paid":"💰",
+
+"Vehicle Found":"🚗",
+
+"Purchased":"🛒",
+
+"Shipping":"🚢",
+
+"At Port":"⚓",
+
+"Clearing":"📑",
+
+"Delivered":"✅"
+
+};
+
+let currentIndex =
+stages.indexOf(status);
+
+let html = "";
+
+stages.forEach((stage,index)=>{
+
+let css = "timeline-step";
+
+if(index < currentIndex){
+
+css += " timeline-complete";
+
+}
+
+else if(index === currentIndex){
+
+css += " timeline-current";
+
+}
+
+html += `
+
+<div class="${css}">
+
+${icons[stage]} ${stage}
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+"customerTimeline"
+).innerHTML = html;
 
 }
 
