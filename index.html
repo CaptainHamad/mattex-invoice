@@ -703,13 +703,83 @@ style="width:100%;border-collapse:collapse;">
 
     </thead>
 
-  <tbody id="customersBody">
+<tbody id="customersBody">
 
 </tbody>
 
-    </table>
+</table>
+
+<hr>
+
+<h3>Activity Log</h3>
+
+<table
+border="1"
+style="width:100%;border-collapse:collapse;">
+
+<thead>
+
+<tr>
+
+<th>Time</th>
+
+<th>User</th>
+
+<th>Activity</th>
+
+</tr>
+
+</thead>
+
+<tbody id="activityBody">
+
+</tbody>
+
+</table>
 
 </div>
+
+async function loadActivityLogs(){
+
+const { data, error }
+=
+await supabaseClient
+.from('activity_logs')
+.select('*')
+.order('id',
+{ ascending:false });
+
+if(error){
+console.error(error);
+return;
+}
+
+let tbody =
+document.getElementById(
+"activityBody"
+);
+
+tbody.innerHTML="";
+
+data.forEach(log => {
+
+tbody.innerHTML += `
+
+<tr>
+
+<td>${log.activity_time}</td>
+
+<td>${log.user_email}</td>
+
+<td>${log.activity}</td>
+
+</tr>
+
+`;
+
+});
+
+}
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = "https://xpgtietajegnttonthxm.supabase.co";
@@ -1039,11 +1109,17 @@ document.getElementById("invNo").innerHTML =
 invoiceNumber;
 
 saveInvoiceToSupabase(invoiceNumber);
+
+saveActivity(
+"Created Invoice " +
+invoiceNumber
+);
+
 setTimeout(() => {
     loadRecords();
 }, 1000);
 
-}
+
 
 function downloadPDF(){
 
@@ -1154,13 +1230,15 @@ await loadCustomers();
 ///MANAGEMENT
 function openManagement(){
 
-    document.getElementById("app")
-    .style.display = "none";
+document.getElementById("app")
+.style.display = "none";
 
-    document.getElementById("managementPage")
-    .style.display = "block";
+document.getElementById("managementPage")
+.style.display = "block";
 
-    loadCustomers();
+loadCustomers();
+
+loadActivityLogs();
 
 }
 
@@ -1271,6 +1349,27 @@ document.getElementById("editETA").value
 })
 .eq('id', selectedCustomerId);
 
+
+async function saveActivity(activityText){
+
+const {
+data:{user}
+}
+=
+await supabaseClient.auth.getUser();
+
+await supabaseClient
+.from('activity_logs')
+.insert([{
+
+user_email: user.email,
+
+activity: activityText
+
+}]);
+
+}
+
 if(error){
 
 alert(error.message);
@@ -1279,12 +1378,21 @@ return;
 
 }
 
+saveActivity(
+
+"Updated Customer " +
+
+selectedCustomerId +
+
+" Status: " +
+
+document.getElementById("editStatus").value
+
+);
+
 alert("Customer Updated");
 
 loadCustomers();
-
-}
-
 
 </script>
 
