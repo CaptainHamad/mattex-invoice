@@ -761,32 +761,6 @@ style="width:100%;border-collapse:collapse;">
 
 <hr>
 
-<h3>Activity Log</h3>
-
-<table
-border="1"
-style="width:100%;border-collapse:collapse;">
-
-<thead>
-
-<tr>
-
-<th>Time</th>
-
-<th>User</th>
-
-<th>Activity</th>
-
-</tr>
-
-</thead>
-
-<tbody id="activityBody">
-
-</tbody>
-
-</table>
-
 </div>
 
 
@@ -1251,7 +1225,6 @@ document.getElementById("managementPage")
 
 loadCustomers();
 
-loadActivityLogs();
 
 }
 
@@ -1483,20 +1456,6 @@ return eta;
 
 }
 
-async function loadActivityLogs(){
-
-const { data, error }
-=
-await supabaseClient
-.from('activity_logs')
-.select('*')
-.order('id',
-{ ascending:false });
-
-if(error){
-console.error(error);
-return;
-}
 
 let tbody =
 document.getElementById(
