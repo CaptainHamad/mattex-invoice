@@ -1457,34 +1457,6 @@ return eta;
 }
 
 
-let tbody =
-document.getElementById(
-"activityBody"
-);
-
-tbody.innerHTML="";
-
-data.forEach(log => {
-
-tbody.innerHTML += `
-
-<tr>
-
-<td>${log.activity_time}</td>
-
-<td>${log.user_email}</td>
-
-<td>${log.activity}</td>
-
-</tr>
-
-`;
-
-});
-
-}
-
-
 async function saveActivity(activityText){
 
 const {
