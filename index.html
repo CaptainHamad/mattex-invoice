@@ -637,6 +637,9 @@ MANAGEMENT
     </button>
 
 <div id="leadsPage" style="display:none;">
+<button onclick="backToManagement()">
+← Back to Management
+</button>
 
 <h3>📞 Leads Management</h3>
 
@@ -1704,6 +1707,9 @@ document.getElementById(
 
 function openLeads(){
 
+document.getElementById("managementPage")
+.style.display = "none";
+
 document.getElementById("leadsPage")
 .style.display = "block";
 
@@ -1805,6 +1811,16 @@ tbody.innerHTML += `
 `;
 
 });
+
+}
+
+function backToManagement(){
+
+document.getElementById("leadsPage")
+.style.display = "none";
+
+document.getElementById("managementPage")
+.style.display = "block";
 
 }
 
