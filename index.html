@@ -316,7 +316,49 @@ font-weight:bold;
     font-size:14px;
     word-wrap:break-word;
 }
-    
+
+.status-badge{
+    padding:6px 10px;
+    border-radius:20px;
+    color:white;
+    font-weight:bold;
+    font-size:12px;
+    display:inline-block;
+    text-align:center;
+}
+
+.status-inquiry{
+    background:#6c757d;
+}
+
+.status-deposit{
+    background:#007bff;
+}
+
+.status-found{
+    background:#6f42c1;
+}
+
+.status-purchased{
+    background:#fd7e14;
+}
+
+.status-shipping{
+    background:#17a2b8;
+}
+
+.status-port{
+    background:#003f88;
+}
+
+.status-clearing{
+    background:#ffc107;
+    color:black;
+}
+
+.status-delivered{
+    background:#28a745;
+}
 </style>
 
 </head>
@@ -1370,31 +1412,67 @@ function getStatusBadge(status){
 switch(status){
 
 case "Inquiry":
-return "🔍 Inquiry";
+return `
+<span class="status-badge status-inquiry">
+🔍 Inquiry
+</span>
+`;
 
 case "Deposit Paid":
-return "💰 Deposit Paid";
+return `
+<span class="status-badge status-deposit">
+💰 Deposit Paid
+</span>
+`;
 
 case "Vehicle Found":
-return "🚗 Vehicle Found";
+return `
+<span class="status-badge status-found">
+🚗 Vehicle Found
+</span>
+`;
 
 case "Purchased":
-return "🛒 Purchased";
+return `
+<span class="status-badge status-purchased">
+🛒 Purchased
+</span>
+`;
 
 case "Shipping":
-return "🚢 Shipping";
+return `
+<span class="status-badge status-shipping">
+🚢 Shipping
+</span>
+`;
 
 case "At Port":
-return "⚓ At Port";
+return `
+<span class="status-badge status-port">
+⚓ At Port
+</span>
+`;
 
 case "Clearing":
-return "📑 Clearing";
+return `
+<span class="status-badge status-clearing">
+📑 Clearing
+</span>
+`;
 
 case "Delivered":
-return "✅ Delivered";
+return `
+<span class="status-badge status-delivered">
+✅ Delivered
+</span>
+`;
 
 default:
-return status || "🔍 Inquiry";
+return `
+<span class="status-badge status-inquiry">
+🔍 Inquiry
+</span>
+`;
 
 }
 
