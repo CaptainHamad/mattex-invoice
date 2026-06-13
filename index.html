@@ -636,99 +636,7 @@ MANAGEMENT
     📞 Leads Management
     </button>
 
-<div id="leadsPage" style="display:none;">
-<button onclick="backToManagement()">
-← Back to Management
-</button>
 
-<h3>📞 Leads Management</h3>
-
-<input id="leadName" placeholder="Customer Name"><br>
-
-<input id="leadPhone" placeholder="Phone"><br>
-
-<input id="leadCar" placeholder="Car Interested"><br>
-
-<select id="leadSource">
-
-<option>Facebook</option>
-<option>Instagram</option>
-<option>TikTok</option>
-<option>WhatsApp</option>
-<option>Referral</option>
-<option>Website</option>
-
-</select><br>
-<select id="leadStatus">
-
-<option value="New Lead">
-🆕 New Lead
-</option>
-
-<option value="Contacted">
-📞 Contacted
-</option>
-
-<option value="Negotiating">
-💬 Negotiating
-</option>
-
-<option value="Deposit Paid">
-💰 Deposit Paid
-</option>
-
-<option value="Converted">
-✅ Converted
-</option>
-
-<option value="Lost">
-❌ Lost
-</option>
-
-</select><br>
-<input id="leadBudget" placeholder="Budget"><br>
-
-<textarea
-id="leadNotes"
-placeholder="Notes"
-style="width:300px;height:80px;">
-</textarea>
-
-<br><br>
-
-<button onclick="saveLead()">
-➕ Save Lead
-</button>
-
-<hr>
-
-<table border="1"
-style="width:100%;border-collapse:collapse;">
-
-<thead>
-
-<tr>
-
-<th>ID</th>
-<th>DATE</th>
-<th>NAME</th>
-<th>PHONE</th>
-<th>CAR</th>
-<th>SOURCE</th>
-<th>BUDGET</th>
-<th>STATUS</th>
-
-</tr>
-
-</thead>
-
-<tbody id="leadsBody">
-
-</tbody>
-
-</table>
-
-</div>
     <div id="editCustomerBox" style="display:none;">
 
 <h3>Update Customer Order</h3>
@@ -899,7 +807,99 @@ style="width:100%;border-collapse:collapse;">
 <hr>
 
 </div>
+<div id="leadsPage" style="display:none;">
+<button onclick="backToManagement()">
+← Back to Management
+</button>
 
+<h3>📞 Leads Management</h3>
+
+<input id="leadName" placeholder="Customer Name"><br>
+
+<input id="leadPhone" placeholder="Phone"><br>
+
+<input id="leadCar" placeholder="Car Interested"><br>
+
+<select id="leadSource">
+
+<option>Facebook</option>
+<option>Instagram</option>
+<option>TikTok</option>
+<option>WhatsApp</option>
+<option>Referral</option>
+<option>Website</option>
+
+</select><br>
+<select id="leadStatus">
+
+<option value="New Lead">
+🆕 New Lead
+</option>
+
+<option value="Contacted">
+📞 Contacted
+</option>
+
+<option value="Negotiating">
+💬 Negotiating
+</option>
+
+<option value="Deposit Paid">
+💰 Deposit Paid
+</option>
+
+<option value="Converted">
+✅ Converted
+</option>
+
+<option value="Lost">
+❌ Lost
+</option>
+
+</select><br>
+<input id="leadBudget" placeholder="Budget"><br>
+
+<textarea
+id="leadNotes"
+placeholder="Notes"
+style="width:300px;height:80px;">
+</textarea>
+
+<br><br>
+
+<button onclick="saveLead()">
+➕ Save Lead
+</button>
+
+<hr>
+
+<table border="1"
+style="width:100%;border-collapse:collapse;">
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>DATE</th>
+<th>NAME</th>
+<th>PHONE</th>
+<th>CAR</th>
+<th>SOURCE</th>
+<th>BUDGET</th>
+<th>STATUS</th>
+
+</tr>
+
+</thead>
+
+<tbody id="leadsBody">
+
+</tbody>
+
+</table>
+
+</div>
 
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
