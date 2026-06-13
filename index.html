@@ -632,8 +632,74 @@ MANAGEMENT
 
     <button>Invoice Records</button>
     <button>Customers</button>
+    <button onclick="openLeads()">
+    📞 Leads Management
+    </button>
 
+<div id="leadsPage" style="display:none;">
 
+<h3>📞 Leads Management</h3>
+
+<input id="leadName" placeholder="Customer Name"><br>
+
+<input id="leadPhone" placeholder="Phone"><br>
+
+<input id="leadCar" placeholder="Car Interested"><br>
+
+<select id="leadSource">
+
+<option>Facebook</option>
+<option>Instagram</option>
+<option>TikTok</option>
+<option>WhatsApp</option>
+<option>Referral</option>
+<option>Website</option>
+
+</select><br>
+
+<input id="leadBudget" placeholder="Budget"><br>
+
+<textarea
+id="leadNotes"
+placeholder="Notes"
+style="width:300px;height:80px;">
+</textarea>
+
+<br><br>
+
+<button onclick="saveLead()">
+➕ Save Lead
+</button>
+
+<hr>
+
+<table border="1"
+style="width:100%;border-collapse:collapse;">
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>DATE</th>
+<th>NAME</th>
+<th>PHONE</th>
+<th>CAR</th>
+<th>SOURCE</th>
+<th>BUDGET</th>
+<th>STATUS</th>
+
+</tr>
+
+</thead>
+
+<tbody id="leadsBody">
+
+</tbody>
+
+</table>
+
+</div>
     <div id="editCustomerBox" style="display:none;">
 
 <h3>Update Customer Order</h3>
@@ -1636,6 +1702,111 @@ document.getElementById(
 
 }
 
+function openLeads(){
+
+document.getElementById("leadsPage")
+.style.display = "block";
+
+loadLeads();
+
+}
+
+async function saveLead(){
+
+const today = new Date();
+
+const date =
+today.toLocaleDateString('en-GB');
+
+const { error } =
+await supabaseClient
+.from('leads')
+.insert([{
+
+lead_date: date,
+
+customer_name:
+document.getElementById("leadName").value,
+
+phone:
+document.getElementById("leadPhone").value,
+
+car_interest:
+document.getElementById("leadCar").value,
+
+source:
+document.getElementById("leadSource").value,
+
+budget:
+document.getElementById("leadBudget").value,
+
+notes:
+document.getElementById("leadNotes").value
+
+}]);
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+alert("Lead Saved");
+
+loadLeads();
+
+}
+
+async function loadLeads(){
+
+const { data, error } =
+await supabaseClient
+.from('leads')
+.select('*')
+.order('id',{ascending:false});
+
+if(error){
+
+console.error(error);
+return;
+
+}
+
+let tbody =
+document.getElementById("leadsBody");
+
+tbody.innerHTML = "";
+
+data.forEach(lead => {
+
+tbody.innerHTML += `
+
+<tr>
+
+<td>${lead.id}</td>
+
+<td>${lead.lead_date}</td>
+
+<td>${lead.customer_name}</td>
+
+<td>${lead.phone}</td>
+
+<td>${lead.car_interest}</td>
+
+<td>${lead.source}</td>
+
+<td>${lead.budget}</td>
+
+<td>🆕 ${lead.status}</td>
+
+</tr>
+
+`;
+
+});
+
+}
 
 </script>
 
