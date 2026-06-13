@@ -659,7 +659,33 @@ MANAGEMENT
 <option>Website</option>
 
 </select><br>
+<select id="leadStatus">
 
+<option value="New Lead">
+🆕 New Lead
+</option>
+
+<option value="Contacted">
+📞 Contacted
+</option>
+
+<option value="Negotiating">
+💬 Negotiating
+</option>
+
+<option value="Deposit Paid">
+💰 Deposit Paid
+</option>
+
+<option value="Converted">
+✅ Converted
+</option>
+
+<option value="Lost">
+❌ Lost
+</option>
+
+</select><br>
 <input id="leadBudget" placeholder="Budget"><br>
 
 <textarea
@@ -1745,6 +1771,9 @@ document.getElementById("leadSource").value,
 
 budget:
 document.getElementById("leadBudget").value,
+
+status:
+document.getElementById("leadStatus").value,
 
 notes:
 document.getElementById("leadNotes").value
