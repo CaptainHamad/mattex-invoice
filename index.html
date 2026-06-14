@@ -902,7 +902,25 @@ style="width:100%;border-collapse:collapse;">
 </select><br>
 <input id="leadBudget" placeholder="Budget"><br>
 
-<input id="assignedTo" placeholder="Assigned To"><br>
+<select id="assignedTo">
+
+<option value="">
+-- Select Staff --
+</option>
+
+<option value="SYLVIA">
+SYLVIA
+</option>
+
+<option value="FRANK">
+FRANK
+</option>
+
+<option value="HAMAD">
+HAMAD
+</option>
+
+</select><br>
 
 <label>Next Follow Up</label><br>
 
@@ -942,6 +960,7 @@ style="width:100%;border-collapse:collapse;">
 <th>ASSIGNED TO</th>
 <th>NEXT FOLLOW UP</th>
 <th>VIEW NOTES</th>
+<th>ACTION</th>
 
 </tr>
 
@@ -952,6 +971,37 @@ style="width:100%;border-collapse:collapse;">
 </tbody>
 
 </table>
+
+<hr>
+
+<div
+id="editLeadBox"
+style="display:none;">
+
+<h3>Edit Lead</h3>
+
+<input id="editLeadName" placeholder="Name"><br>
+
+<input id="editLeadPhone" placeholder="Phone"><br>
+
+<input id="editLeadCar" placeholder="Car Interested"><br>
+
+<select id="editLeadStatus">
+
+<option>New Lead</option>
+<option>Contacted</option>
+<option>Negotiating</option>
+<option>Deposit Paid</option>
+<option>Converted</option>
+<option>Lost</option>
+
+</select><br>
+
+<button onclick="updateLead()">
+Save Changes
+</button>
+
+</div>
 
 </div>
 
@@ -1935,6 +1985,15 @@ tbody.innerHTML += `
 </td>
 
 </tr>
+
+<td>
+<button onclick="editLead(${lead.id})">
+✏ Edit
+</button>
+</td>
+
+</tr>
+
 
 `;
 
