@@ -813,6 +813,41 @@ style="width:100%;border-collapse:collapse;">
 </button>
 
 <h3>📞 Leads Management</h3>
+<div class="stats-container">
+
+<div class="stat-card">
+<h2 id="totalLeads">0</h2>
+<p>📞 Total Leads</p>
+</div>
+
+<div class="stat-card">
+<h2 id="newLeads">0</h2>
+<p>🆕 New Leads</p>
+</div>
+
+<div class="stat-card">
+<h2 id="contactedLeads">0</h2>
+<p>📞 Contacted</p>
+</div>
+
+<div class="stat-card">
+<h2 id="negotiatingLeads">0</h2>
+<p>💬 Negotiating</p>
+</div>
+
+<div class="stat-card">
+<h2 id="depositLeads">0</h2>
+<p>💰 Deposit Paid</p>
+</div>
+
+<div class="stat-card">
+<h2 id="convertedLeads">0</h2>
+<p>✅ Converted</p>
+</div>
+
+</div>
+
+<hr>
 
 <input id="leadName" placeholder="Customer Name"><br>
 
@@ -1808,6 +1843,24 @@ console.error(error);
 return;
 
 }
+
+document.getElementById("totalLeads").innerHTML =
+data.length;
+
+document.getElementById("newLeads").innerHTML =
+data.filter(x => x.status === "New Lead").length;
+
+document.getElementById("contactedLeads").innerHTML =
+data.filter(x => x.status === "Contacted").length;
+
+document.getElementById("negotiatingLeads").innerHTML =
+data.filter(x => x.status === "Negotiating").length;
+
+document.getElementById("depositLeads").innerHTML =
+data.filter(x => x.status === "Deposit Paid").length;
+
+document.getElementById("convertedLeads").innerHTML =
+data.filter(x => x.status === "Converted").length;
 
 let tbody =
 document.getElementById("leadsBody");
