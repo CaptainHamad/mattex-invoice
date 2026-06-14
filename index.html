@@ -888,6 +888,7 @@ style="width:100%;border-collapse:collapse;">
 <th>SOURCE</th>
 <th>BUDGET</th>
 <th>STATUS</th>
+<th>VIEW NOTES</th>
 
 </tr>
 
@@ -1834,6 +1835,11 @@ tbody.innerHTML += `
 <td>${lead.budget}</td>
 
 <td>🆕 ${lead.status}</td>
+<td>
+<button onclick="viewNotes('${lead.notes || ""}')">
+📝 Notes
+</button>
+</td>
 
 </tr>
 
@@ -1850,6 +1856,12 @@ document.getElementById("leadsPage")
 
 document.getElementById("managementPage")
 .style.display = "block";
+
+}
+
+function viewNotes(notes){
+
+alert(notes || "No notes available");
 
 }
 
