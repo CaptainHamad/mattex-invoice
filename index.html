@@ -1956,7 +1956,7 @@ tbody.innerHTML = "";
 
 data.forEach(lead => {
 
-tbody.innerHTML += `
+<tbody.innerHTML += `
 
 <tr>
 
@@ -1975,16 +1975,16 @@ tbody.innerHTML += `
 <td>${lead.budget}</td>
 
 <td>🆕 ${lead.status}</td>
+
 <td>${lead.assigned_to || "-"}</td>
 
 <td>${lead.next_follow_up || "-"}</td>
+
 <td>
 <button onclick="viewNotes('${lead.notes || ""}')">
 📝 Notes
 </button>
 </td>
-
-</tr>
 
 <td>
 <button onclick="editLead(${lead.id})">
@@ -1994,9 +1994,7 @@ tbody.innerHTML += `
 
 </tr>
 
-
 `;
-
 });
 
 }
@@ -2014,6 +2012,80 @@ document.getElementById("managementPage")
 function viewNotes(notes){
 
 alert(notes || "No notes available");
+
+}
+let selectedLeadId = null;
+
+async function editLead(id){
+
+selectedLeadId = id;
+
+const { data, error } =
+await supabaseClient
+.from('leads')
+.select('*')
+.eq('id', id)
+.single();
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+document.getElementById("editLeadName").value =
+data.customer_name || "";
+
+document.getElementById("editLeadPhone").value =
+data.phone || "";
+
+document.getElementById("editLeadCar").value =
+data.car_interest || "";
+
+document.getElementById("editLeadStatus").value =
+data.status || "New Lead";
+
+document.getElementById("editLeadBox")
+.style.display = "block";
+
+}
+
+async function updateLead(){
+
+const { error } =
+await supabaseClient
+.from('leads')
+.update({
+
+customer_name:
+document.getElementById("editLeadName").value,
+
+phone:
+document.getElementById("editLeadPhone").value,
+
+car_interest:
+document.getElementById("editLeadCar").value,
+
+status:
+document.getElementById("editLeadStatus").value
+
+})
+.eq('id', selectedLeadId);
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+alert("Lead Updated");
+
+document.getElementById("editLeadBox")
+.style.display = "none";
+
+loadLeads();
 
 }
 
