@@ -1151,6 +1151,25 @@ style="display:none;">
 <option>Lost</option>
 
 </select><br>
+<input id="editLeadBudget" placeholder="Budget"><br>
+
+<select id="editAssignedTo">
+
+<option value="">Assign Staff</option>
+<option>SYLVIA</option>
+<option>FRANK</option>
+<option>HAMAD</option>
+
+</select><br>
+
+<input
+type="date"
+id="editFollowUp"><br>
+
+<textarea
+id="editLeadNotes"
+placeholder="Notes">
+</textarea><br>
 
 <button onclick="updateLead()">
 Save Changes
@@ -2246,6 +2265,7 @@ data.notes || "";
 }
 
 async function updateLead(){
+console.log(selectedLeadId);
 
 const { error } =
 await supabaseClient
