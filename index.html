@@ -813,6 +813,44 @@ style="width:100%;border-collapse:collapse;">
 </button>
 
 <h3>📞 Leads Management</h3>
+
+<hr>
+
+<h3>📊 Lead Sources Performance</h3>
+
+<div class="stats-container">
+
+<div class="stat-card">
+<h2 id="facebookLeads">0</h2>
+<p>📘 Facebook</p>
+</div>
+
+<div class="stat-card">
+<h2 id="instagramLeads">0</h2>
+<p>📸 Instagram</p>
+</div>
+
+<div class="stat-card">
+<h2 id="tiktokLeads">0</h2>
+<p>🎵 TikTok</p>
+</div>
+
+<div class="stat-card">
+<h2 id="whatsappLeads">0</h2>
+<p>💬 WhatsApp</p>
+</div>
+
+<div class="stat-card">
+<h2 id="referralLeads">0</h2>
+<p>🤝 Referral</p>
+</div>
+
+<div class="stat-card">
+<h2 id="websiteLeads">0</h2>
+<p>🌐 Website</p>
+</div>
+
+</div>
 <div class="stats-container">
 
 <div class="stat-card">
@@ -1935,6 +1973,24 @@ data.filter(x => x.status === "Deposit Paid").length;
 
 document.getElementById("convertedLeads").innerHTML =
 data.filter(x => x.status === "Converted").length;
+
+document.getElementById("facebookLeads").innerHTML =
+data.filter(x => x.source === "Facebook").length;
+
+document.getElementById("instagramLeads").innerHTML =
+data.filter(x => x.source === "Instagram").length;
+
+document.getElementById("tiktokLeads").innerHTML =
+data.filter(x => x.source === "TikTok").length;
+
+document.getElementById("whatsappLeads").innerHTML =
+data.filter(x => x.source === "WhatsApp").length;
+
+document.getElementById("referralLeads").innerHTML =
+data.filter(x => x.source === "Referral").length;
+
+document.getElementById("websiteLeads").innerHTML =
+data.filter(x => x.source === "Website").length;
 
 const today =
 new Date().toISOString().split("T")[0];
