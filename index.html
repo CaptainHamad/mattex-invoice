@@ -818,6 +818,29 @@ style="width:100%;border-collapse:collapse;">
 
 <h3>📊 Lead Sources Performance</h3>
 
+<hr>
+
+<h3>👨‍💼 Staff Performance</h3>
+
+<div class="stats-container">
+
+<div class="stat-card">
+<h2 id="sylviaLeads">0</h2>
+<p>👩 SYLVIA</p>
+</div>
+
+<div class="stat-card">
+<h2 id="frankLeads">0</h2>
+<p>👨 FRANK</p>
+</div>
+
+<div class="stat-card">
+<h2 id="hamadLeads">0</h2>
+<p>⭐ HAMAD</p>
+</div>
+
+</div>
+
 <div class="stats-container">
 
 <div class="stat-card">
@@ -1991,6 +2014,15 @@ data.filter(x => x.source === "Referral").length;
 
 document.getElementById("websiteLeads").innerHTML =
 data.filter(x => x.source === "Website").length;
+
+document.getElementById("sylviaLeads").innerHTML =
+data.filter(x => x.assigned_to === "SYLVIA").length;
+
+document.getElementById("frankLeads").innerHTML =
+data.filter(x => x.assigned_to === "FRANK").length;
+
+document.getElementById("hamadLeads").innerHTML =
+data.filter(x => x.assigned_to === "HAMAD").length;
 
 const today =
 new Date().toISOString().split("T")[0];
