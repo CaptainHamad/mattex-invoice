@@ -261,11 +261,28 @@ gap:10px;
 
 .stat-card{
 
-width:140px;
-padding:10px;
+background:white;
+border-radius:15px;
+padding:15px;
+min-width:170px;
+
+box-shadow:
+0 4px 15px rgba(0,0,0,0.08);
+
+transition:0.3s;
+
+border-left:5px solid #f7941d;
 
 }
 
+.stat-card:hover{
+
+transform:translateY(-4px);
+
+box-shadow:
+0 8px 20px rgba(0,0,0,0.15);
+
+}
 .stat-card h2{
 
 margin:0;
@@ -372,6 +389,82 @@ color:#333;
 
 padding-left:5px;
 
+}
+
+.lead-form-card{
+
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+margin:20px 0;
+
+}
+
+.lead-form-title{
+
+font-size:22px;
+font-weight:bold;
+margin-bottom:20px;
+color:#f7941d;
+
+}
+
+.form-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea{
+
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:8px;
+box-sizing:border-box;
+
+}
+
+.save-lead-btn{
+
+background:#f7941d;
+padding:14px 25px;
+border:none;
+border-radius:8px;
+color:white;
+font-size:16px;
+font-weight:bold;
+margin-top:15px;
+
+}
+
+.facebook-card{
+border-left:5px solid #1877F2;
+}
+
+.instagram-card{
+border-left:5px solid #E1306C;
+}
+
+.tiktok-card{
+border-left:5px solid #000;
+}
+
+.whatsapp-card{
+border-left:5px solid #25D366;
+}
+
+.referral-card{
+border-left:5px solid #ff9800;
+}
+
+.website-card{
+border-left:5px solid #6c63ff;
 }
 </style>
 
@@ -939,89 +1032,67 @@ style="width:100%;border-collapse:collapse;">
 
 <hr>
 
-<input id="leadName" placeholder="Customer Name"><br>
+<div class="lead-form-card">
 
-<input id="leadPhone" placeholder="Phone"><br>
+<div class="lead-form-title">
+➕ Add New Lead
+</div>
 
-<input id="leadCar" placeholder="Car Interested"><br>
+<div class="form-grid">
+
+<input id="leadName" placeholder="Customer Name">
+
+<input id="leadPhone" placeholder="Phone">
+
+<input id="leadCar" placeholder="Car Interested">
+
+<input id="leadBudget" placeholder="Budget">
 
 <select id="leadSource">
-
 <option>Facebook</option>
 <option>Instagram</option>
 <option>TikTok</option>
 <option>WhatsApp</option>
 <option>Referral</option>
 <option>Website</option>
-
-</select><br>
-<select id="leadStatus">
-
-<option value="New Lead">
-🆕 New Lead
-</option>
-
-<option value="Contacted">
-📞 Contacted
-</option>
-
-<option value="Negotiating">
-💬 Negotiating
-</option>
-
-<option value="Deposit Paid">
-💰 Deposit Paid
-</option>
-
-<option value="Converted">
-✅ Converted
-</option>
-
-<option value="Lost">
-❌ Lost
-</option>
-
-</select><br>
-<input id="leadBudget" placeholder="Budget"><br>
+</select>
 
 <select id="assignedTo">
+<option value="">Assign Staff</option>
+<option>SYLVIA</option>
+<option>FRANK</option>
+<option>HAMAD</option>
+</select>
 
-<option value="">
--- Select Staff --
-</option>
-
-<option value="SYLVIA">
-SYLVIA
-</option>
-
-<option value="FRANK">
-FRANK
-</option>
-
-<option value="HAMAD">
-HAMAD
-</option>
-
-</select><br>
-
-<label>Next Follow Up</label><br>
+<select id="leadStatus">
+<option>New Lead</option>
+<option>Contacted</option>
+<option>Negotiating</option>
+<option>Deposit Paid</option>
+<option>Converted</option>
+<option>Lost</option>
+</select>
 
 <input
 type="date"
-id="nextFollowUp"><br>
+id="nextFollowUp">
 
 <textarea
 id="leadNotes"
-placeholder="Notes"
-style="width:300px;height:80px;">
+placeholder="Notes">
 </textarea>
 
-<br><br>
+</div>
 
-<button onclick="saveLead()">
+<button
+class="save-lead-btn"
+onclick="saveLead()">
+
 ➕ Save Lead
+
 </button>
 
+</div>
 <hr>
 
 <table border="1"
