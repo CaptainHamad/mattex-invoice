@@ -2261,21 +2261,26 @@ data.budget || "";
 document.getElementById("editAssignedTo").value =
 data.assigned_to || "";
 
-document.getElementById("editFollowUp").value =
-data.next_follow_up || "";
+if(data.next_follow_up){
 
-document.getElementById("editLeadNotes").value =
-data.notes || "";
+const d = new Date(data.next_follow_up);
+
+document.getElementById("editFollowUp").value =
+d.toISOString().split("T")[0];
+
+}else{
+
+document.getElementById("editFollowUp").value = "";
 
 }
 
-async function updateLead(){
-console.log(selectedLeadId);
+document.getElementById("editLeadNotes").value =
+data.notes || "";
+}
 
-const { error } =
-await supabaseClient
-.from('leads')
-.update({
+async function updateLead(){
+
+const payload = {
 
 customer_name:
 document.getElementById("editLeadName").value,
@@ -2301,23 +2306,31 @@ document.getElementById("editLeadNotes").value,
 status:
 document.getElementById("editLeadStatus").value
 
-})
+};
+
+console.log(payload);
+
+const { error } =
+await supabaseClient
+.from('leads')
+.update(payload)
 .eq('id', selectedLeadId);
 
 if(error){
+
+console.error(error);
+
 alert(error.message);
+
 return;
+
 }
 
 alert("Lead Updated");
 
-document.getElementById("editLeadBox")
-.style.display = "none";
-
-loadLeads();
+await loadLeads();
 
 }
-
 
 </script>
 
