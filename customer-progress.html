@@ -8,19 +8,24 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
     padding:0;
     font-family:Arial, sans-serif;
     background:#f5f6fa;
+    color:#222;
 }
 
 .top-bar{
     background:linear-gradient(135deg,#f7941d,#ffb347);
     color:white;
-    padding:18px 25px;
+    padding:22px 20px;
     text-align:center;
-    box-shadow:0 4px 12px rgba(0,0,0,0.12);
+    box-shadow:0 4px 15px rgba(0,0,0,0.12);
 }
 
 .top-bar img{
@@ -31,7 +36,8 @@ body{
 
 .top-bar h1{
     margin:0;
-    font-size:28px;
+    font-size:30px;
+    letter-spacing:1px;
 }
 
 .top-bar p{
@@ -41,17 +47,22 @@ body{
 }
 
 .container{
-    max-width:1000px;
+    max-width:1100px;
     margin:30px auto;
-    padding:0 15px;
+    padding:0 15px 40px;
 }
 
 .card{
     background:white;
-    border-radius:18px;
+    border-radius:20px;
     box-shadow:0 8px 25px rgba(0,0,0,0.08);
     padding:25px;
     margin-bottom:20px;
+}
+
+.hero-card{
+    background:linear-gradient(135deg,#fff,#fff8f0);
+    border:1px solid #ffe1ba;
 }
 
 .customer-header{
@@ -63,9 +74,15 @@ body{
 }
 
 .customer-name{
-    font-size:28px;
-    font-weight:bold;
+    font-size:30px;
+    font-weight:800;
     color:#222;
+    margin-bottom:6px;
+}
+
+.customer-subtitle{
+    color:#666;
+    font-size:15px;
 }
 
 .customer-code{
@@ -75,6 +92,27 @@ body{
     border-radius:25px;
     font-weight:bold;
     font-size:14px;
+    border:1px solid #ffd08a;
+}
+
+.car-box{
+    margin-top:22px;
+    padding:20px;
+    background:linear-gradient(135deg,#fff7ef,#fffdf9);
+    border:1px solid #ffe0b2;
+    border-radius:18px;
+}
+
+.car-box h2{
+    margin:0 0 8px;
+    color:#f7941d;
+    font-size:24px;
+}
+
+.car-box p{
+    margin:0;
+    color:#666;
+    line-height:1.6;
 }
 
 .summary-grid{
@@ -86,7 +124,7 @@ body{
 
 .summary-box{
     background:#fafafa;
-    border-radius:15px;
+    border-radius:16px;
     padding:18px;
     border-left:5px solid #f7941d;
     box-shadow:0 4px 10px rgba(0,0,0,0.04);
@@ -94,41 +132,43 @@ body{
 
 .summary-box h3{
     margin:0 0 10px;
-    font-size:15px;
-    color:#666;
-    font-weight:600;
+    font-size:14px;
+    color:#777;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
 }
 
 .summary-box p{
     margin:0;
-    font-size:22px;
+    font-size:24px;
+    font-weight:800;
+    color:#222;
+}
+
+.progress-section{
+    margin-top:28px;
+}
+
+.progress-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.progress-title{
+    font-size:20px;
     font-weight:bold;
     color:#222;
 }
 
-.car-box{
-    margin-top:20px;
-    padding:20px;
-    background:linear-gradient(135deg,#fff7ef,#fffdf9);
-    border:1px solid #ffe0b2;
-    border-radius:18px;
-}
-
-.car-box h2{
-    margin:0 0 10px;
-    color:#f7941d;
-}
-
-.progress-section{
-    margin-top:25px;
-}
-
-.progress-label{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:8px;
-    font-weight:bold;
-    color:#444;
+.progress-percentage{
+    font-size:24px;
+    font-weight:800;
+    color:#28a745;
 }
 
 .progress-bar{
@@ -147,10 +187,21 @@ body{
     transition:width 0.5s ease;
 }
 
-.history-title{
-    font-size:22px;
-    font-weight:bold;
-    margin-bottom:15px;
+.progress-note{
+    margin-top:12px;
+    font-size:15px;
+    color:#555;
+    line-height:1.6;
+    background:#f8fff9;
+    border-left:4px solid #28a745;
+    padding:14px;
+    border-radius:12px;
+}
+
+.section-title{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:18px;
     color:#222;
 }
 
@@ -158,6 +209,7 @@ table{
     width:100%;
     border-collapse:collapse;
     margin-top:10px;
+    overflow:hidden;
 }
 
 thead{
@@ -172,21 +224,51 @@ th,td{
     font-size:15px;
 }
 
-tr:hover{
-    background:#fafafa;
+tbody tr:nth-child(even){
+    background:#fcfcfc;
+}
+
+tbody tr:hover{
+    background:#fff8ef;
+}
+
+.amount-strong{
+    font-weight:800;
+    color:#222;
+}
+
+.notes-cell{
+    color:#555;
+    max-width:260px;
+    line-height:1.5;
 }
 
 .empty-state{
     text-align:center;
     padding:40px 20px;
     color:#777;
+    background:#fafafa;
+    border-radius:15px;
 }
 
-.footer-note{
+.footer-box{
+    background:linear-gradient(135deg,#f7941d,#ffb347);
+    color:white;
     text-align:center;
-    margin-top:30px;
-    color:#777;
-    font-size:14px;
+    padding:22px;
+    border-radius:20px;
+    box-shadow:0 8px 20px rgba(247,148,29,0.18);
+}
+
+.footer-box h3{
+    margin:0 0 10px;
+    font-size:24px;
+}
+
+.footer-box p{
+    margin:0;
+    line-height:1.7;
+    font-size:15px;
 }
 
 .error-box{
@@ -213,11 +295,15 @@ tr:hover{
 
 @media(max-width:768px){
     .customer-name{
-        font-size:22px;
+        font-size:24px;
     }
 
     .summary-box p{
-        font-size:18px;
+        font-size:20px;
+    }
+
+    .progress-percentage{
+        font-size:20px;
     }
 
     th,td{
@@ -226,7 +312,7 @@ tr:hover{
     }
 
     .top-bar h1{
-        font-size:22px;
+        font-size:24px;
     }
 }
 </style>
@@ -236,7 +322,7 @@ tr:hover{
 <div class="top-bar">
     <img src="mattex-logo.png" alt="Mattex Logo">
     <h1>MATTEX SAVINGS PROGRESS</h1>
-    <p>Track your savings journey towards your dream car</p>
+    <p>Track your journey towards your dream car with Mattex</p>
 </div>
 
 <div class="container" id="app">
@@ -293,7 +379,7 @@ async function loadCustomerProgress(){
     .from("savings_payments")
     .select("*")
     .eq("customer_id", customer.id)
-    .order("payment_date", { ascending:false });
+    .order("payment_date", { ascending:true });
 
     if(paymentsError){
         app.innerHTML = `
@@ -313,69 +399,114 @@ async function loadCustomerProgress(){
 
     const targetAmount = Number(customer.target_amount || 0);
     const remaining = Math.max(targetAmount - totalSaved, 0);
-    let progress = 0;
 
+    let progress = 0;
     if(targetAmount > 0){
         progress = Math.round((totalSaved / targetAmount) * 100);
         if(progress > 100) progress = 100;
     }
 
     let lastPayment = "No payment yet";
+    if(payments.length > 0){
+        lastPayment = formatDate(payments[payments.length - 1].payment_date);
+    }
+
+    const paymentCount = payments.length;
+
+    let progressMessage = getProgressMessage(progress, remaining, customer.car_interested);
+
+    let runningTotal = 0;
+    let paymentRows = "";
 
     if(payments.length > 0){
-        lastPayment = formatDate(payments[0].payment_date);
+        payments.forEach(payment => {
+            runningTotal += Number(payment.amount || 0);
+
+            paymentRows += `
+                <tr>
+                    <td>${formatDate(payment.payment_date)}</td>
+                    <td class="amount-strong">TZS ${formatMoney(payment.amount)}</td>
+                    <td class="notes-cell">${payment.notes || "-"}</td>
+                    <td class="amount-strong">TZS ${formatMoney(runningTotal)}</td>
+                </tr>
+            `;
+        });
     }
 
     app.innerHTML = `
-        <div class="card">
+        <div class="card hero-card">
 
             <div class="customer-header">
-                <div class="customer-name">👤 ${customer.customer_name || "-"}</div>
-                <div class="customer-code">${customer.customer_code || ""}</div>
+                <div>
+                    <div class="customer-name">👤 ${customer.customer_name || "-"}</div>
+                    <div class="customer-subtitle">
+                        Welcome to your Mattex savings dashboard
+                    </div>
+                </div>
+
+                <div class="customer-code">
+                    ${customer.customer_code || ""}
+                </div>
             </div>
 
             <div class="car-box">
                 <h2>🚗 ${customer.car_interested || "No car selected"}</h2>
-                <p>Your savings progress towards your desired vehicle.</p>
+                <p>
+                    This dashboard shows your savings progress, remaining balance, and full payment history for your selected vehicle.
+                </p>
             </div>
 
             <div class="summary-grid">
                 <div class="summary-box">
-                    <h3>🎯 Target Amount</h3>
+                    <h3>Target Amount</h3>
                     <p>TZS ${formatMoney(targetAmount)}</p>
                 </div>
 
                 <div class="summary-box">
-                    <h3>💰 Total Saved</h3>
+                    <h3>Total Saved</h3>
                     <p>TZS ${formatMoney(totalSaved)}</p>
                 </div>
 
                 <div class="summary-box">
-                    <h3>💸 Remaining</h3>
+                    <h3>Remaining</h3>
                     <p>TZS ${formatMoney(remaining)}</p>
                 </div>
 
                 <div class="summary-box">
-                    <h3>🗓 Last Payment</h3>
+                    <h3>Number of Payments</h3>
+                    <p>${paymentCount}</p>
+                </div>
+
+                <div class="summary-box">
+                    <h3>Last Payment</h3>
                     <p style="font-size:18px;">${lastPayment}</p>
+                </div>
+
+                <div class="summary-box">
+                    <h3>Progress</h3>
+                    <p>${progress}%</p>
                 </div>
             </div>
 
             <div class="progress-section">
-                <div class="progress-label">
-                    <span>Progress</span>
-                    <span>${progress}%</span>
+                <div class="progress-header">
+                    <div class="progress-title">Savings Progress</div>
+                    <div class="progress-percentage">${progress}%</div>
                 </div>
 
                 <div class="progress-bar">
                     <div class="progress-fill" style="width:${progress}%"></div>
+                </div>
+
+                <div class="progress-note">
+                    ${progressMessage}
                 </div>
             </div>
 
         </div>
 
         <div class="card">
-            <div class="history-title">📜 Payment History</div>
+            <div class="section-title">📜 Payment History</div>
 
             ${
                 payments.length === 0
@@ -389,27 +520,71 @@ async function loadCustomerProgress(){
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Amount</th>
+                            <th>Amount Paid</th>
                             <th>Notes</th>
+                            <th>Total Saved After Payment</th>
                         </tr>
                     </thead>
-                    <tbody id="paymentsBody">
-                        ${payments.map(payment => `
-                            <tr>
-                                <td>${formatDate(payment.payment_date)}</td>
-                                <td>TZS ${formatMoney(payment.amount)}</td>
-                                <td>${payment.notes || "-"}</td>
-                            </tr>
-                        `).join("")}
+                    <tbody>
+                        ${paymentRows}
                     </tbody>
                 </table>
                 `
             }
         </div>
 
-        <div class="footer-note">
-            Powered by Mattex Company Limited
+        <div class="footer-box">
+            <h3>Mattex Company Limited</h3>
+            <p>
+                Thank you for saving with Mattex. Every payment brings you closer to your dream car.
+                For support or clarification on your savings account, please contact Mattex directly.
+            </p>
         </div>
+    `;
+}
+
+function getProgressMessage(progress, remaining, carName){
+
+    if(progress >= 100){
+        return `
+            🎉 Congratulations! You have completed your savings target for your
+            <strong>${carName || "vehicle"}</strong>. Please contact Mattex for the next purchase steps.
+        `;
+    }
+
+    if(progress >= 75){
+        return `
+            🔥 Excellent progress! You are very close to your target.
+            Only <strong>TZS ${formatMoney(remaining)}</strong> remains before you reach your goal for
+            <strong>${carName || "your vehicle"}</strong>.
+        `;
+    }
+
+    if(progress >= 50){
+        return `
+            💪 Great job! You are now over halfway towards your
+            <strong>${carName || "vehicle"}</strong>. Keep going — your goal is getting closer.
+        `;
+    }
+
+    if(progress >= 25){
+        return `
+            🚗 Good progress so far. Your savings journey towards
+            <strong>${carName || "your vehicle"}</strong> is moving well.
+            Stay consistent and you will reach your target.
+        `;
+    }
+
+    if(progress > 0){
+        return `
+            🌱 Your journey has started well. Keep building your savings step by step towards
+            <strong>${carName || "your vehicle"}</strong>.
+        `;
+    }
+
+    return `
+        Start your savings journey today. Once payments are recorded, your progress towards
+        <strong>${carName || "your vehicle"}</strong> will appear here.
     `;
 }
 
