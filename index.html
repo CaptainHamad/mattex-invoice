@@ -1243,6 +1243,27 @@ style="display:none;padding:20px;">
 
 <div id="customerSummary"></div>
 
+<hr>
+
+<h3>➕ Add New Payment</h3>
+
+<input
+id="newPaymentAmount"
+placeholder="Amount">
+
+<input
+id="newPaymentNotes"
+placeholder="Notes">
+
+<button
+onclick="addPayment()">
+
+💰 Save Payment
+
+</button>
+
+<hr>
+
 <h3>Payment History</h3>
 
 <table border="1" width="100%">
@@ -2628,6 +2649,7 @@ await supabaseClient
 .eq('customer_id',customerId)
 .order('payment_date',{ascending:false});
 
+
 let totalSaved = 0;
 
 payments.forEach(x=>{
@@ -2667,8 +2689,24 @@ ${totalSaved.toLocaleString()}<br><br>
 💸 Remaining:
 ${remaining.toLocaleString()}<br><br>
 
-📈 Progress:
-${progress}%
+<div style="
+width:400px;
+background:#ddd;
+height:25px;
+border-radius:20px;
+overflow:hidden;">
+
+<div style="
+width:${progress}%;
+height:25px;
+background:#28a745;">
+</div>
+
+</div>
+
+<br>
+
+📈 Progress: ${progress}%
 
 <hr>
 `;
@@ -2788,6 +2826,88 @@ document.getElementById(
 ).style.display = "block";
 
 loadSavings();
+
+}
+
+async function deletePayment(id){
+
+if(!confirm("Delete this payment?")) return;
+
+const { error } =
+await supabaseClient
+.from('savings_payments')
+.delete()
+.eq('id',id);
+
+if(error){
+alert(error.message);
+return;
+}
+
+loadCustomerDetails(currentCustomerId);
+
+}
+
+// WEKA HAPA CHINI
+
+async function addPayment(){
+
+const amount =
+document.getElementById(
+"newPaymentAmount"
+).value;
+
+const notes =
+document.getElementById(
+"newPaymentNotes"
+).value;
+
+if(!amount){
+
+alert("Enter Amount");
+
+return;
+
+}
+
+const { error } =
+await supabaseClient
+.from('savings_payments')
+.insert([{
+
+customer_id:
+currentCustomerId,
+
+amount: amount,
+
+notes: notes,
+
+payment_date:
+new Date()
+.toISOString()
+.split("T")[0]
+
+}]);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+document.getElementById(
+"newPaymentAmount"
+).value = "";
+
+document.getElementById(
+"newPaymentNotes"
+).value = "";
+
+loadCustomerDetails(
+currentCustomerId
+);
 
 }
 
