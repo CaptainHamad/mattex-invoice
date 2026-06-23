@@ -743,6 +743,10 @@ MANAGEMENT
     📞 Leads Management
     </button>
 
+    <button onclick="openSavings()">
+    💰 Savings Customers
+    </button>
+
 
     <div id="editCustomerBox" style="display:none;">
 
@@ -1176,6 +1180,55 @@ Save Changes
 </button>
 
 </div>
+
+</div>
+
+<div id="savingsPage" style="display:none; padding:20px;">
+
+<button onclick="backToManagement()">
+← Back to Management
+</button>
+
+<h2>💰 Savings Customers</h2>
+
+<hr>
+
+<input id="saveName" placeholder="Customer Name">
+
+<input id="savePhone" placeholder="Phone">
+
+<input id="saveCar" placeholder="Car Interested">
+
+<input id="saveTarget" placeholder="Target Amount">
+
+<button onclick="saveCustomer()">
+Save Customer
+</button>
+
+<hr>
+
+<table border="1" width="100%">
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Car</th>
+<th>Target</th>
+<th>Saved</th>
+<th>Remaining</th>
+<th>Progress</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="savingsBody">
+</tbody>
+
+</table>
 
 </div>
 
@@ -2331,6 +2384,175 @@ alert("Lead Updated");
 await loadLeads();
 
 }
+
+function openSavings(){
+
+document.getElementById("managementPage")
+.style.display="none";
+
+document.getElementById("savingsPage")
+.style.display="block";
+
+loadSavings();
+
+}
+
+async function saveCustomer(){
+
+const { error } =
+await supabaseClient
+.from('savings_customers')
+.insert([{
+
+customer_name:
+document.getElementById("saveName").value,
+
+phone:
+document.getElementById("savePhone").value,
+
+car_interested:
+document.getElementById("saveCar").value,
+
+target_amount:
+document.getElementById("saveTarget").value
+
+}]);
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+alert("Customer Saved");
+
+loadSavings();
+
+}
+
+async function loadSavings(){
+
+const { data, error } =
+await supabaseClient
+.from('savings_customers')
+.select('*')
+.order('id',{ascending:false});
+
+if(error){
+console.error(error);
+return;
+}
+
+let body =
+document.getElementById("savingsBody");
+
+body.innerHTML="";
+
+for(const customer of data){
+
+const { data:payments } =
+await supabaseClient
+.from('savings_payments')
+.select('amount')
+.eq('customer_id',customer.id);
+
+let totalSaved = 0;
+
+payments.forEach(x => {
+
+totalSaved += Number(x.amount);
+
+});
+
+let remaining =
+Number(customer.target_amount) -
+totalSaved;
+
+let progress =
+Math.round(
+(totalSaved /
+customer.target_amount) * 100
+);
+
+body.innerHTML += `
+
+<tr>
+
+<td>${customer.id}</td>
+
+<td>${customer.customer_name}</td>
+
+<td>${customer.phone}</td>
+
+<td>${customer.car_interested}</td>
+
+<td>${Number(customer.target_amount).toLocaleString()}</td>
+
+<td>${totalSaved.toLocaleString()}</td>
+
+<td>${remaining.toLocaleString()}</td>
+
+<td>
+
+${progress}%
+
+</td>
+
+<td>
+
+<button
+onclick="openPayments(${customer.id})">
+
+💰 Payments
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+}
+
+async function openPayments(customerId){
+
+const amount =
+prompt("Enter Amount");
+
+if(!amount) return;
+
+const { error } =
+await supabaseClient
+.from('savings_payments')
+.insert([{
+
+customer_id:customerId,
+
+amount:amount,
+
+payment_date:
+new Date().toISOString()
+
+}]);
+
+if(error){
+
+alert(error.message);
+return;
+
+}
+
+alert("Payment Added");
+
+loadSavings();
+
+}
+
+
 
 </script>
 
