@@ -1232,6 +1232,41 @@ Save Customer
 
 </div>
 
+<div id="customerDetailsPage"
+style="display:none;padding:20px;">
+
+<button onclick="backToSavings()">
+← Back to Savings
+</button>
+
+<h2 id="customerTitle"></h2>
+
+<div id="customerSummary"></div>
+
+<h3>Payment History</h3>
+
+<table border="1" width="100%">
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Amount</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="paymentsBody">
+
+</tbody>
+
+</table>
+
+</div>
+
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = "https://xpgtietajegnttonthxm.supabase.co";
@@ -2481,7 +2516,16 @@ body.innerHTML += `
 
 <td>${customer.id}</td>
 
-<td>${customer.customer_name}</td>
+<td>
+
+<a href="#"
+onclick="openCustomerDetails(${customer.id})">
+
+${customer.customer_name}
+
+</a>
+
+</td>
 
 <td>${customer.phone}</td>
 
@@ -2552,6 +2596,200 @@ loadSavings();
 
 }
 
+let currentCustomerId = null;
+
+async function openCustomerDetails(customerId){
+
+currentCustomerId = customerId;
+
+document.getElementById("savingsPage")
+.style.display = "none";
+
+document.getElementById("customerDetailsPage")
+.style.display = "block";
+
+loadCustomerDetails(customerId);
+
+}
+
+async function loadCustomerDetails(customerId){
+
+const { data:customer } =
+await supabaseClient
+.from('savings_customers')
+.select('*')
+.eq('id',customerId)
+.single();
+
+const { data:payments } =
+await supabaseClient
+.from('savings_payments')
+.select('*')
+.eq('customer_id',customerId)
+.order('payment_date',{ascending:false});
+
+let totalSaved = 0;
+
+payments.forEach(x=>{
+
+totalSaved += Number(x.amount);
+
+});
+
+let remaining =
+customer.target_amount -
+totalSaved;
+
+let progress =
+Math.round(
+(totalSaved /
+customer.target_amount)*100
+);
+
+document.getElementById(
+"customerTitle"
+).innerHTML =
+"👤 " + customer.customer_name;
+
+document.getElementById(
+"customerSummary"
+).innerHTML =
+
+`
+🚗 ${customer.car_interested}<br><br>
+
+🎯 Target:
+${Number(customer.target_amount).toLocaleString()}<br><br>
+
+💰 Saved:
+${totalSaved.toLocaleString()}<br><br>
+
+💸 Remaining:
+${remaining.toLocaleString()}<br><br>
+
+📈 Progress:
+${progress}%
+
+<hr>
+`;
+
+let body =
+document.getElementById("paymentsBody");
+
+body.innerHTML = "";
+
+payments.forEach(payment=>{
+
+body.innerHTML += `
+
+<tr>
+
+<td>${payment.payment_date}</td>
+
+<td>${Number(payment.amount).toLocaleString()}</td>
+
+<td>
+
+<button
+onclick="editPayment(${payment.id})">
+
+✏ Edit
+
+</button>
+
+<button
+onclick="deletePayment(${payment.id})">
+
+🗑 Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+async function editPayment(id){
+
+const amount =
+prompt("Enter New Amount");
+
+if(!amount) return;
+
+const { error } =
+await supabaseClient
+.from('savings_payments')
+.update({
+
+amount: amount
+
+})
+.eq('id',id);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+alert("Payment Updated");
+
+loadCustomerDetails(
+currentCustomerId
+);
+
+}
+
+async function deletePayment(id){
+
+if(
+!confirm(
+"Delete this payment?"
+)
+)return;
+
+const { error } =
+await supabaseClient
+.from('savings_payments')
+.delete()
+.eq('id',id);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+alert("Deleted");
+
+loadCustomerDetails(
+currentCustomerId
+);
+
+}
+
+function backToSavings(){
+
+document.getElementById(
+"customerDetailsPage"
+).style.display = "none";
+
+document.getElementById(
+"savingsPage"
+).style.display = "block";
+
+loadSavings();
+
+}
 
 
 </script>
