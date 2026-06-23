@@ -16,20 +16,20 @@ body{
     margin:0;
     padding:0;
     font-family:Arial, sans-serif;
-    background:#f5f6fa;
+    background:#f4f6fb;
     color:#222;
 }
 
 .top-bar{
     background:linear-gradient(135deg,#f7941d,#ffb347);
     color:white;
-    padding:22px 20px;
+    padding:24px 20px;
     text-align:center;
     box-shadow:0 4px 15px rgba(0,0,0,0.12);
 }
 
 .top-bar img{
-    width:150px;
+    width:155px;
     max-width:80%;
     margin-bottom:10px;
 }
@@ -47,14 +47,14 @@ body{
 }
 
 .container{
-    max-width:1100px;
+    max-width:1150px;
     margin:30px auto;
-    padding:0 15px 40px;
+    padding:0 15px 45px;
 }
 
 .card{
     background:white;
-    border-radius:20px;
+    border-radius:22px;
     box-shadow:0 8px 25px rgba(0,0,0,0.08);
     padding:25px;
     margin-bottom:20px;
@@ -68,7 +68,7 @@ body{
 .customer-header{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    align-items:flex-start;
     flex-wrap:wrap;
     gap:15px;
 }
@@ -83,6 +83,7 @@ body{
 .customer-subtitle{
     color:#666;
     font-size:15px;
+    line-height:1.6;
 }
 
 .customer-code{
@@ -95,8 +96,29 @@ body{
     border:1px solid #ffd08a;
 }
 
+.greeting-box{
+    margin-top:20px;
+    background:linear-gradient(135deg,#fffaf3,#fff);
+    border:1px solid #ffe3b8;
+    border-radius:18px;
+    padding:20px;
+}
+
+.greeting-box h2{
+    margin:0 0 10px;
+    color:#f7941d;
+    font-size:24px;
+}
+
+.greeting-box p{
+    margin:0;
+    color:#555;
+    font-size:16px;
+    line-height:1.7;
+}
+
 .car-box{
-    margin-top:22px;
+    margin-top:20px;
     padding:20px;
     background:linear-gradient(135deg,#fff7ef,#fffdf9);
     border:1px solid #ffe0b2;
@@ -173,10 +195,11 @@ body{
 
 .progress-bar{
     width:100%;
-    height:28px;
+    height:30px;
     background:#e5e5e5;
     border-radius:30px;
     overflow:hidden;
+    position:relative;
 }
 
 .progress-fill{
@@ -184,18 +207,82 @@ body{
     width:0%;
     background:linear-gradient(90deg,#28a745,#43d86b);
     border-radius:30px;
-    transition:width 0.5s ease;
+    transition:width 0.6s ease;
 }
 
 .progress-note{
     margin-top:12px;
     font-size:15px;
     color:#555;
-    line-height:1.6;
+    line-height:1.7;
     background:#f8fff9;
     border-left:4px solid #28a745;
     padding:14px;
     border-radius:12px;
+}
+
+.special-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+
+.special-card{
+    border-radius:18px;
+    padding:20px;
+    color:#222;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+
+.eta-card{
+    background:linear-gradient(135deg,#eef9ff,#ffffff);
+    border:1px solid #d6efff;
+}
+
+.eta-card h3{
+    margin:0 0 10px;
+    color:#0d6efd;
+    font-size:18px;
+}
+
+.eta-card p{
+    margin:0;
+    line-height:1.7;
+    color:#444;
+}
+
+.whatsapp-card{
+    background:linear-gradient(135deg,#effff3,#ffffff);
+    border:1px solid #c8f3d2;
+}
+
+.whatsapp-card h3{
+    margin:0 0 10px;
+    color:#25D366;
+    font-size:18px;
+}
+
+.whatsapp-card p{
+    margin:0 0 16px;
+    line-height:1.7;
+    color:#444;
+}
+
+.whatsapp-btn{
+    display:inline-block;
+    background:#25D366;
+    color:white;
+    text-decoration:none;
+    padding:14px 20px;
+    border-radius:12px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.whatsapp-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(37,211,102,0.25);
 }
 
 .section-title{
@@ -255,7 +342,7 @@ tbody tr:hover{
     background:linear-gradient(135deg,#f7941d,#ffb347);
     color:white;
     text-align:center;
-    padding:22px;
+    padding:24px;
     border-radius:20px;
     box-shadow:0 8px 20px rgba(247,148,29,0.18);
 }
@@ -267,7 +354,7 @@ tbody tr:hover{
 
 .footer-box p{
     margin:0;
-    line-height:1.7;
+    line-height:1.8;
     font-size:15px;
 }
 
@@ -314,6 +401,10 @@ tbody tr:hover{
     .top-bar h1{
         font-size:24px;
     }
+
+    .greeting-box h2{
+        font-size:20px;
+    }
 }
 </style>
 </head>
@@ -326,7 +417,7 @@ tbody tr:hover{
 </div>
 
 <div class="container" id="app">
-    <div class="loading" id="loadingBox">
+    <div class="loading">
         Loading customer progress...
     </div>
 </div>
@@ -342,6 +433,9 @@ const supabaseClient = supabase.createClient(
 
 const params = new URLSearchParams(window.location.search);
 const customerCode = params.get("code");
+
+/* BADILISHA HAPA Namba ya WhatsApp ya Mattex */
+const MATTEX_WHATSAPP = "255671567568";
 
 loadCustomerProgress();
 
@@ -392,7 +486,6 @@ async function loadCustomerProgress(){
     }
 
     let totalSaved = 0;
-
     payments.forEach(payment => {
         totalSaved += Number(payment.amount || 0);
     });
@@ -406,14 +499,17 @@ async function loadCustomerProgress(){
         if(progress > 100) progress = 100;
     }
 
+    const paymentCount = payments.length;
+
     let lastPayment = "No payment yet";
     if(payments.length > 0){
         lastPayment = formatDate(payments[payments.length - 1].payment_date);
     }
 
-    const paymentCount = payments.length;
+    const greetingText = getGreeting(customer.customer_name, progress, customer.car_interested);
+    const progressMessage = getProgressMessage(progress, remaining, customer.car_interested);
 
-    let progressMessage = getProgressMessage(progress, remaining, customer.car_interested);
+    const etaInfo = calculateETA(payments, remaining);
 
     let runningTotal = 0;
     let paymentRows = "";
@@ -433,6 +529,19 @@ async function loadCustomerProgress(){
         });
     }
 
+    const whatsappMessage =
+        "Hello Mattex, I am " +
+        (customer.customer_name || "a customer") +
+        ". I am following my savings progress for " +
+        (customer.car_interested || "my car") +
+        " and I need assistance.";
+
+    const whatsappLink =
+        "https://wa.me/" +
+        MATTEX_WHATSAPP +
+        "?text=" +
+        encodeURIComponent(whatsappMessage);
+
     app.innerHTML = `
         <div class="card hero-card">
 
@@ -449,10 +558,16 @@ async function loadCustomerProgress(){
                 </div>
             </div>
 
+            <div class="greeting-box">
+                <h2>${greetingText.title}</h2>
+                <p>${greetingText.message}</p>
+            </div>
+
             <div class="car-box">
                 <h2>🚗 ${customer.car_interested || "No car selected"}</h2>
                 <p>
-                    This dashboard shows your savings progress, remaining balance, and full payment history for your selected vehicle.
+                    This dashboard shows your savings progress, remaining balance,
+                    estimated completion time and full payment history for your selected vehicle.
                 </p>
             </div>
 
@@ -503,6 +618,25 @@ async function loadCustomerProgress(){
                 </div>
             </div>
 
+            <div class="special-grid">
+                <div class="special-card eta-card">
+                    <h3>📅 Estimated Completion Time</h3>
+                    <p>${etaInfo}</p>
+                </div>
+
+                <div class="special-card whatsapp-card">
+                    <h3>💬 Need Help from Mattex?</h3>
+                    <p>
+                        If you need assistance about your savings, vehicle, balance or next steps,
+                        contact Mattex directly on WhatsApp.
+                    </p>
+
+                    <a href="${whatsappLink}" target="_blank" class="whatsapp-btn">
+                        Chat with Mattex on WhatsApp
+                    </a>
+                </div>
+            </div>
+
         </div>
 
         <div class="card">
@@ -537,18 +671,65 @@ async function loadCustomerProgress(){
             <h3>Mattex Company Limited</h3>
             <p>
                 Thank you for saving with Mattex. Every payment brings you closer to your dream car.
-                For support or clarification on your savings account, please contact Mattex directly.
+                Keep going — your goal is achievable, and we are happy to be part of your journey.
             </p>
         </div>
     `;
+}
+
+function getGreeting(customerName, progress, carName){
+
+    const name = customerName || "Customer";
+    const car = carName || "your dream car";
+
+    if(progress >= 100){
+        return {
+            title: `Congratulations ${name}! 🎉`,
+            message: `You have successfully completed your savings target for ${car}. You are now ready for the next step with Mattex.`
+        };
+    }
+
+    if(progress >= 75){
+        return {
+            title: `Hello ${name} 👋`,
+            message: `Amazing progress — you are ${progress}% closer to ${car}. You are now in the final stretch towards your target.`
+        };
+    }
+
+    if(progress >= 50){
+        return {
+            title: `Hello ${name} 👋`,
+            message: `Great work so far. You are ${progress}% closer to ${car}, and you are already past the halfway mark.`
+        };
+    }
+
+    if(progress >= 25){
+        return {
+            title: `Hello ${name} 👋`,
+            message: `You are making steady progress. So far, you are ${progress}% closer to ${car}. Keep building your savings consistently.`
+        };
+    }
+
+    if(progress > 0){
+        return {
+            title: `Hello ${name} 👋`,
+            message: `Your journey to ${car} has already started. Every contribution matters, and you are now ${progress}% closer to your goal.`
+        };
+    }
+
+    return {
+        title: `Hello ${name} 👋`,
+        message: `Welcome to your Mattex dashboard. Your savings journey for ${car} is ready to begin.`
+    };
 }
 
 function getProgressMessage(progress, remaining, carName){
 
     if(progress >= 100){
         return `
-            🎉 Congratulations! You have completed your savings target for your
-            <strong>${carName || "vehicle"}</strong>. Please contact Mattex for the next purchase steps.
+            🎉 Congratulations! You have completed your savings target for
+            <strong>${carName || "your vehicle"}</strong>.
+            Please contact Mattex for the next purchase steps.
         `;
     }
 
@@ -563,7 +744,8 @@ function getProgressMessage(progress, remaining, carName){
     if(progress >= 50){
         return `
             💪 Great job! You are now over halfway towards your
-            <strong>${carName || "vehicle"}</strong>. Keep going — your goal is getting closer.
+            <strong>${carName || "vehicle"}</strong>.
+            Keep going — your goal is getting closer.
         `;
     }
 
@@ -583,8 +765,68 @@ function getProgressMessage(progress, remaining, carName){
     }
 
     return `
-        Start your savings journey today. Once payments are recorded, your progress towards
-        <strong>${carName || "your vehicle"}</strong> will appear here.
+        Start your savings journey today. Once payments are recorded,
+        your progress towards <strong>${carName || "your vehicle"}</strong> will appear here.
+    `;
+}
+
+function calculateETA(payments, remaining){
+
+    if(remaining <= 0){
+        return `
+            🎯 Your savings target has already been completed.
+        `;
+    }
+
+    if(!payments || payments.length < 2){
+        return `
+            ETA will appear after more payment history is recorded.
+            Once there is enough savings pattern, Mattex will estimate your likely completion time.
+        `;
+    }
+
+    const firstDate = new Date(payments[0].payment_date);
+    const lastDate = new Date(payments[payments.length - 1].payment_date);
+
+    if(isNaN(firstDate) || isNaN(lastDate)){
+        return `
+            ETA is not available yet because payment dates are incomplete.
+        `;
+    }
+
+    const totalSaved = payments.reduce((sum,p)=>sum + Number(p.amount || 0),0);
+
+    const diffMs = lastDate - firstDate;
+    const diffDays = Math.max(Math.ceil(diffMs / (1000*60*60*24)), 1);
+
+    const monthsPassed = diffDays / 30;
+
+    if(monthsPassed <= 0){
+        return `
+            ETA will appear after more payment history is recorded.
+        `;
+    }
+
+    const avgMonthlySaving = totalSaved / monthsPassed;
+
+    if(avgMonthlySaving <= 0){
+        return `
+            ETA is not available yet.
+        `;
+    }
+
+    const monthsNeeded = Math.ceil(remaining / avgMonthlySaving);
+
+    if(monthsNeeded <= 1){
+        return `
+            At your current savings pace, you may reach your target in about
+            <strong>1 month</strong>.
+        `;
+    }
+
+    return `
+        At your current savings pace, you may reach your target in about
+        <strong>${monthsNeeded} months</strong>.
     `;
 }
 
