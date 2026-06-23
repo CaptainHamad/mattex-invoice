@@ -466,6 +466,391 @@ border-left:5px solid #ff9800;
 .website-card{
 border-left:5px solid #6c63ff;
 }
+
+/* ===== SAVINGS MODERN UI ===== */
+
+.savings-page-wrap{
+    padding:20px;
+}
+
+.savings-top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.savings-page-title{
+    font-size:36px;
+    font-weight:800;
+    color:#111;
+    margin:0;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.savings-page-subtitle{
+    color:#666;
+    margin-top:8px;
+    font-size:15px;
+}
+
+.savings-summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin:20px 0 25px;
+}
+
+.savings-stat-card{
+    background:white;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    border:1px solid #f1f1f1;
+    position:relative;
+    overflow:hidden;
+}
+
+.savings-stat-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(90deg,#f7941d,#ffb347);
+}
+
+.savings-stat-label{
+    font-size:14px;
+    color:#666;
+    margin-bottom:12px;
+    font-weight:600;
+}
+
+.savings-stat-value{
+    font-size:28px;
+    font-weight:800;
+    color:#111;
+}
+
+.savings-form-card{
+    background:white;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    padding:25px;
+    margin-bottom:25px;
+    border:1px solid #f1f1f1;
+}
+
+.savings-form-title{
+    font-size:22px;
+    font-weight:800;
+    margin-bottom:18px;
+    color:#111;
+}
+
+.savings-form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:15px;
+    align-items:end;
+}
+
+.savings-form-grid input{
+    width:100%;
+    padding:14px 15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:15px;
+    margin:0;
+    box-sizing:border-box;
+    background:#fff;
+    transition:0.2s;
+}
+
+.savings-form-grid input:focus{
+    outline:none;
+    border-color:#f7941d;
+    box-shadow:0 0 0 4px rgba(247,148,29,0.15);
+}
+
+.savings-save-btn{
+    padding:14px 18px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#f7941d,#ff9f2f);
+    color:white;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    box-shadow:0 10px 20px rgba(247,148,29,0.25);
+}
+
+.savings-save-btn:hover{
+    transform:translateY(-1px);
+}
+
+.savings-table-card{
+    background:white;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    padding:20px;
+    border:1px solid #f1f1f1;
+    overflow-x:auto;
+}
+
+.savings-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1100px;
+}
+
+.savings-table thead th{
+    background:#fff7ef;
+    color:#333;
+    font-size:14px;
+    padding:14px 12px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+    white-space:nowrap;
+}
+
+.savings-table tbody td{
+    padding:14px 12px;
+    border-bottom:1px solid #f0f0f0;
+    vertical-align:middle;
+    font-size:15px;
+}
+
+.savings-table tbody tr:hover{
+    background:#fafafa;
+}
+
+.customer-name-link{
+    color:#6f42c1;
+    font-weight:800;
+    text-decoration:none;
+}
+
+.customer-name-link:hover{
+    text-decoration:underline;
+}
+
+.progress-wrap{
+    min-width:160px;
+}
+
+.progress-bar-modern{
+    width:100%;
+    height:12px;
+    background:#ececec;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:8px;
+}
+
+.progress-fill-modern{
+    height:100%;
+    background:linear-gradient(90deg,#28a745,#48db6f);
+    border-radius:20px;
+}
+
+.progress-text{
+    font-size:13px;
+    font-weight:700;
+    color:#333;
+}
+
+.action-btn-row{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.btn-orange{
+    background:#f7941d;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 14px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.btn-purple{
+    background:#6f42c1;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 14px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.btn-red{
+    background:#dc3545;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 14px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.customer-details-wrap{
+    padding:20px;
+}
+
+.customer-details-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.customer-title-big{
+    font-size:34px;
+    font-weight:800;
+    margin:0;
+    color:#111;
+}
+
+.customer-sub-info{
+    color:#666;
+    margin-top:8px;
+    font-size:15px;
+}
+
+.customer-summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin:20px 0 25px;
+}
+
+.customer-summary-card{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    padding:22px;
+    border:1px solid #f1f1f1;
+}
+
+.customer-summary-card h4{
+    margin:0 0 10px;
+    color:#666;
+    font-size:14px;
+    font-weight:700;
+}
+
+.customer-summary-card p{
+    margin:0;
+    font-size:26px;
+    font-weight:800;
+    color:#111;
+}
+
+.big-progress-card{
+    background:white;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    padding:24px;
+    margin-bottom:25px;
+    border:1px solid #f1f1f1;
+}
+
+.big-progress-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-weight:800;
+    color:#333;
+}
+
+.big-progress-bar{
+    width:100%;
+    height:22px;
+    background:#eaeaea;
+    border-radius:30px;
+    overflow:hidden;
+}
+
+.big-progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#28a745,#43d86b);
+    border-radius:30px;
+}
+
+.payment-form-card{
+    background:white;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    padding:24px;
+    margin-bottom:25px;
+    border:1px solid #f1f1f1;
+}
+
+.payment-form-grid{
+    display:grid;
+    grid-template-columns:2fr 2fr auto;
+    gap:15px;
+    align-items:end;
+}
+
+.payment-form-grid input{
+    width:100%;
+    padding:14px 15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:15px;
+    margin:0;
+    box-sizing:border-box;
+}
+
+.payment-form-grid input:focus{
+    outline:none;
+    border-color:#f7941d;
+    box-shadow:0 0 0 4px rgba(247,148,29,0.15);
+}
+
+.payment-table-card{
+    background:white;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    padding:20px;
+    border:1px solid #f1f1f1;
+    overflow-x:auto;
+}
+
+.payment-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.payment-table th{
+    background:#fff7ef;
+    color:#333;
+    font-size:14px;
+    padding:14px 12px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+}
+
+.payment-table td{
+    padding:14px 12px;
+    border-bottom:1px solid #f0f0f0;
+}
+
+.payment-table tr:hover{
+    background:#fafafa;
+}
 </style>
 
 </head>
@@ -1186,108 +1571,142 @@ Save Changes
 </div>
 
 
-<div id="savingsPage" style="display:none; padding:20px;">
-<button onclick="backToManagement()">
-← Back to Management
-</button>
+<div id="savingsPage" style="display:none;" class="savings-page-wrap">
 
-<h2>💰 Savings Customers</h2>
+    <div class="savings-top-bar">
+        <div>
+            <button onclick="backToManagement()">
+                ← Back to Management
+            </button>
 
-<hr>
+            <h2 class="savings-page-title">
+                💰 Savings Customers
+            </h2>
 
-<input id="saveName" placeholder="Customer Name">
+            <div class="savings-page-subtitle">
+                Manage all customers who are saving gradually for their dream cars.
+            </div>
+        </div>
+    </div>
 
-<input id="savePhone" placeholder="Phone">
+    <div class="savings-summary-grid">
 
-<input id="saveCar" placeholder="Car Interested">
+        <div class="savings-stat-card">
+            <div class="savings-stat-label">Total Savings Customers</div>
+            <div class="savings-stat-value" id="savingCustomersCount">0</div>
+        </div>
 
-<input id="saveTarget" placeholder="Target Amount">
+        <div class="savings-stat-card">
+            <div class="savings-stat-label">Total Target Amount</div>
+            <div class="savings-stat-value" id="savingTargetTotal">0</div>
+        </div>
 
-<button onclick="saveCustomer()">
-Save Customer
-</button>
+        <div class="savings-stat-card">
+            <div class="savings-stat-label">Total Saved Amount</div>
+            <div class="savings-stat-value" id="savingSavedTotal">0</div>
+        </div>
 
-<hr>
+        <div class="savings-stat-card">
+            <div class="savings-stat-label">Total Remaining</div>
+            <div class="savings-stat-value" id="savingRemainingTotal">0</div>
+        </div>
 
-<table border="1" width="100%">
+    </div>
 
-<thead>
+    <div class="savings-form-card">
+        <div class="savings-form-title">
+            ➕ Add New Savings Customer
+        </div>
 
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Phone</th>
-<th>Car</th>
-<th>Target</th>
-<th>Saved</th>
-<th>Remaining</th>
-<th>Progress</th>
-<th>Action</th>
-<th>Customer Link</th>
-</tr>
+        <div class="savings-form-grid">
+            <input id="saveName" placeholder="Customer Name">
+            <input id="savePhone" placeholder="Phone">
+            <input id="saveCar" placeholder="Car Interested">
+            <input id="saveTarget" placeholder="Target Amount">
 
-</thead>
+            <button class="savings-save-btn" onclick="saveCustomer()">
+                Save Customer
+            </button>
+        </div>
+    </div>
 
-<tbody id="savingsBody">
-</tbody>
+    <div class="savings-table-card">
+        <table class="savings-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Car</th>
+                    <th>Target</th>
+                    <th>Saved</th>
+                    <th>Remaining</th>
+                    <th>Progress</th>
+                    <th>Action</th>
+                    <th>Customer Link</th>
+                </tr>
+            </thead>
 
-</table>
+            <tbody id="savingsBody"></tbody>
+        </table>
+    </div>
 
 </div>
 
-<div id="customerDetailsPage"
-style="display:none;padding:20px;">
+<div id="customerDetailsPage" style="display:none;" class="customer-details-wrap">
 
-<button onclick="backToSavings()">
-← Back to Savings
-</button>
+    <div class="customer-details-header">
+        <div>
+            <button onclick="backToSavings()">
+                ← Back to Savings
+            </button>
 
-<h2 id="customerTitle"></h2>
+            <h2 id="customerTitle" class="customer-title-big"></h2>
+            <div id="customerSubInfo" class="customer-sub-info"></div>
+        </div>
+    </div>
 
-<div id="customerSummary"></div>
+    <div id="customerSummaryCards" class="customer-summary-grid"></div>
 
-<hr>
+    <div class="big-progress-card">
+        <div class="big-progress-header">
+            <span>Customer Savings Progress</span>
+            <span id="customerProgressPercent">0%</span>
+        </div>
 
-<h3>➕ Add New Payment</h3>
+        <div class="big-progress-bar">
+            <div id="customerBigProgressFill" class="big-progress-fill" style="width:0%;"></div>
+        </div>
+    </div>
 
-<input
-id="newPaymentAmount"
-placeholder="Amount">
+    <div class="payment-form-card">
+        <div class="savings-form-title">➕ Add New Payment</div>
 
-<input
-id="newPaymentNotes"
-placeholder="Notes">
+        <div class="payment-form-grid">
+            <input id="newPaymentAmount" placeholder="Amount">
+            <input id="newPaymentNotes" placeholder="Notes">
+            <button class="savings-save-btn" onclick="addPayment()">
+                💰 Save Payment
+            </button>
+        </div>
+    </div>
 
-<button
-onclick="addPayment()">
+    <div class="payment-table-card">
+        <div class="savings-form-title">Payment History</div>
 
-💰 Save Payment
+        <table class="payment-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
-</button>
-
-<hr>
-
-<h3>Payment History</h3>
-
-<table border="1" width="100%">
-
-<thead>
-
-<tr>
-
-<th>Date</th>
-<th>Amount</th>
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody id="paymentsBody">
-
-</tbody>
-
-</table>
+            <tbody id="paymentsBody"></tbody>
+        </table>
+    </div>
 
 </div>
 
@@ -2464,39 +2883,32 @@ loadSavings();
 
 async function saveCustomer(){
 
+const customerCode =
+"MATTEX-" + Date.now();
+
 const { error } =
 await supabaseClient
 .from('savings_customers')
 .insert([{
-
-customer_name:
-document.getElementById("saveName").value,
-
-phone:
-document.getElementById("savePhone").value,
-
-car_interested:
-document.getElementById("saveCar").value,
-
-target_amount:
-document.getElementById("saveTarget").value,
-
-customer_code:
-"MATTEX-" + Date.now()
-
+    customer_name: document.getElementById("saveName").value,
+    phone: document.getElementById("savePhone").value,
+    car_interested: document.getElementById("saveCar").value,
+    target_amount: document.getElementById("saveTarget").value,
+    customer_code: customerCode
 }]);
 
 if(error){
-
-alert(error.message);
-return;
-
+    alert(error.message);
+    return;
 }
 
-alert("Customer Saved");
+document.getElementById("saveName").value = "";
+document.getElementById("savePhone").value = "";
+document.getElementById("saveCar").value = "";
+document.getElementById("saveTarget").value = "";
 
+alert("Customer Saved Successfully");
 loadSavings();
-
 }
 
 async function loadSavings(){
@@ -2512,10 +2924,13 @@ if(error){
     return;
 }
 
-let body =
-document.getElementById("savingsBody");
-
+let body = document.getElementById("savingsBody");
 body.innerHTML = "";
+
+let totalCustomers = data.length;
+let totalTarget = 0;
+let totalSavedAll = 0;
+let totalRemainingAll = 0;
 
 for(const customer of data){
 
@@ -2531,20 +2946,19 @@ for(const customer of data){
         totalSaved += Number(x.amount || 0);
     });
 
-    let remaining =
-    Number(customer.target_amount || 0) - totalSaved;
-
-    if(remaining < 0){
-        remaining = 0;
-    }
+    let target = Number(customer.target_amount || 0);
+    let remaining = target - totalSaved;
+    if(remaining < 0) remaining = 0;
 
     let progress = 0;
-
-    if(Number(customer.target_amount) > 0){
-        progress = Math.round(
-            (totalSaved / Number(customer.target_amount)) * 100
-        );
+    if(target > 0){
+        progress = Math.round((totalSaved / target) * 100);
+        if(progress > 100) progress = 100;
     }
+
+    totalTarget += target;
+    totalSavedAll += totalSaved;
+    totalRemainingAll += remaining;
 
     const customerLink =
     `${window.location.origin}${window.location.pathname.replace("index.html","")}customer-progress.html?code=${customer.customer_code}`;
@@ -2555,8 +2969,8 @@ for(const customer of data){
 
         <td>
             <a href="#"
-               onclick="openCustomerDetails(${customer.id})"
-               style="color:#6f42c1;font-weight:bold;text-decoration:none;">
+               class="customer-name-link"
+               onclick="openCustomerDetails(${customer.id})">
                ${customer.customer_name}
             </a>
         </td>
@@ -2565,28 +2979,51 @@ for(const customer of data){
 
         <td>${customer.car_interested || "-"}</td>
 
-        <td>${Number(customer.target_amount || 0).toLocaleString()}</td>
+        <td>${target.toLocaleString()}</td>
 
         <td>${totalSaved.toLocaleString()}</td>
 
         <td>${remaining.toLocaleString()}</td>
 
-        <td>${progress}%</td>
-
         <td>
-            <button onclick="openCustomerDetails(${customer.id})">
-                💰 Payments
-            </button>
+            <div class="progress-wrap">
+                <div class="progress-bar-modern">
+                    <div class="progress-fill-modern" style="width:${progress}%"></div>
+                </div>
+                <div class="progress-text">${progress}%</div>
+            </div>
         </td>
 
         <td>
-            <button onclick="copyCustomerLink('${customerLink}')">
-                🔗 Copy Link
-            </button>
+            <div class="action-btn-row">
+                <button class="btn-orange" onclick="openCustomerDetails(${customer.id})">
+                    💰 Payments
+                </button>
+            </div>
+        </td>
+
+        <td>
+            <div class="action-btn-row">
+                <button class="btn-purple" onclick="copyCustomerLink('${customerLink}')">
+                    🔗 Copy Link
+                </button>
+            </div>
         </td>
     </tr>
     `;
 }
+
+document.getElementById("savingCustomersCount").innerHTML =
+totalCustomers.toLocaleString();
+
+document.getElementById("savingTargetTotal").innerHTML =
+totalTarget.toLocaleString();
+
+document.getElementById("savingSavedTotal").innerHTML =
+totalSavedAll.toLocaleString();
+
+document.getElementById("savingRemainingTotal").innerHTML =
+totalRemainingAll.toLocaleString();
 }
 
 function copyCustomerLink(link){
@@ -2646,121 +3083,94 @@ loadCustomerDetails(customerId);
 
 async function loadCustomerDetails(customerId){
 
-const { data:customer } =
+const { data: customer } =
 await supabaseClient
 .from('savings_customers')
 .select('*')
 .eq('id',customerId)
 .single();
 
-const { data:payments } =
+const { data: payments } =
 await supabaseClient
 .from('savings_payments')
 .select('*')
 .eq('customer_id',customerId)
 .order('payment_date',{ascending:false});
 
-
 let totalSaved = 0;
 
 payments.forEach(x=>{
-
-totalSaved += Number(x.amount);
-
+    totalSaved += Number(x.amount || 0);
 });
 
-let remaining =
-customer.target_amount -
-totalSaved;
+let target = Number(customer.target_amount || 0);
+let remaining = target - totalSaved;
+if(remaining < 0) remaining = 0;
 
-let progress =
-Math.round(
-(totalSaved /
-customer.target_amount)*100
-);
+let progress = 0;
+if(target > 0){
+    progress = Math.round((totalSaved / target) * 100);
+    if(progress > 100) progress = 100;
+}
 
-document.getElementById(
-"customerTitle"
-).innerHTML =
-"👤 " + customer.customer_name;
+document.getElementById("customerTitle").innerHTML =
+`👤 ${customer.customer_name}`;
 
-document.getElementById(
-"customerSummary"
-).innerHTML =
+document.getElementById("customerSubInfo").innerHTML =
+`🚗 ${customer.car_interested || "-"} &nbsp;&nbsp; • &nbsp;&nbsp; 📞 ${customer.phone || "-"}`;
 
-`
-🚗 ${customer.car_interested}<br><br>
+document.getElementById("customerSummaryCards").innerHTML = `
+    <div class="customer-summary-card">
+        <h4>🎯 Target Amount</h4>
+        <p>${target.toLocaleString()}</p>
+    </div>
 
-🎯 Target:
-${Number(customer.target_amount).toLocaleString()}<br><br>
+    <div class="customer-summary-card">
+        <h4>💰 Total Saved</h4>
+        <p>${totalSaved.toLocaleString()}</p>
+    </div>
 
-💰 Saved:
-${totalSaved.toLocaleString()}<br><br>
+    <div class="customer-summary-card">
+        <h4>💸 Remaining</h4>
+        <p>${remaining.toLocaleString()}</p>
+    </div>
 
-💸 Remaining:
-${remaining.toLocaleString()}<br><br>
-
-<div style="
-width:400px;
-background:#ddd;
-height:25px;
-border-radius:20px;
-overflow:hidden;">
-
-<div style="
-width:${progress}%;
-height:25px;
-background:#28a745;">
-</div>
-
-</div>
-
-<br>
-
-📈 Progress: ${progress}%
-
-<hr>
+    <div class="customer-summary-card">
+        <h4>📈 Progress</h4>
+        <p>${progress}%</p>
+    </div>
 `;
 
-let body =
-document.getElementById("paymentsBody");
+document.getElementById("customerProgressPercent").innerHTML =
+`${progress}%`;
 
+document.getElementById("customerBigProgressFill").style.width =
+`${progress}%`;
+
+let body = document.getElementById("paymentsBody");
 body.innerHTML = "";
 
 payments.forEach(payment=>{
 
-body.innerHTML += `
+    body.innerHTML += `
+    <tr>
+        <td>${payment.payment_date || "-"}</td>
+        <td>${Number(payment.amount || 0).toLocaleString()}</td>
+        <td>${payment.notes || "-"}</td>
+        <td>
+            <div class="action-btn-row">
+                <button class="btn-orange" onclick="editPayment(${payment.id})">
+                    ✏ Edit
+                </button>
 
-<tr>
-
-<td>${payment.payment_date}</td>
-
-<td>${Number(payment.amount).toLocaleString()}</td>
-
-<td>
-
-<button
-onclick="editPayment(${payment.id})">
-
-✏ Edit
-
-</button>
-
-<button
-onclick="deletePayment(${payment.id})">
-
-🗑 Delete
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
+                <button class="btn-red" onclick="deletePayment(${payment.id})">
+                    🗑 Delete
+                </button>
+            </div>
+        </td>
+    </tr>
+    `;
 });
-
 }
 
 async function editPayment(id){
