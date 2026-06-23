@@ -2508,101 +2508,90 @@ await supabaseClient
 .order('id',{ascending:false});
 
 if(error){
-console.error(error);
-return;
+    console.error(error);
+    return;
 }
 
 let body =
 document.getElementById("savingsBody");
 
-body.innerHTML="";
+body.innerHTML = "";
 
 for(const customer of data){
 
-const { data:payments } =
-await supabaseClient
-.from('savings_payments')
-.select('amount')
-.eq('customer_id',customer.id);
+    const { data: payments } =
+    await supabaseClient
+    .from('savings_payments')
+    .select('amount')
+    .eq('customer_id', customer.id);
 
-let totalSaved = 0;
+    let totalSaved = 0;
 
-payments.forEach(x => {
+    payments.forEach(x => {
+        totalSaved += Number(x.amount || 0);
+    });
 
-totalSaved += Number(x.amount);
+    let remaining =
+    Number(customer.target_amount || 0) - totalSaved;
 
-});
+    if(remaining < 0){
+        remaining = 0;
+    }
 
-let remaining =
-Number(customer.target_amount) -
-totalSaved;
+    let progress = 0;
 
-let progress =
-Math.round(
-(totalSaved /
-customer.target_amount) * 100
-);
+    if(Number(customer.target_amount) > 0){
+        progress = Math.round(
+            (totalSaved / Number(customer.target_amount)) * 100
+        );
+    }
 
-body.innerHTML += `
+    const customerLink =
+    `${window.location.origin}${window.location.pathname.replace("index.html","")}customer-progress.html?code=${customer.customer_code}`;
 
-<tr>
+    body.innerHTML += `
+    <tr>
+        <td>${customer.id}</td>
 
-<td>${customer.id}</td>
+        <td>
+            <a href="#"
+               onclick="openCustomerDetails(${customer.id})"
+               style="color:#6f42c1;font-weight:bold;text-decoration:none;">
+               ${customer.customer_name}
+            </a>
+        </td>
 
-<td>
+        <td>${customer.phone || "-"}</td>
 
-<button
-onclick="openCustomerDetails(${customer.id})">
+        <td>${customer.car_interested || "-"}</td>
 
-💰 Payments
+        <td>${Number(customer.target_amount || 0).toLocaleString()}</td>
 
-</button>
+        <td>${totalSaved.toLocaleString()}</td>
 
-</td>
+        <td>${remaining.toLocaleString()}</td>
 
-<td>
+        <td>${progress}%</td>
 
-<button
-onclick="copyLink('${customer.customer_code}')">
+        <td>
+            <button onclick="openCustomerDetails(${customer.id})">
+                💰 Payments
+            </button>
+        </td>
 
-🔗 Copy Link
-
-</button>
-
-</td>
-<td>${customer.phone}</td>
-
-<td>${customer.car_interested}</td>
-
-<td>${Number(customer.target_amount).toLocaleString()}</td>
-
-<td>${totalSaved.toLocaleString()}</td>
-
-<td>${remaining.toLocaleString()}</td>
-
-<td>
-
-${progress}%
-
-</td>
-
-<td>
-
-<button
-onclick="openPayments(${customer.id})">
-
-💰 Payments
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
+        <td>
+            <button onclick="copyCustomerLink('${customerLink}')">
+                🔗 Copy Link
+            </button>
+        </td>
+    </tr>
+    `;
+}
 }
 
+function copyCustomerLink(link){
+    navigator.clipboard.writeText(link);
+    alert("Customer link copied successfully");
 }
 
 async function openPayments(customerId){
