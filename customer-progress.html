@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mattex Savings Progress</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+    background:#f5f6fa;
+}
+
+.top-bar{
+    background:linear-gradient(135deg,#f7941d,#ffb347);
+    color:white;
+    padding:18px 25px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.12);
+}
+
+.top-bar img{
+    width:150px;
+    max-width:80%;
+    margin-bottom:10px;
+}
+
+.top-bar h1{
+    margin:0;
+    font-size:28px;
+}
+
+.top-bar p{
+    margin:8px 0 0;
+    font-size:15px;
+    opacity:0.95;
+}
+
+.container{
+    max-width:1000px;
+    margin:30px auto;
+    padding:0 15px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    padding:25px;
+    margin-bottom:20px;
+}
+
+.customer-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.customer-name{
+    font-size:28px;
+    font-weight:bold;
+    color:#222;
+}
+
+.customer-code{
+    background:#fff3e0;
+    color:#f7941d;
+    padding:10px 16px;
+    border-radius:25px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+    margin-top:25px;
+}
+
+.summary-box{
+    background:#fafafa;
+    border-radius:15px;
+    padding:18px;
+    border-left:5px solid #f7941d;
+    box-shadow:0 4px 10px rgba(0,0,0,0.04);
+}
+
+.summary-box h3{
+    margin:0 0 10px;
+    font-size:15px;
+    color:#666;
+    font-weight:600;
+}
+
+.summary-box p{
+    margin:0;
+    font-size:22px;
+    font-weight:bold;
+    color:#222;
+}
+
+.car-box{
+    margin-top:20px;
+    padding:20px;
+    background:linear-gradient(135deg,#fff7ef,#fffdf9);
+    border:1px solid #ffe0b2;
+    border-radius:18px;
+}
+
+.car-box h2{
+    margin:0 0 10px;
+    color:#f7941d;
+}
+
+.progress-section{
+    margin-top:25px;
+}
+
+.progress-label{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-weight:bold;
+    color:#444;
+}
+
+.progress-bar{
+    width:100%;
+    height:28px;
+    background:#e5e5e5;
+    border-radius:30px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#28a745,#43d86b);
+    border-radius:30px;
+    transition:width 0.5s ease;
+}
+
+.history-title{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:15px;
+    color:#222;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+thead{
+    background:#f7941d;
+    color:white;
+}
+
+th,td{
+    padding:14px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+    font-size:15px;
+}
+
+tr:hover{
+    background:#fafafa;
+}
+
+.empty-state{
+    text-align:center;
+    padding:40px 20px;
+    color:#777;
+}
+
+.footer-note{
+    text-align:center;
+    margin-top:30px;
+    color:#777;
+    font-size:14px;
+}
+
+.error-box{
+    background:white;
+    max-width:700px;
+    margin:60px auto;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    text-align:center;
+}
+
+.error-box h2{
+    color:#d9534f;
+    margin-bottom:10px;
+}
+
+.loading{
+    text-align:center;
+    padding:60px 20px;
+    font-size:18px;
+    color:#555;
+}
+
+@media(max-width:768px){
+    .customer-name{
+        font-size:22px;
+    }
+
+    .summary-box p{
+        font-size:18px;
+    }
+
+    th,td{
+        font-size:13px;
+        padding:10px;
+    }
+
+    .top-bar h1{
+        font-size:22px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <img src="mattex-logo.png" alt="Mattex Logo">
+    <h1>MATTEX SAVINGS PROGRESS</h1>
+    <p>Track your savings journey towards your dream car</p>
+</div>
+
+<div class="container" id="app">
+    <div class="loading" id="loadingBox">
+        Loading customer progress...
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://xpgtietajegnttonthxm.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Lr18Tvgct5tyYcX5fLHAPg_xC-To0zM";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+const params = new URLSearchParams(window.location.search);
+const customerCode = params.get("code");
+
+loadCustomerProgress();
+
+async function loadCustomerProgress(){
+
+    const app = document.getElementById("app");
+
+    if(!customerCode){
+        app.innerHTML = `
+            <div class="error-box">
+                <h2>Invalid Link</h2>
+                <p>No customer code was provided in the link.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const { data: customer, error: customerError } = await supabaseClient
+    .from("savings_customers")
+    .select("*")
+    .eq("customer_code", customerCode)
+    .single();
+
+    if(customerError || !customer){
+        app.innerHTML = `
+            <div class="error-box">
+                <h2>Customer Not Found</h2>
+                <p>This savings link is invalid or the customer record could not be found.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const { data: payments, error: paymentsError } = await supabaseClient
+    .from("savings_payments")
+    .select("*")
+    .eq("customer_id", customer.id)
+    .order("payment_date", { ascending:false });
+
+    if(paymentsError){
+        app.innerHTML = `
+            <div class="error-box">
+                <h2>Error Loading Payments</h2>
+                <p>${paymentsError.message}</p>
+            </div>
+        `;
+        return;
+    }
+
+    let totalSaved = 0;
+
+    payments.forEach(payment => {
+        totalSaved += Number(payment.amount || 0);
+    });
+
+    const targetAmount = Number(customer.target_amount || 0);
+    const remaining = Math.max(targetAmount - totalSaved, 0);
+    let progress = 0;
+
+    if(targetAmount > 0){
+        progress = Math.round((totalSaved / targetAmount) * 100);
+        if(progress > 100) progress = 100;
+    }
+
+    let lastPayment = "No payment yet";
+
+    if(payments.length > 0){
+        lastPayment = formatDate(payments[0].payment_date);
+    }
+
+    app.innerHTML = `
+        <div class="card">
+
+            <div class="customer-header">
+                <div class="customer-name">👤 ${customer.customer_name || "-"}</div>
+                <div class="customer-code">${customer.customer_code || ""}</div>
+            </div>
+
+            <div class="car-box">
+                <h2>🚗 ${customer.car_interested || "No car selected"}</h2>
+                <p>Your savings progress towards your desired vehicle.</p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-box">
+                    <h3>🎯 Target Amount</h3>
+                    <p>TZS ${formatMoney(targetAmount)}</p>
+                </div>
+
+                <div class="summary-box">
+                    <h3>💰 Total Saved</h3>
+                    <p>TZS ${formatMoney(totalSaved)}</p>
+                </div>
+
+                <div class="summary-box">
+                    <h3>💸 Remaining</h3>
+                    <p>TZS ${formatMoney(remaining)}</p>
+                </div>
+
+                <div class="summary-box">
+                    <h3>🗓 Last Payment</h3>
+                    <p style="font-size:18px;">${lastPayment}</p>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>Progress</span>
+                    <span>${progress}%</span>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:${progress}%"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="history-title">📜 Payment History</div>
+
+            ${
+                payments.length === 0
+                ? `
+                <div class="empty-state">
+                    No payment history available yet.
+                </div>
+                `
+                : `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsBody">
+                        ${payments.map(payment => `
+                            <tr>
+                                <td>${formatDate(payment.payment_date)}</td>
+                                <td>TZS ${formatMoney(payment.amount)}</td>
+                                <td>${payment.notes || "-"}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+                `
+            }
+        </div>
+
+        <div class="footer-note">
+            Powered by Mattex Company Limited
+        </div>
+    `;
+}
+
+function formatMoney(value){
+    return Number(value || 0).toLocaleString();
+}
+
+function formatDate(dateString){
+    if(!dateString) return "-";
+
+    const d = new Date(dateString);
+
+    if(isNaN(d)) return dateString;
+
+    return d.toLocaleDateString("en-GB",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    });
+}
+</script>
+
+</body>
+</html>
