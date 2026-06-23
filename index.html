@@ -1223,6 +1223,7 @@ Save Customer
 <th>Remaining</th>
 <th>Progress</th>
 <th>Action</th>
+<th>Customer Link</th>
 </tr>
 
 </thead>
@@ -2478,7 +2479,10 @@ car_interested:
 document.getElementById("saveCar").value,
 
 target_amount:
-document.getElementById("saveTarget").value
+document.getElementById("saveTarget").value,
+
+customer_code:
+"MATTEX-" + Date.now()
 
 }]);
 
@@ -2547,15 +2551,25 @@ body.innerHTML += `
 
 <td>
 
-<a href="#"
+<button
 onclick="openCustomerDetails(${customer.id})">
 
-${customer.customer_name}
+💰 Payments
 
-</a>
+</button>
 
 </td>
 
+<td>
+
+<button
+onclick="copyLink('${customer.customer_code}')">
+
+🔗 Copy Link
+
+</button>
+
+</td>
 <td>${customer.phone}</td>
 
 <td>${customer.car_interested}</td>
@@ -2919,6 +2933,18 @@ currentCustomerId
 
 }
 
+function copyLink(code){
+
+const link =
+window.location.origin +
+"/customer-progress.html?code=" +
+code;
+
+navigator.clipboard.writeText(link);
+
+alert("Customer Link Copied");
+
+}
 
 </script>
 
