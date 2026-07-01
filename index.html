@@ -2890,11 +2890,22 @@ const { error } =
 await supabaseClient
 .from('savings_customers')
 .insert([{
-    customer_name: document.getElementById("saveName").value,
-    phone: document.getElementById("savePhone").value,
-    car_interested: document.getElementById("saveCar").value,
-    target_amount: document.getElementById("saveTarget").value,
-    customer_code: customerCode
+
+customer_name:
+document.getElementById("saveName").value,
+
+phone:
+document.getElementById("savePhone").value,
+
+car_interested:
+document.getElementById("saveCar").value,
+
+target_amount:
+document.getElementById("saveTarget").value,
+
+public_token:
+crypto.randomUUID()
+
 }]);
 
 if(error){
@@ -2961,7 +2972,10 @@ for(const customer of data){
     totalRemainingAll += remaining;
 
     const customerLink =
-    `${window.location.origin}${window.location.pathname.replace("index.html","")}customer-progress.html?code=${customer.customer_code}`;
+    `${window.location.origin}${window.location.pathname.replace("index.html","")}customer-progress.html?code=${const customerLink =
+window.location.origin +
+"/customer-progress.html?token=" +
+customer.public_token;}`;
 
     body.innerHTML += `
     <tr>
@@ -3004,9 +3018,9 @@ for(const customer of data){
 
         <td>
             <div class="action-btn-row">
-                <button class="btn-purple" onclick="copyCustomerLink('${customerLink}')">
-                    🔗 Copy Link
-                </button>
+                <button onclick="copyLink('${customerLink}')">
+🔗 Copy Link
+</button>
             </div>
         </td>
     </tr>
@@ -3344,7 +3358,13 @@ navigator.clipboard.writeText(link);
 alert("Customer Link Copied");
 
 }
+function copyLink(link){
 
+navigator.clipboard.writeText(link);
+
+alert("Customer link copied successfully.");
+
+}
 </script>
 
    
