@@ -432,7 +432,8 @@ const supabaseClient = supabase.createClient(
 );
 
 const params = new URLSearchParams(window.location.search);
-const customerCode = params.get("code");
+
+const customerToken = params.get("token");
 
 /* BADILISHA HAPA Namba ya WhatsApp ya Mattex */
 const MATTEX_WHATSAPP = "255671567568";
@@ -443,7 +444,7 @@ async function loadCustomerProgress(){
 
     const app = document.getElementById("app");
 
-    if(!customerCode){
+    if(!customerToken){
         app.innerHTML = `
             <div class="error-box">
                 <h2>Invalid Link</h2>
@@ -456,7 +457,7 @@ async function loadCustomerProgress(){
     const { data: customer, error: customerError } = await supabaseClient
     .from("savings_customers")
     .select("*")
-    .eq("customer_code", customerCode)
+    .eq("public_token", customerToken)
     .single();
 
     if(customerError || !customer){
