@@ -2971,11 +2971,10 @@ for(const customer of data){
     totalSavedAll += totalSaved;
     totalRemainingAll += remaining;
 
-    const customerLink =
-    `${window.location.origin}${window.location.pathname.replace("index.html","")}customer-progress.html?code=${const customerLink =
+const customerLink =
 window.location.origin +
 "/customer-progress.html?token=" +
-customer.public_token;}`;
+customer.public_token;
 
     body.innerHTML += `
     <tr>
