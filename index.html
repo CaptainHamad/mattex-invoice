@@ -2041,7 +2041,7 @@ invoiceNumber;
 document.getElementById("invNo").innerHTML =
 invoiceNumber;
 
-saveInvoiceToSupabase(invoiceNumber);
+await saveInvoiceToSupabase(invoiceNumber);
 
 saveActivity(
 "Created Invoice " +
@@ -2097,7 +2097,8 @@ const pdfUrl = await uploadInvoicePDF(
 );
 
 if(pdfUrl){
-    await supabaseClient
+
+    const { data, error } = await supabaseClient
         .from("invoices")
         .update({
             pdf_url: pdfUrl
@@ -2105,7 +2106,11 @@ if(pdfUrl){
         .eq(
             "invoice_no",
             document.getElementById("invNo").innerText
-        );
+        )
+        .select();
+
+    console.log("Updated:", data);
+    console.log("Error:", error);
 }
 
 await worker.save();
