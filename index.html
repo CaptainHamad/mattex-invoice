@@ -2054,43 +2054,87 @@ setTimeout(() => {
 }
 
 
-function downloadPDF(){
+async function downloadPDF(){
 
     const element = document.getElementById("invoice");
 
     const opt = {
-        margin: [0,0,0,0],
+        margin:[0,0,0,0],
 
-        filename: "Mattex-Proforma-Invoice.pdf",
+        filename:
+        document.getElementById("invNo").innerText + ".pdf",
 
-        image: {
-            type: "jpeg",
-            quality: 1
+        image:{
+            type:"jpeg",
+            quality:1
         },
 
-        html2canvas: {
-            scale: 2,
-            useCORS: true,
-            scrollX: 0,
-            scrollY: 0,
-            windowWidth: document.body.scrollWidth,
-            windowHeight: document.body.scrollHeight
+        html2canvas:{
+            scale:2,
+            useCORS:true,
+            scrollX:0,
+            scrollY:0,
+            windowWidth:document.body.scrollWidth,
+            windowHeight:document.body.scrollHeight
         },
 
-        jsPDF: {
-            unit: "mm",
-            format: "a4",
-            orientation: "portrait"
+        jsPDF:{
+            unit:"mm",
+            format:"a4",
+            orientation:"portrait"
         }
     };
 
-    html2pdf()
-        .set(opt)
-        .from(element)
-        .save();
+   const worker = html2pdf()
+    .set(opt)
+    .from(element);
+
+const pdfBlob = await worker.outputPdf("blob");
+
+const pdfUrl = await uploadInvoicePDF(
+    pdfBlob,
+    document.getElementById("invNo").innerText
+);
+
+if(pdfUrl){
+    await supabaseClient
+        .from("invoices")
+        .update({
+            pdf_url: pdfUrl
+        })
+        .eq(
+            "invoice_no",
+            document.getElementById("invNo").innerText
+        );
+}
+
+await worker.save();
 }
 
 
+async function uploadInvoicePDF(pdfBlob, invoiceNumber){
+
+    const fileName = invoiceNumber + ".pdf";
+
+    const { error } = await supabaseClient.storage
+        .from("invoices")
+        .upload(fileName, pdfBlob, {
+            upsert: true,
+            contentType: "application/pdf"
+        });
+
+    if(error){
+        console.error(error);
+        alert("Failed to upload PDF");
+        return null;
+    }
+
+    const { data } = supabaseClient.storage
+        .from("invoices")
+        .getPublicUrl(fileName);
+
+    return data.publicUrl;
+}
     async function saveInvoiceToSupabase(invoiceNumber){
 
     const { error } = await supabaseClient
