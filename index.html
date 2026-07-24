@@ -253,25 +253,34 @@ table{
 
 .stats-container{
 
-display:flex;
-flex-wrap:wrap;
-gap:10px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:12px;
+margin-bottom:15px;
 
 }
 
 .stat-card{
 
-background:white;
-border-radius:15px;
-padding:15px;
-min-width:170px;
+display:flex;
+align-items:center;
+justify-content:space-between;
 
-box-shadow:
-0 4px 15px rgba(0,0,0,0.08);
+background:#fff;
 
-transition:0.3s;
+height:55px;
+min-width:180px;
+padding:0 15px;
 
-border-left:5px solid #f7941d;
+border-radius:10px;
+
+border-left:4px solid #f7941d;
+
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+
+transition:.25s;
+
+flex:1;
 
 }
 
@@ -286,15 +295,18 @@ box-shadow:
 .stat-card h2{
 
 margin:0;
-font-size:24px;
+font-size:28px;
+font-weight:700;
 color:#f7941d;
 
 }
 
 .stat-card p{
 
-margin-top:8px;
-font-size:15px;
+margin:0;
+font-size:14px;
+font-weight:600;
+color:#555;
 
 }
 
