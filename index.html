@@ -1291,6 +1291,7 @@ style="width:100%;border-collapse:collapse;">
        <th>ETA</th>
        <th>COUNTDOWN</th>
        <th>ACTION</th>
+        <th>INVOICE</th>
 
     </tr>
 
@@ -1912,6 +1913,39 @@ ${getETACountdown(record.eta)}
 <button onclick="editCustomer(${record.id})">
 Edit
 </button>
+</td>
+
+<td>
+
+<a
+href="${record.pdf_url || '#'}"
+target="_blank"
+style="
+background:#28a745;
+color:white;
+padding:6px 12px;
+text-decoration:none;
+border-radius:6px;
+margin-right:5px;
+display:inline-block;
+">
+View
+</a>
+
+<a
+href="${record.pdf_url || '#'}"
+download
+style="
+background:#007bff;
+color:white;
+padding:6px 12px;
+text-decoration:none;
+border-radius:6px;
+display:inline-block;
+">
+Download
+</a>
+
 </td>
 </tr>
 
