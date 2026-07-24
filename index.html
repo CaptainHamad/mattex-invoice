@@ -268,9 +268,9 @@ justify-content:space-between;
 
 background:#fff;
 
-height:55px;
+height:42px;
 min-width:180px;
-padding:0 15px;
+padding:0 10px;
 
 border-radius:10px;
 
@@ -295,7 +295,7 @@ box-shadow:
 .stat-card h2{
 
 margin:0;
-font-size:28px;
+font-size:20px;
 font-weight:700;
 color:#f7941d;
 
@@ -339,19 +339,61 @@ font-weight:bold;
     table-layout:fixed;
 }
 
+#customersTable,
+#managementPage table{
+
+    width:100%;
+    border-collapse:collapse;
+    table-layout:auto;
+
+}
+
 #customersTable th,
-#customersTable td{
-    padding:8px;
-    font-size:14px;
-    word-wrap:break-word;
+#customersTable td,
+#managementPage table th,
+#managementPage table td{
+
+    padding:4px 6px;
+
+    font-size:11px;
+
+    white-space:nowrap;
+
+    vertical-align:middle;
+
+}
+
+#managementPage table th{
+
+    background:#f7941d;
+    color:white;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    padding:6px;
+
+}
+
+#managementPage table button{
+
+    padding:4px 8px;
+
+    font-size:11px;
+
+    border-radius:5px;
+
 }
 
 .status-badge{
-    padding:6px 10px;
+    padding:3px 8px;
     border-radius:20px;
     color:white;
     font-weight:bold;
-    font-size:12px;
+    font-size:10px;
+    border-radius:15px;
+    font-weight:600;
     display:inline-block;
     text-align:center;
 }
@@ -1935,9 +1977,10 @@ target="_blank"
 style="
 background:#28a745;
 color:white;
-padding:6px 12px;
+padding:3px 8px;
 text-decoration:none;
-border-radius:6px;
+font-size:11px;
+border-radius:5px;
 margin-right:5px;
 display:inline-block;
 ">
@@ -1950,9 +1993,10 @@ download
 style="
 background:#007bff;
 color:white;
-padding:6px 12px;
+padding:3px 8px;
 text-decoration:none;
-border-radius:6px;
+font-size:11px;
+border-radius:5px;
 display:inline-block;
 ">
 Download
