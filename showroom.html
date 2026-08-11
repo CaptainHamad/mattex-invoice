@@ -793,21 +793,77 @@ body{
             </select>
 
 
-            <select id="searchYear">
+          <select id="searchYearFrom">
 
-                <option value="">
-                    Year
-                </option>
+    <option value="">
+        From Year
+    </option>
 
-                <option>2025</option>
-                <option>2024</option>
-                <option>2023</option>
-                <option>2022</option>
-                <option>2021</option>
-                <option>2020</option>
-                <option>2019</option>
+    <option>2026</option>
+    <option>2025</option>
+    <option>2024</option>
+    <option>2023</option>
+    <option>2022</option>
+    <option>2021</option>
+    <option>2020</option>
+    <option>2019</option>
+    <option>2018</option>
+    <option>2017</option>
+    <option>2016</option>
+    <option>2015</option>
+    <option>2014</option>
+    <option>2013</option>
+    <option>2012</option>
+    <option>2011</option>
+    <option>2010</option>
+    <option>2009</option>
+    <option>2008</option>
+    <option>2007</option>
+    <option>2006</option>
+    <option>2005</option>
+    <option>2004</option>
+    <option>2003</option>
+    <option>2002</option>
+    <option>2001</option>
 
-            </select>
+</select>
+
+
+<select id="searchYearTo">
+
+    <option value="">
+        To Year
+    </option>
+
+     <option>2026</option>
+    <option>2025</option>
+    <option>2024</option>
+    <option>2023</option>
+    <option>2022</option>
+    <option>2021</option>
+    <option>2020</option>
+    <option>2019</option>
+    <option>2018</option>
+    <option>2017</option>
+    <option>2016</option>
+    <option>2015</option>
+    <option>2014</option>
+    <option>2013</option>
+    <option>2012</option>
+    <option>2011</option>
+    <option>2010</option>
+    <option>2009</option>
+    <option>2008</option>
+    <option>2007</option>
+    <option>2006</option>
+    <option>2005</option>
+    <option>2004</option>
+    <option>2003</option>
+    <option>2002</option>
+    <option>2001</option>
+    
+
+</select>
 
 
             <input
@@ -1492,9 +1548,13 @@ function searchVehicles(){
         .value
         .toLowerCase();
 
-    const year =
-        document.getElementById("searchYear")
-        .value;
+const yearFrom =
+    document.getElementById("searchYearFrom")
+    .value;
+
+const yearTo =
+    document.getElementById("searchYearTo")
+    .value;
 
     const model =
         document.getElementById("searchModel")
@@ -1513,9 +1573,13 @@ function searchVehicles(){
                 !body ||
                 vehicle.body.toLowerCase() === body;
 
-            const matchesYear =
-                !year ||
-                vehicle.year.toString() === year;
+           const matchesYearFrom =
+    !yearFrom ||
+    vehicle.year >= Number(yearFrom);
+
+const matchesYearTo =
+    !yearTo ||
+    vehicle.year <= Number(yearTo);
 
             const matchesModel =
                 !model ||
@@ -1523,12 +1587,13 @@ function searchVehicles(){
                 .includes(model);
 
 
-            return (
-                matchesMake &&
-                matchesBody &&
-                matchesYear &&
-                matchesModel
-            );
+           return (
+    matchesMake &&
+    matchesBody &&
+    matchesYearFrom &&
+    matchesYearTo &&
+    matchesModel
+);
 
         });
 
