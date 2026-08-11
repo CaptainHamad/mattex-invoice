@@ -793,11 +793,9 @@ body{
             </select>
 
 
-          <select id="searchYearFrom">
+         <select id="searchYearFrom" onchange="updateToYearOptions()">
 
-    <option value="">
-        From Year
-    </option>
+    <option value="">From Year</option>
 
     <option>2026</option>
     <option>2025</option>
@@ -831,40 +829,9 @@ body{
 
 <select id="searchYearTo">
 
-    <option value="">
-        To Year
-    </option>
-
-     <option>2026</option>
-    <option>2025</option>
-    <option>2024</option>
-    <option>2023</option>
-    <option>2022</option>
-    <option>2021</option>
-    <option>2020</option>
-    <option>2019</option>
-    <option>2018</option>
-    <option>2017</option>
-    <option>2016</option>
-    <option>2015</option>
-    <option>2014</option>
-    <option>2013</option>
-    <option>2012</option>
-    <option>2011</option>
-    <option>2010</option>
-    <option>2009</option>
-    <option>2008</option>
-    <option>2007</option>
-    <option>2006</option>
-    <option>2005</option>
-    <option>2004</option>
-    <option>2003</option>
-    <option>2002</option>
-    <option>2001</option>
-    
+    <option value="">To Year</option>
 
 </select>
-
 
             <input
                 type="text"
@@ -1623,42 +1590,18 @@ function updateToYearOptions(){
     const toSelect =
         document.getElementById("searchYearTo");
 
-    const currentValue =
-        toSelect.value;
-
     toSelect.innerHTML = `
-        <option value="">
-            To Year
-        </option>
+        <option value="">To Year</option>
     `;
 
     const maxYear = 2026;
-    const minYear = 2001;
+    const minYear = fromYear
+        ? Number(fromYear)
+        : 2001;
 
-    // Kama From Year haijachaguliwa
-    if(!fromYear){
-
-        for(
-            let year = maxYear;
-            year >= minYear;
-            year--
-        ){
-
-            toSelect.innerHTML += `
-                <option value="${year}">
-                    ${year}
-                </option>
-            `;
-
-        }
-
-        return;
-    }
-
-    // To Year ianze kwenye From Year
     for(
         let year = maxYear;
-        year >= Number(fromYear);
+        year >= minYear;
         year--
     ){
 
@@ -1669,17 +1612,6 @@ function updateToYearOptions(){
         `;
 
     }
-
-    // Rudisha previous selection kama bado ni valid
-    if(
-        currentValue &&
-        Number(currentValue) >= Number(fromYear)
-    ){
-
-        toSelect.value = currentValue;
-
-    }
-
 }
 </script>
 
