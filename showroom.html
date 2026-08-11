@@ -1615,6 +1615,72 @@ const matchesYearTo =
 
 renderVehicles(vehicles);
 
+function updateToYearOptions(){
+
+    const fromYear =
+        document.getElementById("searchYearFrom").value;
+
+    const toSelect =
+        document.getElementById("searchYearTo");
+
+    const currentValue =
+        toSelect.value;
+
+    toSelect.innerHTML = `
+        <option value="">
+            To Year
+        </option>
+    `;
+
+    const maxYear = 2026;
+    const minYear = 2001;
+
+    // Kama From Year haijachaguliwa
+    if(!fromYear){
+
+        for(
+            let year = maxYear;
+            year >= minYear;
+            year--
+        ){
+
+            toSelect.innerHTML += `
+                <option value="${year}">
+                    ${year}
+                </option>
+            `;
+
+        }
+
+        return;
+    }
+
+    // To Year ianze kwenye From Year
+    for(
+        let year = maxYear;
+        year >= Number(fromYear);
+        year--
+    ){
+
+        toSelect.innerHTML += `
+            <option value="${year}">
+                ${year}
+            </option>
+        `;
+
+    }
+
+    // Rudisha previous selection kama bado ni valid
+    if(
+        currentValue &&
+        Number(currentValue) >= Number(fromYear)
+    ){
+
+        toSelect.value = currentValue;
+
+    }
+
+}
 </script>
 
 </body>
