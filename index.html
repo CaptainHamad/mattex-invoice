@@ -2264,7 +2264,24 @@ document.getElementById("recordsBody");
 
 tbody.innerHTML="";
 
-data.forEach(record => {
+const sortedData = [...data].sort((a, b) => {
+
+    // Delivered always goes to the bottom
+    if (a.status === "Delivered" && b.status !== "Delivered") {
+        return 1;
+    }
+
+    if (a.status !== "Delivered" && b.status === "Delivered") {
+        return -1;
+    }
+
+    // Within the same group, newest ID first
+    return b.id - a.id;
+
+});
+
+
+sortedData.forEach(record => {
 
 tbody.innerHTML += `
 
