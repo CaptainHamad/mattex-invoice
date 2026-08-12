@@ -1187,6 +1187,9 @@ MANAGEMENT
     <button onclick="openSavings()">
     💰 Savings Customers
     </button>
+    <button onclick="openVehicleInventory()">
+🚗 Vehicle Inventory
+</button>
 
 
     <div id="editCustomerBox" style="display:none;">
@@ -1358,6 +1361,464 @@ style="width:100%;border-collapse:collapse;">
 </table>
 
 <hr>
+
+</div>
+
+<!-- ================= VEHICLE INVENTORY ================= -->
+
+<div id="vehicleInventoryPage" style="display:none;">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+        flex-wrap:wrap;
+        gap:10px;
+    ">
+
+        <div>
+            <button onclick="backToManagement()">
+                ← Back to Management
+            </button>
+
+            <h2 style="margin:15px 0 5px;">
+                🚗 Vehicle Inventory
+            </h2>
+
+            <p style="color:#777;margin:0;">
+                Manage Mattex vehicles available for customers.
+            </p>
+        </div>
+
+        <button
+            onclick="openAddVehicleForm()"
+            style="
+                background:#f7941d;
+                color:white;
+                border:none;
+                padding:11px 18px;
+                border-radius:8px;
+                font-weight:bold;
+                cursor:pointer;
+            "
+        >
+            + Add Vehicle
+        </button>
+
+    </div>
+
+
+    <!-- SEARCH + FILTER -->
+
+    <div style="
+        background:white;
+        padding:15px;
+        border-radius:12px;
+        box-shadow:0 3px 12px rgba(0,0,0,.08);
+        margin-bottom:15px;
+    ">
+
+        <input
+            id="vehicleSearch"
+            type="text"
+            placeholder="Search Make, Model or Stock Number..."
+            onkeyup="filterVehicles()"
+            style="
+                width:300px;
+                max-width:100%;
+                padding:10px;
+                border:1px solid #ddd;
+                border-radius:7px;
+                box-sizing:border-box;
+            "
+        >
+
+        <select
+            id="vehicleStatusFilter"
+            onchange="filterVehicles()"
+            style="
+                padding:10px;
+                border:1px solid #ddd;
+                border-radius:7px;
+                margin-left:5px;
+            "
+        >
+            <option value="">All Status</option>
+            <option value="Published">Published</option>
+            <option value="Draft">Draft</option>
+            <option value="Reserved">Reserved</option>
+            <option value="Sold">Sold</option>
+        </select>
+
+    </div>
+
+
+    <!-- VEHICLE TABLE -->
+
+    <div style="
+        background:white;
+        border-radius:12px;
+        box-shadow:0 3px 12px rgba(0,0,0,.08);
+        overflow-x:auto;
+    ">
+
+        <table
+            id="vehiclesTable"
+            style="
+                width:100%;
+                border-collapse:collapse;
+                min-width:850px;
+            "
+        >
+
+            <thead>
+
+                <tr style="
+                    background:#f7941d;
+                    color:white;
+                ">
+
+                    <th style="padding:10px;">Photo</th>
+                    <th style="padding:10px;">Vehicle</th>
+                    <th style="padding:10px;">Year</th>
+                    <th style="padding:10px;">Mileage</th>
+                    <th style="padding:10px;">Price</th>
+                    <th style="padding:10px;">Status</th>
+                    <th style="padding:10px;">Featured</th>
+                    <th style="padding:10px;">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="vehiclesBody">
+
+                <tr>
+                    <td
+                        colspan="8"
+                        style="
+                            text-align:center;
+                            padding:30px;
+                            color:#777;
+                        "
+                    >
+                        Loading vehicles...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- ================= ADD / EDIT VEHICLE ================= -->
+
+<div
+    id="vehicleFormPage"
+    style="
+        display:none;
+        padding:20px;
+    "
+>
+
+    <button onclick="backToVehicleInventory()">
+        ← Back to Vehicle Inventory
+    </button>
+
+    <h2 id="vehicleFormTitle">
+        Add New Vehicle
+    </h2>
+
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:15px;
+        box-shadow:0 4px 15px rgba(0,0,0,.08);
+        max-width:1100px;
+    ">
+
+        <h3 style="color:#f7941d;">
+            Vehicle Information
+        </h3>
+
+        <div class="form-grid">
+
+            <input id="vehicleMake" placeholder="Make">
+
+            <input id="vehicleModel" placeholder="Model">
+
+            <input
+                id="vehicleYear"
+                type="number"
+                placeholder="Year"
+            >
+
+            <input
+                id="vehicleBodyType"
+                placeholder="Body Type"
+            >
+
+            <input
+                id="vehicleColor"
+                placeholder="Colour"
+            >
+
+            <input
+                id="vehicleMileage"
+                type="number"
+                placeholder="Mileage"
+            >
+
+            <input
+                id="vehicleEngine"
+                type="number"
+                placeholder="Engine CC"
+            >
+
+            <select id="vehicleTransmission">
+
+                <option value="">
+                    Transmission
+                </option>
+
+                <option>Automatic</option>
+                <option>Manual</option>
+                <option>CVT</option>
+
+            </select>
+
+
+            <select id="vehicleFuel">
+
+                <option value="">
+                    Fuel Type
+                </option>
+
+                <option>Petrol</option>
+                <option>Diesel</option>
+                <option>Hybrid</option>
+                <option>Electric</option>
+
+            </select>
+
+
+            <input
+                id="vehicleSeats"
+                type="number"
+                placeholder="Seats"
+            >
+
+            <input
+                id="vehicleDoors"
+                type="number"
+                placeholder="Doors"
+            >
+
+
+            <select id="vehicleDriveType">
+
+                <option value="">
+                    Drive Type
+                </option>
+
+                <option>2WD</option>
+                <option>4WD</option>
+                <option>AWD</option>
+
+            </select>
+
+
+            <select id="vehicleSteering">
+
+                <option value="">
+                    Steering
+                </option>
+
+                <option>Right Hand Drive</option>
+                <option>Left Hand Drive</option>
+
+            </select>
+
+        </div>
+
+
+        <h3 style="color:#f7941d;margin-top:30px;">
+            Japan Information
+        </h3>
+
+        <div class="form-grid">
+
+            <input
+                id="vehicleChassis"
+                placeholder="Chassis Number"
+            >
+
+            <input
+                id="vehicleGrade"
+                placeholder="Auction Grade"
+            >
+
+            <input
+                id="vehicleAuctionHouse"
+                placeholder="Auction House"
+            >
+
+            <input
+                id="vehicleStock"
+                placeholder="Stock Number"
+            >
+
+            <input
+                id="vehicleAuctionDate"
+                type="date"
+            >
+
+            <input
+                id="vehicleSourceUrl"
+                placeholder="Japan Source URL"
+            >
+
+            <input
+                id="vehiclePurchasePrice"
+                type="number"
+                placeholder="Purchase Price"
+            >
+
+        </div>
+
+
+        <h3 style="color:#f7941d;margin-top:30px;">
+            Mattex Information
+        </h3>
+
+        <div class="form-grid">
+
+            <input
+                id="vehicleSellingPrice"
+                type="number"
+                placeholder="Selling Price"
+            >
+
+            <select id="vehicleStatus">
+
+                <option value="Draft">
+                    Draft
+                </option>
+
+                <option value="Published">
+                    Published
+                </option>
+
+                <option value="Reserved">
+                    Reserved
+                </option>
+
+                <option value="Sold">
+                    Sold
+                </option>
+
+            </select>
+
+
+            <select id="vehicleFeatured">
+
+                <option value="false">
+                    Not Featured
+                </option>
+
+                <option value="true">
+                    Featured
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <textarea
+            id="vehicleDescription"
+            placeholder="Vehicle Description"
+            style="
+                width:100%;
+                min-height:120px;
+                margin-top:15px;
+                padding:12px;
+                border:1px solid #ddd;
+                border-radius:8px;
+                box-sizing:border-box;
+            "
+        ></textarea>
+
+
+        <h3 style="color:#f7941d;margin-top:30px;">
+            Vehicle Photos
+        </h3>
+
+        <input
+            type="file"
+            id="vehiclePhotos"
+            accept="image/*"
+            multiple
+            onchange="previewVehicleImages()"
+        >
+
+        <p style="color:#777;font-size:13px;">
+            Maximum 15 photos per vehicle.
+        </p>
+
+        <div
+            id="vehicleImagePreview"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(auto-fill,minmax(120px,1fr));
+                gap:10px;
+                margin-top:15px;
+            "
+        ></div>
+
+
+        <div style="margin-top:25px;">
+
+            <button
+                onclick="saveVehicle()"
+                style="
+                    background:#f7941d;
+                    color:white;
+                    border:none;
+                    padding:12px 25px;
+                    border-radius:8px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                Save Vehicle
+            </button>
+
+            <button
+                onclick="backToVehicleInventory()"
+                style="
+                    background:#777;
+                    color:white;
+                    border:none;
+                    padding:12px 20px;
+                    border-radius:8px;
+                    cursor:pointer;
+                    margin-left:5px;
+                "
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 <div id="leadsPage" style="display:none;">
@@ -3502,6 +3963,512 @@ navigator.clipboard.writeText(link);
 
 alert("Customer link copied successfully.");
 
+}
+
+/* =========================================================
+   VEHICLE INVENTORY
+========================================================= */
+
+let vehiclesData = [];
+let editingVehicleId = null;
+
+
+/* OPEN VEHICLE INVENTORY */
+
+async function openVehicleInventory(){
+
+    document.getElementById("managementPage").style.display = "none";
+    document.getElementById("leadsPage").style.display = "none";
+    document.getElementById("savingsPage").style.display = "none";
+    document.getElementById("customerDetailsPage").style.display = "none";
+
+    document.getElementById("vehicleFormPage").style.display = "none";
+
+    document.getElementById("vehicleInventoryPage").style.display = "block";
+
+    await loadVehicles();
+}
+
+
+/* LOAD VEHICLES */
+
+async function loadVehicles(){
+
+    const tbody =
+        document.getElementById("vehiclesBody");
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="8"
+                style="text-align:center;padding:30px;">
+                Loading vehicles...
+            </td>
+        </tr>
+    `;
+
+
+    const { data, error } =
+        await supabaseClient
+
+        .from("vehicles")
+
+        .select("*")
+
+        .order("id", {
+            ascending:false
+        });
+
+
+    if(error){
+
+        console.error(error);
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8"
+                    style="text-align:center;padding:30px;color:red;">
+                    ${error.message}
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
+    vehiclesData = data || [];
+
+    renderVehicles(vehiclesData);
+}
+
+
+/* RENDER VEHICLES */
+
+function renderVehicles(data){
+
+    const tbody =
+        document.getElementById("vehiclesBody");
+
+    tbody.innerHTML = "";
+
+
+    if(data.length === 0){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8"
+                    style="
+                        text-align:center;
+                        padding:40px;
+                        color:#777;
+                    "
+                >
+                    No vehicles found.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
+    data.forEach(vehicle => {
+
+        const status = vehicle.status || "Draft";
+
+
+        let statusColor = "#777";
+
+        if(status === "Published")
+            statusColor = "#28a745";
+
+        if(status === "Reserved")
+            statusColor = "#007bff";
+
+        if(status === "Sold")
+            statusColor = "#dc3545";
+
+
+        tbody.innerHTML += `
+
+        <tr style="border-bottom:1px solid #eee;">
+
+            <td style="padding:8px;text-align:center;">
+
+                ${
+                    vehicle.main_image
+
+                    ?
+
+                    `<img
+                        src="${vehicle.main_image}"
+                        style="
+                            width:70px;
+                            height:50px;
+                            object-fit:cover;
+                            border-radius:6px;
+                        "
+                    >`
+
+                    :
+
+                    `<div style="
+                        width:70px;
+                        height:50px;
+                        background:#eee;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        border-radius:6px;
+                        font-size:11px;
+                        color:#777;
+                    ">
+                        No Image
+                    </div>`
+                }
+
+            </td>
+
+
+            <td style="padding:8px;">
+
+                <strong>
+                    ${vehicle.make || "-"}
+                    ${vehicle.model || ""}
+                </strong>
+
+            </td>
+
+
+            <td style="padding:8px;">
+                ${vehicle.year || "-"}
+            </td>
+
+
+            <td style="padding:8px;">
+                ${
+                    vehicle.mileage
+                    ?
+                    Number(vehicle.mileage).toLocaleString()
+                    :
+                    "-"
+                }
+            </td>
+
+
+            <td style="padding:8px;">
+                ${
+                    vehicle.selling_price
+                    ?
+                    "TZS " +
+                    Number(vehicle.selling_price)
+                    .toLocaleString()
+                    :
+                    "-"
+                }
+            </td>
+
+
+            <td style="padding:8px;">
+
+                <span style="
+                    background:${statusColor};
+                    color:white;
+                    padding:4px 9px;
+                    border-radius:15px;
+                    font-size:11px;
+                    font-weight:bold;
+                ">
+                    ${status}
+                </span>
+
+            </td>
+
+
+            <td style="padding:8px;text-align:center;">
+
+                ${
+                    vehicle.featured
+                    ? "⭐"
+                    : "-"
+                }
+
+            </td>
+
+
+            <td style="padding:8px;">
+
+                <button
+                    onclick="editVehicle(${vehicle.id})"
+                    style="
+                        padding:5px 10px;
+                        background:#f7941d;
+                        color:white;
+                        border:none;
+                        border-radius:5px;
+                        cursor:pointer;
+                    "
+                >
+                    Edit
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* SEARCH + FILTER */
+
+function filterVehicles(){
+
+    const search =
+        document
+        .getElementById("vehicleSearch")
+        .value
+        .toLowerCase();
+
+
+    const status =
+        document
+        .getElementById("vehicleStatusFilter")
+        .value;
+
+
+    const filtered =
+        vehiclesData.filter(vehicle => {
+
+            const text = `
+
+                ${vehicle.make || ""}
+
+                ${vehicle.model || ""}
+
+                ${vehicle.stock_number || ""}
+
+            `.toLowerCase();
+
+
+            const matchesSearch =
+                text.includes(search);
+
+
+            const matchesStatus =
+                !status ||
+                vehicle.status === status;
+
+
+            return matchesSearch &&
+                   matchesStatus;
+
+        });
+
+
+    renderVehicles(filtered);
+}
+
+
+/* OPEN ADD FORM */
+
+function openAddVehicleForm(){
+
+    editingVehicleId = null;
+
+    document.getElementById("vehicleInventoryPage")
+        .style.display = "none";
+
+    document.getElementById("vehicleFormPage")
+        .style.display = "block";
+
+
+    document.getElementById("vehicleFormTitle")
+        .innerText = "Add New Vehicle";
+
+
+    clearVehicleForm();
+}
+
+
+/* CLEAR FORM */
+
+function clearVehicleForm(){
+
+    const ids = [
+
+        "vehicleMake",
+        "vehicleModel",
+        "vehicleYear",
+        "vehicleBodyType",
+        "vehicleColor",
+        "vehicleMileage",
+        "vehicleEngine",
+        "vehicleChassis",
+        "vehicleGrade",
+        "vehicleAuctionHouse",
+        "vehicleStock",
+        "vehicleAuctionDate",
+        "vehicleSourceUrl",
+        "vehiclePurchasePrice",
+        "vehicleSellingPrice",
+        "vehicleDescription"
+
+    ];
+
+
+    ids.forEach(id => {
+
+        const el =
+            document.getElementById(id);
+
+        if(el)
+            el.value = "";
+
+    });
+
+
+    document.getElementById("vehicleTransmission")
+        .value = "";
+
+    document.getElementById("vehicleFuel")
+        .value = "";
+
+    document.getElementById("vehicleSeats")
+        .value = "";
+
+    document.getElementById("vehicleDoors")
+        .value = "";
+
+    document.getElementById("vehicleDriveType")
+        .value = "";
+
+    document.getElementById("vehicleSteering")
+        .value = "";
+
+    document.getElementById("vehicleStatus")
+        .value = "Draft";
+
+    document.getElementById("vehicleFeatured")
+        .value = "false";
+
+
+    document.getElementById("vehiclePhotos")
+        .value = "";
+
+    document.getElementById("vehicleImagePreview")
+        .innerHTML = "";
+
+}
+
+
+/* PREVIEW PHOTOS */
+
+function previewVehicleImages(){
+
+    const input =
+        document.getElementById("vehiclePhotos");
+
+
+    const files =
+        Array.from(input.files);
+
+
+    if(files.length > 15){
+
+        alert(
+            "Maximum 15 photos are allowed."
+        );
+
+        input.value = "";
+
+        return;
+    }
+
+
+    const preview =
+        document.getElementById(
+            "vehicleImagePreview"
+        );
+
+
+    preview.innerHTML = "";
+
+
+    files.forEach((file,index) => {
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload = function(e){
+
+            preview.innerHTML += `
+
+                <div style="
+                    position:relative;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                    overflow:hidden;
+                ">
+
+                    <img
+                        src="${e.target.result}"
+                        style="
+                            width:100%;
+                            height:100px;
+                            object-fit:cover;
+                            display:block;
+                        "
+                    >
+
+                    <div style="
+                        position:absolute;
+                        bottom:0;
+                        left:0;
+                        right:0;
+                        background:rgba(0,0,0,.65);
+                        color:white;
+                        padding:4px;
+                        font-size:11px;
+                        text-align:center;
+                    ">
+                        ${index + 1}
+                        ${
+                            index === 0
+                            ? " • MAIN"
+                            : ""
+                        }
+                    </div>
+
+                </div>
+
+            `;
+
+        };
+
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+
+/* BACK TO INVENTORY */
+
+function backToVehicleInventory(){
+
+    document.getElementById("vehicleFormPage")
+        .style.display = "none";
+
+    document.getElementById("vehicleInventoryPage")
+        .style.display = "block";
+
+    loadVehicles();
 }
 </script>
 
