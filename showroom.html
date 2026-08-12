@@ -20,6 +20,8 @@ rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 >
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 
 *{
@@ -793,7 +795,10 @@ body{
             </select>
 
 
-         <select id="searchYearFrom" onchange="updateToYearOptions()">
+         <select
+    id="searchYearFrom"
+    onchange="updateToYearOptions()"
+>
 
     <option value="">From Year</option>
 
@@ -950,132 +955,168 @@ body{
 /* =====================================
    VEHICLE DATA
 ===================================== */
+const SUPABASE_URL =
+    "https://xpgtietajegnttonthxm.supabase.co";
 
-const vehicles = [
+const SUPABASE_KEY =
+    "sb_publishable_Lr18Tvgct5tyYcX5fLHAPg_xC-To0zM";
 
-{
-    id:1,
-    make:"Toyota",
-    model:"Harrier",
-    year:2020,
-    body:"SUV",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"2000cc",
-    mileage:"48,000 km",
-    price:38500000,
-    badge:"HOT",
-    image:"https://images.unsplash.com/photo-1553440569-bcc63803a83d?q=80&w=1200&auto=format&fit=crop"
-},
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
-{
-    id:2,
-    make:"Mazda",
-    model:"CX-5",
-    year:2021,
-    body:"SUV",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"2000cc",
-    mileage:"42,000 km",
-    price:34800000,
-    badge:"NEW",
-    image:"https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=1200&auto=format&fit=crop"
-},
+let vehicles = [];
+async function loadVehicles(){
 
-{
-    id:3,
-    make:"Subaru",
-    model:"Forester",
-    year:2019,
-    body:"SUV",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"2000cc",
-    mileage:"55,000 km",
-    price:29900000,
-    badge:"FEATURED",
-    image:"https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?q=80&w=1200&auto=format&fit=crop"
-},
+    const grid =
+        document.getElementById("vehicleGrid");
 
-{
-    id:4,
-    make:"Toyota",
-    model:"RAV4",
-    year:2022,
-    body:"SUV",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"2000cc",
-    mileage:"31,000 km",
-    price:42500000,
-    badge:"NEW",
-    image:"https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop"
-},
+    grid.innerHTML = `
+        <div class="empty">
+            <i class="fa-solid fa-spinner fa-spin"></i>
 
-{
-    id:5,
-    make:"Toyota",
-    model:"Vitz",
-    year:2020,
-    body:"Hatchback",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"1000cc",
-    mileage:"39,000 km",
-    price:21500000,
-    badge:"",
-    image:"https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=1200&auto=format&fit=crop"
-},
+            <h3>
+                Loading vehicles...
+            </h3>
 
-{
-    id:6,
-    make:"Subaru",
-    model:"XV",
-    year:2021,
-    body:"SUV",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"2000cc",
-    mileage:"45,000 km",
-    price:31500000,
-    badge:"FEATURED",
-    image:"https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?q=80&w=1200&auto=format&fit=crop"
-},
+            <p>
+                Please wait while we load available vehicles.
+            </p>
+        </div>
+    `;
 
-{
-    id:7,
-    make:"Nissan",
-    model:"Juke",
-    year:2020,
-    body:"SUV",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"1500cc",
-    mileage:"40,000 km",
-    price:27500000,
-    badge:"",
-    image:"https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=1200&auto=format&fit=crop"
-},
 
-{
-    id:8,
-    make:"Toyota",
-    model:"Alphard",
-    year:2021,
-    body:"Van",
-    fuel:"Petrol",
-    transmission:"Automatic",
-    engine:"2500cc",
-    mileage:"50,000 km",
-    price:65000000,
-    badge:"PREMIUM",
-    image:"https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1200&auto=format&fit=crop"
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("vehicles")
+
+        .select(`
+            *,
+            vehicle_images (
+                id,
+                image_url,
+                is_main,
+                sort_order
+            )
+        `)
+
+        .eq(
+            "status",
+            "Published"
+        )
+
+        .order(
+            "featured",
+            {
+                ascending:false
+            }
+        )
+
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(error){
+
+        console.error(
+            "Failed to load vehicles:",
+            error
+        );
+
+
+        grid.innerHTML = `
+            <div class="empty">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <h3>
+                    Unable to load vehicles
+                </h3>
+
+                <p>
+                    ${error.message}
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    vehicles =
+        (data || []).map(vehicle => {
+
+            const images =
+                (vehicle.vehicle_images || [])
+                .sort(
+                    (a,b) =>
+                    a.sort_order - b.sort_order
+                );
+
+
+            const mainImage =
+                images.find(
+                    image =>
+                    image.is_main === true
+                )
+                ||
+                images[0];
+
+
+            return {
+
+                ...vehicle,
+
+                body:
+                    vehicle.body_type || "",
+
+                fuel:
+                    vehicle.fuel_type || "",
+
+                engine:
+                    vehicle.engine_cc
+                    ? vehicle.engine_cc + "cc"
+                    : "",
+
+                mileage:
+                    vehicle.mileage
+                    ? Number(
+                        vehicle.mileage
+                      ).toLocaleString()
+                      + " km"
+                    : "",
+
+                price:
+                    vehicle.selling_price || 0,
+
+                image:
+                    mainImage
+                    ? mainImage.image_url
+                    : "",
+
+                images:
+                    images
+
+            };
+
+        });
+
+
+    renderVehicles(
+        vehicles
+    );
+
 }
-
-];
-
-
 /* =====================================
    FORMAT MONEY
 ===================================== */
@@ -1305,19 +1346,105 @@ function renderVehicles(list){
 function openVehicle(id){
 
     const vehicle =
-        vehicles.find(v => v.id === id);
+        vehicles.find(
+            v => v.id === id
+        );
+
 
     if(!vehicle) return;
 
 
-    document.getElementById("modalContent")
-    .innerHTML = `
+    const images =
+        vehicle.images || [];
+
+
+    const gallery =
+        images.length > 0
+
+        ?
+
+        images.map(image => `
+
+            <img
+                src="${image.image_url}"
+                style="
+                    width:80px;
+                    height:60px;
+                    object-fit:cover;
+                    border-radius:6px;
+                    cursor:pointer;
+                    border:1px solid #ddd;
+                "
+                onclick="
+                    document.getElementById('mainVehicleModalImage').src='${image.image_url}'
+                "
+            >
+
+        `).join("")
+
+        :
+
+        "";
+
+
+    document.getElementById(
+        "modalContent"
+    ).innerHTML = `
 
         <div class="modal-image">
 
-            <img
-                src="${vehicle.image}"
-                alt="${vehicle.make} ${vehicle.model}">
+            ${
+                vehicle.image
+
+                ?
+
+                `
+                <img
+                    id="mainVehicleModalImage"
+                    src="${vehicle.image}"
+                    alt="${vehicle.make} ${vehicle.model}"
+                >
+                `
+
+                :
+
+                `
+                <div style="
+                    height:100%;
+                    min-height:450px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    background:#eee;
+                    color:#777;
+                ">
+                    No Image Available
+                </div>
+                `
+            }
+
+
+            ${
+                gallery
+
+                ?
+
+                `
+                <div style="
+                    display:flex;
+                    gap:8px;
+                    padding:10px;
+                    overflow-x:auto;
+                    background:#fff;
+                ">
+                    ${gallery}
+                </div>
+                `
+
+                :
+
+                ""
+            }
 
         </div>
 
@@ -1325,17 +1452,13 @@ function openVehicle(id){
         <div class="modal-info">
 
             <h2>
-
                 ${vehicle.make}
                 ${vehicle.model}
-
             </h2>
 
 
             <div class="modal-price">
-
                 TZS ${money(vehicle.price)}
-
             </div>
 
 
@@ -1349,7 +1472,7 @@ function openVehicle(id){
                     </small>
 
                     <strong>
-                        ${vehicle.year}
+                        ${vehicle.year || "-"}
                     </strong>
 
                 </div>
@@ -1362,7 +1485,7 @@ function openVehicle(id){
                     </small>
 
                     <strong>
-                        ${vehicle.body}
+                        ${vehicle.body_type || "-"}
                     </strong>
 
                 </div>
@@ -1375,7 +1498,10 @@ function openVehicle(id){
                     </small>
 
                     <strong>
-                        ${vehicle.engine}
+                        ${vehicle.engine_cc
+                            ? vehicle.engine_cc + "cc"
+                            : "-"
+                        }
                     </strong>
 
                 </div>
@@ -1388,7 +1514,7 @@ function openVehicle(id){
                     </small>
 
                     <strong>
-                        ${vehicle.transmission}
+                        ${vehicle.transmission || "-"}
                     </strong>
 
                 </div>
@@ -1401,7 +1527,7 @@ function openVehicle(id){
                     </small>
 
                     <strong>
-                        ${vehicle.fuel}
+                        ${vehicle.fuel_type || "-"}
                     </strong>
 
                 </div>
@@ -1414,17 +1540,119 @@ function openVehicle(id){
                     </small>
 
                     <strong>
-                        ${vehicle.mileage}
+                        ${
+                            vehicle.mileage
+                            ?
+                            Number(
+                                vehicle.mileage
+                            ).toLocaleString()
+                            + " km"
+                            :
+                            "-"
+                        }
                     </strong>
 
                 </div>
 
+
+                <div class="modal-spec">
+
+                    <small>
+                        COLOUR
+                    </small>
+
+                    <strong>
+                        ${vehicle.color || "-"}
+                    </strong>
+
+                </div>
+
+
+                <div class="modal-spec">
+
+                    <small>
+                        SEATS
+                    </small>
+
+                    <strong>
+                        ${vehicle.seats || "-"}
+                    </strong>
+
+                </div>
+
+
+                <div class="modal-spec">
+
+                    <small>
+                        DOORS
+                    </small>
+
+                    <strong>
+                        ${vehicle.doors || "-"}
+                    </strong>
+
+                </div>
+
+
+                <div class="modal-spec">
+
+                    <small>
+                        DRIVE TYPE
+                    </small>
+
+                    <strong>
+                        ${vehicle.drive_type || "-"}
+                    </strong>
+
+                </div>
+
+
+                <div class="modal-spec">
+
+                    <small>
+                        STEERING
+                    </small>
+
+                    <strong>
+                        ${vehicle.steering || "-"}
+                    </strong>
+
+                </div>
+
+
             </div>
+
+
+            ${
+                vehicle.description
+
+                ?
+
+                `
+                <p style="
+                    color:#666;
+                    font-size:13px;
+                    line-height:1.6;
+                    margin-bottom:25px;
+                ">
+                    ${vehicle.description}
+                </p>
+                `
+
+                :
+
+                ""
+            }
 
 
             <button
                 class="modal-whatsapp"
-                onclick="contactVehicle('${vehicle.make} ${vehicle.model}')">
+                onclick="
+                    contactVehicle(
+                        '${vehicle.make} ${vehicle.model}'
+                    )
+                "
+            >
 
                 <i class="fa-brands fa-whatsapp"></i>
 
@@ -1437,12 +1665,11 @@ function openVehicle(id){
     `;
 
 
-    document.getElementById("vehicleModal")
-        .classList.add("active");
+    document.getElementById(
+        "vehicleModal"
+    ).classList.add("active");
 
 }
-
-
 /* =====================================
    CLOSE MODAL
 ===================================== */
@@ -1580,7 +1807,7 @@ const matchesYearTo =
    INITIAL LOAD
 ===================================== */
 
-renderVehicles(vehicles);
+loadVehicles();
 
 function updateToYearOptions(){
 
