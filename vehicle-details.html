@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Vehicle Details | Mattex Motors</title>
+
+
+<link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+>
+
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
+
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+    margin:0;
+
+    font-family:
+        "Inter",
+        Arial,
+        sans-serif;
+
+    background:#f6f7f9;
+
+    color:#202020;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+
+    height:72px;
+
+    background:#fff;
+
+    border-bottom:1px solid #eee;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 45px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+}
+
+
+.logo{
+
+    height:42px;
+
+}
+
+
+.nav{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+}
+
+
+.nav a{
+
+    text-decoration:none;
+
+    color:#333;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+.nav a:hover{
+
+    color:#f7941d;
+
+}
+
+
+.header-btn{
+
+    background:#f7941d;
+
+    color:white !important;
+
+    padding:11px 18px;
+
+    border-radius:6px;
+
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.page{
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:35px;
+
+}
+
+
+/* BACK */
+
+.back-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    text-decoration:none;
+
+    color:#555;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin-bottom:25px;
+
+}
+
+
+.back-btn:hover{
+
+    color:#f7941d;
+
+}
+
+
+/* =========================
+   VEHICLE HEADER
+========================= */
+
+.vehicle-header{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:25px;
+
+    margin-bottom:20px;
+
+    border:1px solid #eee;
+
+}
+
+
+.vehicle-header-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:20px;
+
+}
+
+
+.vehicle-title{
+
+    margin:0;
+
+    font-size:34px;
+
+    font-weight:800;
+
+}
+
+
+.vehicle-subtitle{
+
+    margin-top:8px;
+
+    color:#777;
+
+    font-size:14px;
+
+}
+
+
+.vehicle-price{
+
+    color:#f7941d;
+
+    font-size:28px;
+
+    font-weight:800;
+
+    text-align:right;
+
+}
+
+
+.price-label{
+
+    display:block;
+
+    color:#888;
+
+    font-size:10px;
+
+    font-weight:500;
+
+    margin-bottom:4px;
+
+}
+
+
+/* =========================
+   MAIN GRID
+========================= */
+
+.vehicle-layout{
+
+    display:grid;
+
+    grid-template-columns:
+        1.3fr
+        .7fr;
+
+    gap:20px;
+
+}
+
+
+/* =========================
+   GALLERY
+========================= */
+
+.gallery{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    border:1px solid #eee;
+
+}
+
+
+.main-image{
+
+    width:100%;
+
+    height:560px;
+
+    object-fit:cover;
+
+    display:block;
+
+    background:#eee;
+
+}
+
+
+.thumbnail-container{
+
+    display:flex;
+
+    gap:10px;
+
+    padding:12px;
+
+    overflow-x:auto;
+
+}
+
+
+.thumbnail{
+
+    width:90px;
+
+    height:70px;
+
+    object-fit:cover;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    border:2px solid transparent;
+
+}
+
+
+.thumbnail:hover{
+
+    border-color:#f7941d;
+
+}
+
+
+.thumbnail.active{
+
+    border-color:#f7941d;
+
+}
+
+
+/* =========================
+   INFORMATION
+========================= */
+
+.info-card{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:25px;
+
+    border:1px solid #eee;
+
+}
+
+
+.info-title{
+
+    font-size:20px;
+
+    font-weight:800;
+
+    margin-bottom:20px;
+
+}
+
+
+.spec-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap:10px;
+
+}
+
+
+.spec{
+
+    background:#f7f7f7;
+
+    border-radius:7px;
+
+    padding:14px;
+
+}
+
+
+.spec small{
+
+    display:block;
+
+    color:#888;
+
+    font-size:10px;
+
+    margin-bottom:5px;
+
+}
+
+
+.spec strong{
+
+    font-size:13px;
+
+}
+
+
+.description{
+
+    margin-top:25px;
+
+    border-top:1px solid #eee;
+
+    padding-top:20px;
+
+}
+
+
+.description h3{
+
+    margin:0 0 10px;
+
+    font-size:16px;
+
+}
+
+
+.description p{
+
+    margin:0;
+
+    color:#666;
+
+    font-size:13px;
+
+    line-height:1.7;
+
+}
+
+
+/* =========================
+   WHATSAPP
+========================= */
+
+.whatsapp-btn{
+
+    width:100%;
+
+    height:50px;
+
+    border:0;
+
+    border-radius:7px;
+
+    background:#25D366;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    margin-top:25px;
+
+}
+
+
+.whatsapp-btn:hover{
+
+    background:#1fba59;
+
+}
+
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+
+    min-height:500px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+    color:#777;
+
+}
+
+
+.loading i{
+
+    font-size:35px;
+
+    color:#f7941d;
+
+    margin-bottom:15px;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+
+    margin-top:50px;
+
+    background:#171717;
+
+    color:#aaa;
+
+    text-align:center;
+
+    padding:30px 20px;
+
+    font-size:12px;
+
+}
+
+
+.footer strong{
+
+    color:#fff;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+    .page{
+
+        padding:20px;
+
+    }
+
+
+    .vehicle-layout{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .main-image{
+
+        height:450px;
+
+    }
+
+
+    .vehicle-header-top{
+
+        flex-direction:column;
+
+    }
+
+
+    .vehicle-price{
+
+        text-align:left;
+
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .header{
+
+        padding:0 20px;
+
+    }
+
+
+    .nav{
+
+        display:none;
+
+    }
+
+
+    .vehicle-title{
+
+        font-size:26px;
+
+    }
+
+
+    .main-image{
+
+        height:300px;
+
+    }
+
+
+    .spec-grid{
+
+        grid-template-columns:
+            1fr
+            1fr;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="header">
+
+    <img
+        src="mattex-logo.png"
+        class="logo"
+        alt="Mattex"
+    >
+
+
+    <nav class="nav">
+
+        <a href="showroom.html">
+            Vehicles
+        </a>
+
+        <a href="#">
+            How It Works
+        </a>
+
+        <a href="#">
+            About Us
+        </a>
+
+
+        <a
+            href="https://wa.me/255699446205"
+            class="header-btn"
+            target="_blank"
+        >
+
+            <i class="fa-brands fa-whatsapp"></i>
+
+            Talk to Us
+
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     PAGE
+========================= -->
+
+<main class="page">
+
+
+    <a
+        href="showroom.html"
+        class="back-btn"
+    >
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Back to Vehicles
+
+    </a>
+
+
+    <div id="vehiclePage">
+
+        <div class="loading">
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+            <strong>
+                Loading vehicle...
+            </strong>
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+<footer class="footer">
+
+    © 2026
+
+    <strong>
+        Mattex Company Limited
+    </strong>
+
+    — All Rights Reserved.
+
+</footer>
+
+
+
+<script>
+
+
+/* =========================
+   SUPABASE
+========================= */
+
+const SUPABASE_URL =
+    "https://xpgtietajegnttonthxm.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable_Lr18Tvgct5tyYcX5fLHAPg_xC-To0zM";
+
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+
+/* =========================
+   GET VEHICLE ID
+========================= */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const vehicleId =
+    params.get("id");
+
+
+
+/* =========================
+   LOAD VEHICLE
+========================= */
+
+async function loadVehicle(){
+
+    if(!vehicleId){
+
+        showError(
+            "Vehicle was not specified."
+        );
+
+        return;
+
+    }
+
+
+    const {
+
+        data: vehicle,
+
+        error
+
+    } = await supabaseClient
+
+        .from("vehicles")
+
+        .select(`
+            *,
+            vehicle_images (
+                id,
+                image_url,
+                is_main,
+                sort_order
+            )
+        `)
+
+        .eq(
+            "id",
+            vehicleId
+        )
+
+        .eq(
+            "status",
+            "Published"
+        )
+
+        .single();
+
+
+
+    if(error){
+
+        console.error(error);
+
+        showError(
+            "Vehicle not found."
+        );
+
+        return;
+
+    }
+
+
+    renderVehicle(
+        vehicle
+    );
+
+}
+
+
+
+/* =========================
+   RENDER
+========================= */
+
+function renderVehicle(vehicle){
+
+
+    const images =
+
+        (vehicle.vehicle_images || [])
+
+        .sort(
+            (a,b) =>
+            a.sort_order - b.sort_order
+        );
+
+
+    const mainImage =
+
+        images.find(
+            image =>
+            image.is_main === true
+        )
+
+        ||
+
+        images[0]
+
+        ||
+
+        null;
+
+
+    const imageURL =
+
+        mainImage
+
+        ?
+
+        mainImage.image_url
+
+        :
+
+        "";
+
+
+
+    document.getElementById(
+        "vehiclePage"
+    ).innerHTML = `
+
+
+        <!-- VEHICLE HEADER -->
+
+        <section class="vehicle-header">
+
+            <div class="vehicle-header-top">
+
+
+                <div>
+
+                    <h1 class="vehicle-title">
+
+                        ${vehicle.make || ""}
+
+                        ${vehicle.model || ""}
+
+                    </h1>
+
+
+                    <div class="vehicle-subtitle">
+
+                        ${vehicle.year || ""}
+
+                        ${vehicle.body_type || ""}
+
+                        ${vehicle.fuel_type || ""}
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="vehicle-price">
+
+                    <span class="price-label">
+
+                        PRICE
+
+                    </span>
+
+                    TZS
+
+                    ${money(
+                        vehicle.selling_price
+                    )}
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- MAIN -->
+
+        <section class="vehicle-layout">
+
+
+            <!-- GALLERY -->
+
+            <div class="gallery">
+
+
+                ${
+                    imageURL
+
+                    ?
+
+                    `
+                    <img
+                        id="mainVehicleImage"
+                        class="main-image"
+                        src="${imageURL}"
+                        alt="${vehicle.make} ${vehicle.model}"
+                    >
+                    `
+
+                    :
+
+                    `
+                    <div
+                        class="main-image"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            color:#777;
+                        "
+                    >
+
+                        No Image Available
+
+                    </div>
+                    `
+                }
+
+
+
+                <div class="thumbnail-container">
+
+
+                    ${
+
+                        images.map(
+                            (image,index) => `
+
+                            <img
+                                src="${image.image_url}"
+                                class="thumbnail ${
+                                    index === 0
+                                    ? "active"
+                                    : ""
+                                }"
+                                onclick="
+                                    changeImage(
+                                        '${image.image_url}',
+                                        this
+                                    )
+                                "
+                            >
+
+                        `
+                        ).join("")
+
+                    }
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- INFORMATION -->
+
+            <div class="info-card">
+
+
+                <div class="info-title">
+
+                    Vehicle Information
+
+                </div>
+
+
+                <div class="spec-grid">
+
+
+                    ${spec(
+                        "YEAR",
+                        vehicle.year
+                    )}
+
+
+                    ${spec(
+                        "BODY TYPE",
+                        vehicle.body_type
+                    )}
+
+
+                    ${spec(
+                        "ENGINE",
+                        vehicle.engine_cc
+                        ? vehicle.engine_cc + "cc"
+                        : "-"
+                    )}
+
+
+                    ${spec(
+                        "TRANSMISSION",
+                        vehicle.transmission
+                    )}
+
+
+                    ${spec(
+                        "FUEL",
+                        vehicle.fuel_type
+                    )}
+
+
+                    ${spec(
+                        "MILEAGE",
+                        vehicle.mileage
+                        ? Number(
+                            vehicle.mileage
+                          ).toLocaleString()
+                          + " km"
+                        : "-"
+                    )}
+
+
+                    ${spec(
+                        "COLOUR",
+                        vehicle.color
+                    )}
+
+
+                    ${spec(
+                        "SEATS",
+                        vehicle.seats
+                    )}
+
+
+                    ${spec(
+                        "DOORS",
+                        vehicle.doors
+                    )}
+
+
+                    ${spec(
+                        "DRIVE TYPE",
+                        vehicle.drive_type
+                    )}
+
+
+                    ${spec(
+                        "STEERING",
+                        vehicle.steering
+                    )}
+
+
+                </div>
+
+
+
+                ${
+                    vehicle.description
+
+                    ?
+
+                    `
+
+                    <div class="description">
+
+                        <h3>
+                            Description
+                        </h3>
+
+                        <p>
+                            ${vehicle.description}
+                        </p>
+
+                    </div>
+
+                    `
+
+                    :
+
+                    ""
+
+                }
+
+
+
+                <button
+                    class="whatsapp-btn"
+                    onclick="
+                        contactVehicle(
+                            '${vehicle.make} ${vehicle.model}'
+                        )
+                    "
+                >
+
+                    <i class="fa-brands fa-whatsapp"></i>
+
+                    Enquire About This Vehicle
+
+                </button>
+
+
+            </div>
+
+
+        </section>
+
+    `;
+
+}
+
+
+
+/* =========================
+   SPEC
+========================= */
+
+function spec(
+    label,
+    value
+){
+
+    return `
+
+        <div class="spec">
+
+            <small>
+                ${label}
+            </small>
+
+            <strong>
+                ${value || "-"}
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =========================
+   IMAGE
+========================= */
+
+function changeImage(
+    url,
+    element
+){
+
+    const main =
+        document.getElementById(
+            "mainVehicleImage"
+        );
+
+
+    if(main){
+
+        main.src = url;
+
+    }
+
+
+    document
+        .querySelectorAll(".thumbnail")
+        .forEach(
+            img =>
+            img.classList.remove(
+                "active"
+            )
+        );
+
+
+    element.classList.add(
+        "active"
+    );
+
+}
+
+
+
+/* =========================
+   WHATSAPP
+========================= */
+
+function contactVehicle(
+    name
+){
+
+    const message =
+
+        `Hello Mattex Motors, I am interested in the ${name}. Please send me more details.`;
+
+
+
+    window.open(
+
+        "https://wa.me/255699446205?text=" +
+
+        encodeURIComponent(
+            message
+        ),
+
+        "_blank"
+
+    );
+
+}
+
+
+
+/* =========================
+   MONEY
+========================= */
+
+function money(
+    value
+){
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "en-US"
+    );
+
+}
+
+
+
+/* =========================
+   ERROR
+========================= */
+
+function showError(
+    message
+){
+
+    document.getElementById(
+        "vehiclePage"
+    ).innerHTML = `
+
+        <div class="loading">
+
+            <i class="fa-solid fa-car"></i>
+
+            <h3>
+                ${message}
+            </h3>
+
+            <a
+                href="showroom.html"
+                class="back-btn"
+            >
+
+                ← Back to Vehicles
+
+            </a>
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =========================
+   START
+========================= */
+
+loadVehicle();
+
+</script>
+
+
+</body>
+
+</html>
