@@ -1117,6 +1117,14 @@ async function loadVehicles(){
     );
 
 }
+
+function openVehiclePage(id){
+
+    window.location.href =
+        "vehicle-details.html?id=" +
+        encodeURIComponent(id);
+
+}
 /* =====================================
    FORMAT MONEY
 ===================================== */
@@ -1177,9 +1185,8 @@ function renderVehicles(list){
         list.map(vehicle => `
 
         <div
-            class="vehicle-card"
-            onclick="openVehicle(${vehicle.id})">
-
+    class="vehicle-card"
+    onclick="openVehiclePage(${vehicle.id})">
 
             <div class="vehicle-image">
 
@@ -1306,10 +1313,9 @@ function renderVehicles(list){
                 <div class="actions">
 
 
-                    <button
-                        class="action-btn details-btn"
-                        onclick="event.stopPropagation();openVehicle(${vehicle.id})">
-
+                   <button
+    class="action-btn details-btn"
+    onclick="event.stopPropagation();openVehiclePage(${vehicle.id})">
                         View Details
 
                     </button>
