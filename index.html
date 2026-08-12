@@ -1771,35 +1771,44 @@ style="width:100%;border-collapse:collapse;">
         <p style="color:#777;font-size:13px;">
             Maximum 15 photos per vehicle.
         </p>
-
-        <div
-            id="vehicleImagePreview"
-            style="
-                display:grid;
-                grid-template-columns:
-                    repeat(auto-fill,minmax(120px,1fr));
-                gap:10px;
-                margin-top:15px;
-            "
-        ></div>
-
+<h4
+    id="existingImagesTitle"
+    style="
+        display:none;
+        margin-top:25px;
+        color:#555;
+    "
+>
+    Existing Photos
+</h4>
+       <div
+    id="existingVehicleImages"
+    style="
+        display:grid;
+        grid-template-columns:
+            repeat(auto-fill,minmax(120px,1fr));
+        gap:10px;
+        margin-top:15px;
+    "
+></div>
 
         <div style="margin-top:25px;">
 
-            <button
-                onclick="saveVehicle()"
-                style="
-                    background:#f7941d;
-                    color:white;
-                    border:none;
-                    padding:12px 25px;
-                    border-radius:8px;
-                    font-weight:bold;
-                    cursor:pointer;
-                "
-            >
-                Save Vehicle
-            </button>
+<button
+    id="vehicleSaveButton"
+    onclick="saveVehicle()"
+    style="
+        background:#f7941d;
+        color:white;
+        border:none;
+        padding:12px 25px;
+        border-radius:8px;
+        font-weight:bold;
+        cursor:pointer;
+    "
+>
+    Save Vehicle
+</button>
 
             <button
                 onclick="backToVehicleInventory()"
@@ -4291,6 +4300,15 @@ function openAddVehicleForm(){
 
 
     clearVehicleForm();
+
+    document.getElementById(
+    "vehicleSaveButton"
+).onclick = saveVehicle;
+
+document.getElementById(
+    "vehicleSaveButton"
+).innerText =
+    "Save Vehicle";
 }
 
 
@@ -5018,6 +5036,1187 @@ function backToVehicleInventory(){
         .style.display = "block";
 
     loadVehicles();
+}
+
+/* =========================================================
+   EDIT VEHICLE
+========================================================= */
+
+async function editVehicle(id){
+
+    editingVehicleId = id;
+
+    document.getElementById("vehicleInventoryPage")
+        .style.display = "none";
+
+    document.getElementById("vehicleFormPage")
+        .style.display = "block";
+
+    document.getElementById("vehicleFormTitle")
+        .innerText = "Edit Vehicle";
+
+
+    const {
+        data: vehicle,
+        error
+    } = await supabaseClient
+
+        .from("vehicles")
+
+        .select("*")
+
+        .eq("id", id)
+
+        .single();
+
+
+    if(error){
+
+        console.error(error);
+
+        alert(
+            "Failed to load vehicle: " +
+            error.message
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       BASIC INFORMATION
+    ========================= */
+
+    document.getElementById("vehicleMake").value =
+        vehicle.make || "";
+
+    document.getElementById("vehicleModel").value =
+        vehicle.model || "";
+
+    document.getElementById("vehicleYear").value =
+        vehicle.year || "";
+
+    document.getElementById("vehicleBodyType").value =
+        vehicle.body_type || "";
+
+    document.getElementById("vehicleColor").value =
+        vehicle.color || "";
+
+    document.getElementById("vehicleMileage").value =
+        vehicle.mileage || "";
+
+    document.getElementById("vehicleEngine").value =
+        vehicle.engine_cc || "";
+
+    document.getElementById("vehicleTransmission").value =
+        vehicle.transmission || "";
+
+    document.getElementById("vehicleFuel").value =
+        vehicle.fuel_type || "";
+
+    document.getElementById("vehicleSeats").value =
+        vehicle.seats || "";
+
+    document.getElementById("vehicleDoors").value =
+        vehicle.doors || "";
+
+    document.getElementById("vehicleDriveType").value =
+        vehicle.drive_type || "";
+
+    document.getElementById("vehicleSteering").value =
+        vehicle.steering || "";
+
+
+    /* =========================
+       JAPAN INFORMATION
+    ========================= */
+
+    document.getElementById("vehicleChassis").value =
+        vehicle.chassis_number || "";
+
+    document.getElementById("vehicleGrade").value =
+        vehicle.auction_grade || "";
+
+    document.getElementById("vehicleAuctionHouse").value =
+        vehicle.auction_house || "";
+
+    document.getElementById("vehicleStock").value =
+        vehicle.stock_number || "";
+
+    document.getElementById("vehicleAuctionDate").value =
+        vehicle.auction_date || "";
+
+    document.getElementById("vehicleSourceUrl").value =
+        vehicle.source_url || "";
+
+    document.getElementById("vehiclePurchasePrice").value =
+        vehicle.purchase_price || "";
+
+
+    /* =========================
+       MATTEX INFORMATION
+    ========================= */
+
+    document.getElementById("vehicleSellingPrice").value =
+        vehicle.selling_price || "";
+
+    document.getElementById("vehicleDescription").value =
+        vehicle.description || "";
+
+    document.getElementById("vehicleStatus").value =
+        vehicle.status || "Draft";
+
+    document.getElementById("vehicleFeatured").value =
+        vehicle.featured
+        ? "true"
+        : "false";
+
+
+    /* =========================
+       CLEAR NEW PHOTO INPUT
+    ========================= */
+
+    document.getElementById("vehiclePhotos").value = "";
+
+    document.getElementById("vehicleImagePreview").innerHTML = "";
+
+
+    /* =========================
+       LOAD EXISTING PHOTOS
+    ========================= */
+document.getElementById(
+    "vehicleSaveButton"
+).onclick = updateVehicle;
+
+document.getElementById(
+    "vehicleSaveButton"
+).innerText =
+    "Update Vehicle";
+    await loadExistingVehicleImages(id);
+
+}
+
+/* =========================================================
+   LOAD EXISTING VEHICLE IMAGES
+========================================================= */
+
+async function loadExistingVehicleImages(vehicleId){
+
+    const container =
+        document.getElementById(
+            "existingVehicleImages"
+        );
+
+    const title =
+        document.getElementById(
+            "existingImagesTitle"
+        );
+
+
+    container.innerHTML = `
+        <div style="
+            grid-column:1/-1;
+            color:#777;
+            padding:10px;
+        ">
+            Loading photos...
+        </div>
+    `;
+
+
+    const {
+        data: images,
+        error
+    } = await supabaseClient
+
+        .from("vehicle_images")
+
+        .select("*")
+
+        .eq("vehicle_id", vehicleId)
+
+        .order("sort_order", {
+            ascending:true
+        });
+
+
+    if(error){
+
+        console.error(error);
+
+        container.innerHTML = `
+            <div style="
+                grid-column:1/-1;
+                color:red;
+            ">
+                ${error.message}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if(!images || images.length === 0){
+
+        title.style.display = "none";
+
+        container.innerHTML = "";
+
+        return;
+    }
+
+
+    title.style.display = "block";
+
+    container.innerHTML = "";
+
+
+    images.forEach(image => {
+
+        container.innerHTML += `
+
+            <div
+                id="image-box-${image.id}"
+                style="
+                    position:relative;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                    overflow:hidden;
+                    background:#fff;
+                "
+            >
+
+                <img
+                    src="${image.image_url}"
+                    style="
+                        width:100%;
+                        height:110px;
+                        object-fit:cover;
+                        display:block;
+                    "
+                >
+
+
+                ${
+                    image.is_main
+
+                    ?
+
+                    `
+                    <div style="
+                        position:absolute;
+                        top:5px;
+                        left:5px;
+                        background:#f7941d;
+                        color:white;
+                        padding:4px 7px;
+                        border-radius:4px;
+                        font-size:10px;
+                        font-weight:bold;
+                    ">
+                        MAIN
+                    </div>
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+                <button
+                    onclick="deleteVehicleImage(${image.id}, ${image.vehicle_id}, '${image.image_url}')"
+                    style="
+                        position:absolute;
+                        top:5px;
+                        right:5px;
+                        width:28px;
+                        height:28px;
+                        border:none;
+                        border-radius:50%;
+                        background:#dc3545;
+                        color:white;
+                        cursor:pointer;
+                    "
+                >
+                    ×
+                </button>
+
+
+                ${
+                    !image.is_main
+
+                    ?
+
+                    `
+                    <button
+                        onclick="setMainVehicleImage(${image.id}, ${image.vehicle_id})"
+                        style="
+                            width:100%;
+                            border:none;
+                            background:#222;
+                            color:white;
+                            padding:6px;
+                            font-size:10px;
+                            cursor:pointer;
+                        "
+                    >
+                        Set Main
+                    </button>
+                    `
+
+                    :
+
+                    `
+                    <div style="
+                        text-align:center;
+                        background:#f7941d;
+                        color:white;
+                        padding:6px;
+                        font-size:10px;
+                    ">
+                        Main Image
+                    </div>
+                    `
+                }
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+/* =========================================================
+   UPDATE VEHICLE
+========================================================= */
+
+async function updateVehicle(){
+
+    if(!editingVehicleId){
+
+        alert("No vehicle selected.");
+
+        return;
+    }
+
+
+    const make =
+        document.getElementById("vehicleMake")
+        .value
+        .trim();
+
+    const model =
+        document.getElementById("vehicleModel")
+        .value
+        .trim();
+
+    const year =
+        document.getElementById("vehicleYear")
+        .value;
+
+    const sellingPrice =
+        document.getElementById("vehicleSellingPrice")
+        .value;
+
+
+    if(!make){
+
+        alert("Please enter vehicle make.");
+
+        return;
+    }
+
+
+    if(!model){
+
+        alert("Please enter vehicle model.");
+
+        return;
+    }
+
+
+    if(!year){
+
+        alert("Please enter vehicle year.");
+
+        return;
+    }
+
+
+    if(!sellingPrice){
+
+        alert("Please enter selling price.");
+
+        return;
+    }
+
+
+    const updatePayload = {
+
+        make: make,
+
+        model: model,
+
+        year: Number(year),
+
+        body_type:
+            document.getElementById(
+                "vehicleBodyType"
+            ).value.trim(),
+
+        color:
+            document.getElementById(
+                "vehicleColor"
+            ).value.trim(),
+
+        mileage:
+            document.getElementById(
+                "vehicleMileage"
+            ).value
+            ?
+            Number(
+                document.getElementById(
+                    "vehicleMileage"
+                ).value
+            )
+            :
+            null,
+
+        engine_cc:
+            document.getElementById(
+                "vehicleEngine"
+            ).value
+            ?
+            Number(
+                document.getElementById(
+                    "vehicleEngine"
+                ).value
+            )
+            :
+            null,
+
+        transmission:
+            document.getElementById(
+                "vehicleTransmission"
+            ).value,
+
+        fuel_type:
+            document.getElementById(
+                "vehicleFuel"
+            ).value,
+
+        seats:
+            document.getElementById(
+                "vehicleSeats"
+            ).value
+            ?
+            Number(
+                document.getElementById(
+                    "vehicleSeats"
+                ).value
+            )
+            :
+            null,
+
+        doors:
+            document.getElementById(
+                "vehicleDoors"
+            ).value
+            ?
+            Number(
+                document.getElementById(
+                    "vehicleDoors"
+                ).value
+            )
+            :
+            null,
+
+        drive_type:
+            document.getElementById(
+                "vehicleDriveType"
+            ).value,
+
+        steering:
+            document.getElementById(
+                "vehicleSteering"
+            ).value,
+
+
+        /* JAPAN */
+
+        chassis_number:
+            document.getElementById(
+                "vehicleChassis"
+            ).value.trim(),
+
+        auction_grade:
+            document.getElementById(
+                "vehicleGrade"
+            ).value.trim(),
+
+        auction_house:
+            document.getElementById(
+                "vehicleAuctionHouse"
+            ).value.trim(),
+
+        stock_number:
+            document.getElementById(
+                "vehicleStock"
+            ).value.trim(),
+
+        auction_date:
+            document.getElementById(
+                "vehicleAuctionDate"
+            ).value
+            || null,
+
+        source_url:
+            document.getElementById(
+                "vehicleSourceUrl"
+            ).value.trim(),
+
+        purchase_price:
+            document.getElementById(
+                "vehiclePurchasePrice"
+            ).value
+            ?
+            Number(
+                document.getElementById(
+                    "vehiclePurchasePrice"
+                ).value
+            )
+            :
+            null,
+
+
+        /* MATTEX */
+
+        selling_price:
+            Number(sellingPrice),
+
+        description:
+            document.getElementById(
+                "vehicleDescription"
+            ).value.trim(),
+
+        status:
+            document.getElementById(
+                "vehicleStatus"
+            ).value,
+
+        featured:
+            document.getElementById(
+                "vehicleFeatured"
+            ).value === "true",
+
+        updated_at:
+            new Date().toISOString()
+
+    };
+
+
+    const saveButton =
+        document.getElementById(
+            "vehicleSaveButton"
+        );
+
+
+    if(saveButton){
+
+        saveButton.disabled = true;
+
+        saveButton.innerText =
+            "Updating...";
+    }
+
+
+    try{
+
+        /* =========================
+           UPDATE DATABASE
+        ========================= */
+
+        const {
+            error
+        } = await supabaseClient
+
+            .from("vehicles")
+
+            .update(updatePayload)
+
+            .eq(
+                "id",
+                editingVehicleId
+            );
+
+
+        if(error){
+
+            throw new Error(
+                error.message
+            );
+
+        }
+
+
+        /* =========================
+           ADD NEW PHOTOS
+        ========================= */
+
+        const photoInput =
+            document.getElementById(
+                "vehiclePhotos"
+            );
+
+
+        const newFiles =
+            Array.from(photoInput.files);
+
+
+        if(newFiles.length > 0){
+
+            const {
+                data: existingImages,
+                error: imagesError
+            } = await supabaseClient
+
+                .from("vehicle_images")
+
+                .select("*")
+
+                .eq(
+                    "vehicle_id",
+                    editingVehicleId
+                );
+
+
+            if(imagesError){
+
+                throw new Error(
+                    imagesError.message
+                );
+
+            }
+
+
+            const existingCount =
+                existingImages
+                ? existingImages.length
+                : 0;
+
+
+            if(
+                existingCount +
+                newFiles.length >
+                15
+            ){
+
+                throw new Error(
+                    `This vehicle already has ${existingCount} photos. Maximum is 15.`
+                );
+
+            }
+
+
+            for(
+                let i = 0;
+                i < newFiles.length;
+                i++
+            ){
+
+                const file =
+                    newFiles[i];
+
+
+                const extension =
+                    file.name
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+
+                const fileName =
+                    `${Date.now()}-${i}.${extension}`;
+
+
+                const filePath =
+                    `${editingVehicleId}/${fileName}`;
+
+
+                const {
+                    error: uploadError
+                } =
+                    await supabaseClient.storage
+
+                    .from("vehicle-images")
+
+                    .upload(
+                        filePath,
+                        file,
+                        {
+                            cacheControl:"3600",
+                            upsert:false,
+                            contentType:file.type
+                        }
+                    );
+
+
+                if(uploadError){
+
+                    throw new Error(
+                        uploadError.message
+                    );
+
+                }
+
+
+                const {
+                    data:publicData
+                } =
+                    supabaseClient.storage
+
+                    .from("vehicle-images")
+
+                    .getPublicUrl(
+                        filePath
+                    );
+
+
+                const imageUrl =
+                    publicData.publicUrl;
+
+
+                const sortOrder =
+                    existingCount + i;
+
+
+                const {
+                    error:imageError
+                } =
+                    await supabaseClient
+
+                    .from("vehicle_images")
+
+                    .insert([{
+
+                        vehicle_id:
+                            editingVehicleId,
+
+                        image_url:
+                            imageUrl,
+
+                        is_main:
+                            false,
+
+                        sort_order:
+                            sortOrder
+
+                    }]);
+
+
+                if(imageError){
+
+                    throw new Error(
+                        imageError.message
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================
+           SUCCESS
+        ========================= */
+
+        alert(
+            "Vehicle updated successfully!"
+        );
+
+
+        editingVehicleId = null;
+
+
+        clearVehicleForm();
+
+
+        document.getElementById(
+            "vehicleFormPage"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "vehicleInventoryPage"
+        ).style.display = "block";
+
+
+        await loadVehicles();
+
+    }
+
+    catch(error){
+
+        console.error(
+            "UPDATE VEHICLE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Failed to update vehicle:\n\n" +
+            error.message
+        );
+
+    }
+
+    finally{
+
+        if(saveButton){
+
+            saveButton.disabled = false;
+
+            saveButton.innerText =
+                "Save Vehicle";
+
+        }
+
+    }
+
+}
+
+/* =========================================================
+   DELETE VEHICLE IMAGE
+========================================================= */
+
+async function deleteVehicleImage(
+    imageId,
+    vehicleId,
+    imageUrl
+){
+
+    if(
+        !confirm(
+            "Are you sure you want to delete this photo?"
+        )
+    ){
+
+        return;
+    }
+
+
+    try{
+
+        /* =========================
+           DELETE DATABASE RECORD
+        ========================= */
+
+        const {
+            error
+        } = await supabaseClient
+
+            .from("vehicle_images")
+
+            .delete()
+
+            .eq(
+                "id",
+                imageId
+            );
+
+
+        if(error){
+
+            throw new Error(
+                error.message
+            );
+
+        }
+
+
+        /* =========================
+           DELETE STORAGE FILE
+        ========================= */
+
+        try{
+
+            const marker =
+                "/vehicle-images/";
+
+            const index =
+                imageUrl.indexOf(marker);
+
+
+            if(index !== -1){
+
+                const path =
+                    imageUrl.substring(
+                        index + marker.length
+                    );
+
+
+                await supabaseClient.storage
+
+                    .from("vehicle-images")
+
+                    .remove([path]);
+
+            }
+
+        }
+
+        catch(storageError){
+
+            console.warn(
+                "Storage delete warning:",
+                storageError
+            );
+
+        }
+
+
+        /* =========================
+           CHECK IF DELETED IMAGE
+           WAS MAIN IMAGE
+        ========================= */
+
+        const {
+            data:remainingImages
+        } =
+            await supabaseClient
+
+            .from("vehicle_images")
+
+            .select("*")
+
+            .eq(
+                "vehicle_id",
+                vehicleId
+            )
+
+            .order(
+                "sort_order",
+                {
+                    ascending:true
+                }
+            );
+
+
+        if(
+            remainingImages &&
+            remainingImages.length > 0
+        ){
+
+            const hasMain =
+                remainingImages.some(
+                    image =>
+                    image.is_main === true
+                );
+
+
+            if(!hasMain){
+
+                const firstImage =
+                    remainingImages[0];
+
+
+                await setMainVehicleImage(
+                    firstImage.id,
+                    vehicleId,
+                    false
+                );
+
+            }
+
+        }
+        else{
+
+            await supabaseClient
+
+                .from("vehicles")
+
+                .update({
+
+                    main_image:null,
+
+                    updated_at:
+                        new Date().toISOString()
+
+                })
+
+                .eq(
+                    "id",
+                    vehicleId
+                );
+
+        }
+
+
+        await loadExistingVehicleImages(
+            vehicleId
+        );
+
+
+        alert(
+            "Photo deleted successfully."
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "Failed to delete photo:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+/* =========================================================
+   SET MAIN VEHICLE IMAGE
+========================================================= */
+
+async function setMainVehicleImage(
+    imageId,
+    vehicleId,
+    showAlert = true
+){
+
+    try{
+
+        /* Remove main from all images */
+
+        const {
+            error:resetError
+        } =
+            await supabaseClient
+
+            .from("vehicle_images")
+
+            .update({
+
+                is_main:false
+
+            })
+
+            .eq(
+                "vehicle_id",
+                vehicleId
+            );
+
+
+        if(resetError){
+
+            throw new Error(
+                resetError.message
+            );
+
+        }
+
+
+        /* Set selected image as main */
+
+        const {
+            data:selectedImage,
+            error:selectedError
+        } =
+            await supabaseClient
+
+            .from("vehicle_images")
+
+            .update({
+
+                is_main:true
+
+            })
+
+            .eq(
+                "id",
+                imageId
+            )
+
+            .select()
+
+            .single();
+
+
+        if(selectedError){
+
+            throw new Error(
+                selectedError.message
+            );
+
+        }
+
+
+        /* Update vehicles.main_image */
+
+        const {
+            error:vehicleError
+        } =
+            await supabaseClient
+
+            .from("vehicles")
+
+            .update({
+
+                main_image:
+                    selectedImage.image_url,
+
+                updated_at:
+                    new Date().toISOString()
+
+            })
+
+            .eq(
+                "id",
+                vehicleId
+            );
+
+
+        if(vehicleError){
+
+            throw new Error(
+                vehicleError.message
+            );
+
+        }
+
+
+        await loadExistingVehicleImages(
+            vehicleId
+        );
+
+
+        if(showAlert){
+
+            alert(
+                "Main image updated."
+            );
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "Failed to set main image:\n\n" +
+            error.message
+        );
+
+    }
+
 }
 </script>
 
