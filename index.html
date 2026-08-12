@@ -2411,10 +2411,29 @@ monthlyDelivered;
 document.getElementById("monthlyPending").innerHTML =
 monthlyPending;
 
-data.forEach(record => {
+const sortedCustomerData = [...data].sort((a, b) => {
 
-tbody.innerHTML += `
+    const statusA = (a.status || "").trim().toLowerCase();
+    const statusB = (b.status || "").trim().toLowerCase();
 
+    // Delivered goes to the bottom
+    if (statusA === "delivered" && statusB !== "delivered") {
+        return 1;
+    }
+
+    if (statusA !== "delivered" && statusB === "delivered") {
+        return -1;
+    }
+
+    // Newest first within each group
+    return b.id - a.id;
+
+});
+
+
+sortedCustomerData.forEach(record => {
+
+    tbody.innerHTML += `
 
 <tr>
 
