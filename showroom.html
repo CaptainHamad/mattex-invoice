@@ -765,7 +765,10 @@ body{
 
         <div class="search-box">
 
-            <select id="searchMake">
+           <select
+    id="searchMake"
+    onchange="updateModelOptions()"
+>
 
                 <option value="">
                     Make
@@ -838,11 +841,15 @@ body{
 
 </select>
 
-            <input
-                type="text"
-                id="searchModel"
-                placeholder="Search model">
-
+            <select
+    id="searchModel"
+    disabled
+    onchange="searchVehicles()"
+>
+    <option value="">
+        Model
+    </option>
+</select>
 
             <button
                 class="search-btn"
@@ -1115,9 +1122,108 @@ async function loadVehicles(){
     renderVehicles(
         vehicles
     );
+updateModelOptions();
+}
+function updateModelOptions(){
+
+    const makeSelect =
+        document.getElementById("searchMake");
+
+    const modelSelect =
+        document.getElementById("searchModel");
+
+
+    if(!makeSelect || !modelSelect){
+        return;
+    }
+
+
+    const selectedMake =
+        makeSelect.value
+        .trim()
+        .toLowerCase();
+
+
+    // Reset Model dropdown
+    modelSelect.innerHTML = `
+        <option value="">
+            Model
+        </option>
+    `;
+
+
+    // No Make selected
+    if(!selectedMake){
+
+        modelSelect.disabled = true;
+
+        return;
+    }
+
+
+    // Get models belonging to selected Make
+    const models = [
+        ...new Set(
+
+            vehicles
+
+                .filter(vehicle => {
+
+                    return (
+                        vehicle.make || ""
+                    )
+                    .trim()
+                    .toLowerCase()
+                    ===
+                    selectedMake;
+
+                })
+
+                .map(vehicle => {
+
+                    return (
+                        vehicle.model || ""
+                    ).trim();
+
+                })
+
+                .filter(Boolean)
+
+        )
+    ];
+
+
+    // Sort models alphabetically
+    models.sort(
+        (a, b) =>
+        a.localeCompare(b)
+    );
+
+
+    // Add models to dropdown
+    models.forEach(model => {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            model;
+
+        option.textContent =
+            model;
+
+        modelSelect.appendChild(
+            option
+        );
+
+    });
+
+
+    // Enable / disable Model dropdown
+    modelSelect.disabled =
+        models.length === 0;
 
 }
-
 function openVehiclePage(id){
 
     window.location.href =
