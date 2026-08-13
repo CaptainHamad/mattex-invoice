@@ -781,7 +781,15 @@ body{
                 <option>Honda</option>
 
             </select>
-
+            <select
+    id="searchModel"
+    disabled
+    onchange="searchVehicles()"
+>
+    <option value="">
+        Model
+    </option>
+</select>
 
             <select id="searchBody">
 
@@ -841,15 +849,7 @@ body{
 
 </select>
 
-            <select
-    id="searchModel"
-    disabled
-    onchange="searchVehicles()"
->
-    <option value="">
-        Model
-    </option>
-</select>
+
 
             <button
                 class="search-btn"
