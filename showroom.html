@@ -1546,6 +1546,49 @@ function renderBrandList(){
 
     brandList.innerHTML = "";
 
+    const allButton =
+    document.createElement("button");
+
+allButton.className =
+    "brand-item active";
+
+allButton.dataset.brand = "";
+
+allButton.innerHTML = `
+
+    <span
+        class="brand-logo"
+        style="
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:15px;
+        "
+    >
+        🚗
+    </span>
+
+    <span class="brand-name">
+        All Makes
+    </span>
+
+    <span class="brand-count">
+        (${vehicles.length})
+    </span>
+
+`;
+
+
+allButton.addEventListener(
+    "click",
+    () => selectAllBrands()
+);
+
+
+brandList.appendChild(
+    allButton
+);
+
 
     if(brands.length === 0){
 
@@ -1732,6 +1775,66 @@ function getBrandLogo(make){
         });
 
 }
+
+function selectAllBrands(){
+
+    const makeSelect =
+        document.getElementById(
+            "searchMake"
+        );
+
+    const modelSelect =
+        document.getElementById(
+            "searchModel"
+        );
+
+
+    // Clear Make
+    makeSelect.value = "";
+
+
+    // Reset Model
+    modelSelect.innerHTML = `
+        <option value="">
+            Model
+        </option>
+    `;
+
+    modelSelect.disabled = true;
+
+
+    // Remove active state
+    document
+        .querySelectorAll(".brand-item")
+        .forEach(item => {
+
+            item.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    // Activate All Makes
+    const allButton =
+        document.querySelector(
+            '.brand-item[data-brand=""]'
+        );
+
+    if(allButton){
+
+        allButton.classList.add(
+            "active"
+        );
+
+    }
+
+
+    // Show all vehicles
+    searchVehicles();
+
+}
+    
 function filterBrandList(){
 
     const input =
