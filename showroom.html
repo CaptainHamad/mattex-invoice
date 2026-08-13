@@ -266,15 +266,17 @@ body{
 
 .makes-title{
 
-    font-size:16px;
+    font-size:15px;
 
-    font-weight:800;
+    font-weight:700;
 
-    margin-bottom:12px;
+    color:#222;
 
-    padding-bottom:10px;
+    margin-bottom:10px;
 
-    border-bottom:1px solid #eee;
+    padding-bottom:9px;
+
+    border-bottom:1px solid #eeeeee;
 
 }
 
@@ -335,9 +337,36 @@ body{
 
 .brand-list{
 
-    max-height:600px;
+    max-height:620px;
 
     overflow-y:auto;
+
+    overflow-x:hidden;
+
+}
+
+
+/* Scrollbar */
+
+.brand-list::-webkit-scrollbar{
+
+    width:5px;
+
+}
+
+
+.brand-list::-webkit-scrollbar-thumb{
+
+    background:#ccc;
+
+    border-radius:10px;
+
+}
+
+
+.brand-list::-webkit-scrollbar-track{
+
+    background:#f5f5f5;
 
 }
 
@@ -350,19 +379,84 @@ body{
 
     align-items:center;
 
-    gap:9px;
+    gap:10px;
 
-    padding:8px 5px;
+    padding:7px 5px;
 
     border:0;
 
-    border-bottom:1px solid #f0f0f0;
+    border-bottom:1px solid #eeeeee;
 
     background:#fff;
 
     cursor:pointer;
 
     text-align:left;
+
+    transition:background .15s ease;
+
+}
+
+
+.brand-item:hover{
+
+    background:#f7f7f7;
+
+}
+
+
+.brand-item.active{
+
+    background:#fff1df;
+
+}
+
+
+/* LOGO */
+
+.brand-logo{
+
+    width:28px;
+
+    height:28px;
+
+    object-fit:contain;
+
+    flex-shrink:0;
+
+}
+
+
+/* BRAND NAME */
+
+.brand-name{
+
+    flex:1;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    color:#333;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+
+/* NUMBER OF VEHICLES */
+
+.brand-count{
+
+    font-size:12px;
+
+    color:#777;
+
+    white-space:nowrap;
 
 }
 
