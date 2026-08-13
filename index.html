@@ -1767,7 +1767,38 @@ style="width:100%;border-collapse:collapse;">
             multiple
             onchange="previewVehicleImages()"
         >
+<div
+    id="vehicleImagePreview"
+    style="
+        display:grid;
+        grid-template-columns:
+            repeat(5, 1fr);
+        gap:10px;
+        margin-top:15px;
+    "
+></div>
 
+    <h4
+    id="existingImagesTitle"
+    style="
+        display:none;
+        margin-top:25px;
+        color:#f7941d;
+    "
+>
+    Existing Photos
+</h4>
+
+<div
+    id="existingVehicleImages"
+    style="
+        display:grid;
+        grid-template-columns:
+            repeat(5, 1fr);
+        gap:10px;
+        margin-top:10px;
+    "
+></div>
         <p style="color:#777;font-size:13px;">
             Maximum 15 photos per vehicle.
         </p>
