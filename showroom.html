@@ -1394,7 +1394,291 @@ async function loadVehicles(){
         vehicles
     );
 updateModelOptions();
+
+renderBrandList();
 }
+
+function renderBrandList(){
+
+    const brandList =
+        document.getElementById("brandList");
+
+    if(!brandList){
+        return;
+    }
+
+
+    const brandMap = {};
+
+
+    vehicles.forEach(vehicle => {
+
+        const make =
+            (vehicle.make || "").trim();
+
+        if(!make){
+            return;
+        }
+
+
+        const key =
+            make.toLowerCase();
+
+
+        if(!brandMap[key]){
+
+            brandMap[key] = {
+
+                name: make,
+
+                count: 0
+
+            };
+
+        }
+
+
+        brandMap[key].count++;
+
+    });
+
+
+    const brands =
+        Object.values(brandMap)
+        .sort((a,b) =>
+            a.name.localeCompare(b.name)
+        );
+
+
+    brandList.innerHTML = "";
+
+
+    if(brands.length === 0){
+
+        brandList.innerHTML = `
+            <div class="brand-loading">
+                No vehicles available.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    brands.forEach(brand => {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "brand-item";
+
+
+        button.dataset.brand =
+            brand.name;
+
+
+        const logo =
+            getBrandLogo(brand.name);
+
+
+        button.innerHTML = `
+
+            <img
+                class="brand-logo"
+                src="${logo}"
+                alt="${brand.name}"
+                onerror="
+                    this.style.visibility='hidden'
+                "
+            >
+
+            <span class="brand-name">
+                ${brand.name}
+            </span>
+
+            <span class="brand-count">
+                (${brand.count})
+            </span>
+
+        `;
+
+
+        button.addEventListener(
+            "click",
+            () => selectBrand(brand.name)
+        );
+
+
+        brandList.appendChild(button);
+
+    });
+
+}
+
+function getBrandLogo(make){
+
+    const logos = {
+
+        "toyota":
+            "https://cdn.simpleicons.org/toyota",
+
+        "nissan":
+            "https://cdn.simpleicons.org/nissan",
+
+        "honda":
+            "https://cdn.simpleicons.org/honda",
+
+        "mitsubishi":
+            "https://cdn.simpleicons.org/mitsubishi",
+
+        "mitsubishi fuso":
+            "https://cdn.simpleicons.org/mitsubishi",
+
+        "mazda":
+            "https://cdn.simpleicons.org/mazda",
+
+        "subaru":
+            "https://cdn.simpleicons.org/subaru",
+
+        "suzuki":
+            "https://cdn.simpleicons.org/suzuki",
+
+        "daihatsu":
+            "https://cdn.simpleicons.org/daihatsu",
+
+        "isuzu":
+            "https://cdn.simpleicons.org/isuzu",
+
+        "hino":
+            "https://cdn.simpleicons.org/hino",
+
+        "lexus":
+            "https://cdn.simpleicons.org/lexus",
+
+        "mercedes benz":
+            "https://cdn.simpleicons.org/mercedes",
+
+        "bmw":
+            "https://cdn.simpleicons.org/bmw"
+
+    };
+
+
+    const key =
+        make
+        .trim()
+        .toLowerCase();
+
+
+    return logos[key] || "";
+}
+
+    function selectBrand(make){
+
+    const makeSelect =
+        document.getElementById(
+            "searchMake"
+        );
+
+
+    const modelSelect =
+        document.getElementById(
+            "searchModel"
+        );
+
+
+    // Select Make
+    makeSelect.value = make;
+
+
+    // Load models for this Make
+    updateModelOptions();
+
+
+    // Reset Model
+    modelSelect.value = "";
+
+
+    // Run search
+    searchVehicles();
+
+
+    // Remove previous active state
+    document
+        .querySelectorAll(".brand-item")
+        .forEach(item => {
+
+            item.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    // Highlight selected Make
+    document
+        .querySelectorAll(".brand-item")
+        .forEach(item => {
+
+            if(
+                item.dataset.brand
+                .toLowerCase()
+                ===
+                make.toLowerCase()
+            ){
+
+                item.classList.add(
+                    "active"
+                );
+
+            }
+
+        });
+
+}
+function filterBrandList(){
+
+    const input =
+        document.getElementById(
+            "brandSearch"
+        );
+
+
+    const search =
+        input.value
+        .trim()
+        .toLowerCase();
+
+
+    document
+        .querySelectorAll(".brand-item")
+        .forEach(item => {
+
+            const brand =
+                item.dataset.brand
+                .toLowerCase();
+
+
+            if(
+                brand.includes(search)
+            ){
+
+                item.style.display =
+                    "flex";
+
+            }else{
+
+                item.style.display =
+                    "none";
+
+            }
+
+        });
+
+}
+    
 function updateModelOptions(){
 
     const makeSelect =
