@@ -1011,6 +1011,109 @@ body{
 
 }
 
+
+/* =========================
+   VEHICLE IMAGE GALLERY
+========================= */
+
+.vehicle-gallery{
+    width:100%;
+}
+
+.main-image-wrapper{
+    position:relative;
+    width:100%;
+    height:450px;
+    background:#f1f1f1;
+    overflow:hidden;
+}
+
+.main-image-wrapper img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+/* PREVIOUS / NEXT */
+
+.gallery-nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+
+    width:42px;
+    height:42px;
+
+    border:0;
+    border-radius:50%;
+
+    background:rgba(255,255,255,.92);
+    color:#222;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    box-shadow:0 3px 12px rgba(0,0,0,.20);
+
+    z-index:5;
+
+    transition:.2s ease;
+}
+
+.gallery-nav:hover{
+    background:#f7941d;
+    color:white;
+}
+
+.gallery-prev{
+    left:15px;
+}
+
+.gallery-next{
+    right:15px;
+}
+
+/* THUMBNAILS */
+
+.gallery-thumbnails{
+    display:flex;
+    gap:8px;
+
+    padding:10px;
+
+    overflow-x:auto;
+
+    background:#fff;
+}
+
+.gallery-thumb{
+    width:80px;
+    height:60px;
+
+    flex-shrink:0;
+
+    object-fit:cover;
+
+    border-radius:6px;
+
+    border:2px solid #ddd;
+
+    cursor:pointer;
+
+    transition:.2s ease;
+}
+
+.gallery-thumb:hover{
+    border-color:#f7941d;
+}
+
+.gallery-thumb.active{
+    border-color:#f7941d;
+}
 </style>
 
 </head>
@@ -1338,6 +1441,13 @@ const supabaseClient =
         SUPABASE_URL,
         SUPABASE_KEY
     );
+
+    /* =========================
+   GALLERY STATE
+========================= */
+
+let currentGalleryImages = [];
+let currentGalleryIndex = 0;
 
 let vehicles = [];
 async function loadVehicles(){
@@ -2214,65 +2324,151 @@ function openVehicle(id){
             v => v.id === id
         );
 
-
     if(!vehicle) return;
 
+
+    /* =========================
+       LOAD VEHICLE IMAGES
+    ========================= */
 
     const images =
         vehicle.images || [];
 
 
-    const gallery =
+    currentGalleryImages =
         images.length > 0
+        ? images
+        : (
+            vehicle.image
+            ? [{
+                image_url:vehicle.image
+            }]
+            : []
+        );
+
+
+    currentGalleryIndex = 0;
+
+
+    /* =========================
+       GALLERY THUMBNAILS
+    ========================= */
+
+    const gallery =
+        currentGalleryImages.length > 0
 
         ?
 
-        images.map(image => `
+        currentGalleryImages.map(
+            (image,index) => `
 
-            <img
-                src="${image.image_url}"
-                style="
-                    width:80px;
-                    height:60px;
-                    object-fit:cover;
-                    border-radius:6px;
-                    cursor:pointer;
-                    border:1px solid #ddd;
-                "
-                onclick="
-                    document.getElementById('mainVehicleModalImage').src='${image.image_url}'
-                "
-            >
+                <img
+                    class="gallery-thumb
+                    ${index === 0 ? "active" : ""}"
 
-        `).join("")
+                    src="${image.image_url}"
+
+                    alt="${vehicle.make} ${vehicle.model}"
+
+                    onclick="
+                        changeGalleryImage(${index})
+                    "
+                >
+
+            `
+        ).join("")
 
         :
 
         "";
 
 
+    /* =========================
+       MAIN IMAGE
+    ========================= */
+
+    const mainImage =
+        currentGalleryImages.length > 0
+        ? currentGalleryImages[0].image_url
+        : "";
+
+
     document.getElementById(
         "modalContent"
     ).innerHTML = `
 
-        <div class="modal-image">
+
+        <!-- =========================
+             IMAGE GALLERY
+        ========================= -->
+
+        <div class="modal-image vehicle-gallery">
 
             ${
-                vehicle.image
+                mainImage
 
                 ?
 
                 `
-                <img
-                    id="mainVehicleModalImage"
-                    src="${vehicle.image}"
-                    alt="${vehicle.make} ${vehicle.model}"
-                >
+
+                <div class="main-image-wrapper">
+
+                    <img
+                        id="mainVehicleModalImage"
+
+                        src="${mainImage}"
+
+                        alt="${vehicle.make} ${vehicle.model}"
+                    >
+
+
+                    ${
+                        currentGalleryImages.length > 1
+
+                        ?
+
+                        `
+
+                        <button
+                            class="gallery-nav gallery-prev"
+
+                            onclick="previousGalleryImage()"
+
+                            aria-label="Previous image"
+                        >
+
+                            <i class="fa-solid fa-chevron-left"></i>
+
+                        </button>
+
+
+                        <button
+                            class="gallery-nav gallery-next"
+
+                            onclick="nextGalleryImage()"
+
+                            aria-label="Next image"
+                        >
+
+                            <i class="fa-solid fa-chevron-right"></i>
+
+                        </button>
+
+                        `
+
+                        :
+
+                        ""
+                    }
+
+                </div>
+
                 `
 
                 :
 
                 `
+
                 <div style="
                     height:100%;
                     min-height:450px;
@@ -2282,8 +2478,11 @@ function openVehicle(id){
                     background:#eee;
                     color:#777;
                 ">
+
                     No Image Available
+
                 </div>
+
                 `
             }
 
@@ -2294,15 +2493,13 @@ function openVehicle(id){
                 ?
 
                 `
-                <div style="
-                    display:flex;
-                    gap:8px;
-                    padding:10px;
-                    overflow-x:auto;
-                    background:#fff;
-                ">
+
+                <div class="gallery-thumbnails">
+
                     ${gallery}
+
                 </div>
+
                 `
 
                 :
@@ -2312,6 +2509,10 @@ function openVehicle(id){
 
         </div>
 
+
+        <!-- =========================
+             VEHICLE INFORMATION
+        ========================= -->
 
         <div class="modal-info">
 
@@ -2328,12 +2529,9 @@ function openVehicle(id){
 
             <div class="modal-specs">
 
-
                 <div class="modal-spec">
 
-                    <small>
-                        YEAR
-                    </small>
+                    <small>YEAR</small>
 
                     <strong>
                         ${vehicle.year || "-"}
@@ -2344,9 +2542,7 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        BODY TYPE
-                    </small>
+                    <small>BODY TYPE</small>
 
                     <strong>
                         ${vehicle.body_type || "-"}
@@ -2357,12 +2553,11 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        ENGINE
-                    </small>
+                    <small>ENGINE</small>
 
                     <strong>
-                        ${vehicle.engine_cc
+                        ${
+                            vehicle.engine_cc
                             ? vehicle.engine_cc + "cc"
                             : "-"
                         }
@@ -2373,9 +2568,7 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        TRANSMISSION
-                    </small>
+                    <small>TRANSMISSION</small>
 
                     <strong>
                         ${vehicle.transmission || "-"}
@@ -2386,9 +2579,7 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        FUEL
-                    </small>
+                    <small>FUEL</small>
 
                     <strong>
                         ${vehicle.fuel_type || "-"}
@@ -2399,21 +2590,25 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        MILEAGE
-                    </small>
+                    <small>MILEAGE</small>
 
                     <strong>
+
                         ${
                             vehicle.mileage
+
                             ?
+
                             Number(
                                 vehicle.mileage
                             ).toLocaleString()
                             + " km"
+
                             :
+
                             "-"
                         }
+
                     </strong>
 
                 </div>
@@ -2421,9 +2616,7 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        COLOUR
-                    </small>
+                    <small>COLOUR</small>
 
                     <strong>
                         ${vehicle.color || "-"}
@@ -2434,9 +2627,7 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        SEATS
-                    </small>
+                    <small>SEATS</small>
 
                     <strong>
                         ${vehicle.seats || "-"}
@@ -2447,9 +2638,7 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        DOORS
-                    </small>
+                    <small>DOORS</small>
 
                     <strong>
                         ${vehicle.doors || "-"}
@@ -2460,9 +2649,7 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        DRIVE TYPE
-                    </small>
+                    <small>DRIVE TYPE</small>
 
                     <strong>
                         ${vehicle.drive_type || "-"}
@@ -2473,16 +2660,13 @@ function openVehicle(id){
 
                 <div class="modal-spec">
 
-                    <small>
-                        STEERING
-                    </small>
+                    <small>STEERING</small>
 
                     <strong>
                         ${vehicle.steering || "-"}
                     </strong>
 
                 </div>
-
 
             </div>
 
@@ -2493,14 +2677,18 @@ function openVehicle(id){
                 ?
 
                 `
+
                 <p style="
                     color:#666;
                     font-size:13px;
                     line-height:1.6;
                     margin-bottom:25px;
                 ">
+
                     ${vehicle.description}
+
                 </p>
+
                 `
 
                 :
@@ -2511,6 +2699,7 @@ function openVehicle(id){
 
             <button
                 class="modal-whatsapp"
+
                 onclick="
                     contactVehicle(
                         '${vehicle.make} ${vehicle.model}'
@@ -2534,6 +2723,8 @@ function openVehicle(id){
     ).classList.add("active");
 
 }
+
+
 /* =====================================
    CLOSE MODAL
 ===================================== */
@@ -2703,6 +2894,143 @@ function updateToYearOptions(){
         `;
 
     }
+}
+
+/* =========================
+   NEXT IMAGE
+========================= */
+
+function nextGalleryImage(){
+
+    if(
+        currentGalleryImages.length === 0
+    ){
+        return;
+    }
+
+
+    currentGalleryIndex++;
+
+    
+    if(
+        currentGalleryIndex >=
+        currentGalleryImages.length
+    ){
+
+        currentGalleryIndex = 0;
+
+    }
+
+
+    updateGalleryImage();
+
+}
+
+
+/* =========================
+   PREVIOUS IMAGE
+========================= */
+
+function previousGalleryImage(){
+
+    if(
+        currentGalleryImages.length === 0
+    ){
+        return;
+    }
+
+
+    currentGalleryIndex--;
+
+
+    if(
+        currentGalleryIndex < 0
+    ){
+
+        currentGalleryIndex =
+            currentGalleryImages.length - 1;
+
+    }
+
+
+    updateGalleryImage();
+
+}
+
+
+/* =========================
+   CHANGE IMAGE
+========================= */
+
+function changeGalleryImage(index){
+
+    if(
+        index < 0 ||
+        index >= currentGalleryImages.length
+    ){
+
+        return;
+
+    }
+
+
+    currentGalleryIndex = index;
+
+
+    updateGalleryImage();
+
+}
+
+
+/* =========================
+   UPDATE MAIN IMAGE
+========================= */
+
+function updateGalleryImage(){
+
+    const mainImage =
+        document.getElementById(
+            "mainVehicleModalImage"
+        );
+
+
+    if(!mainImage){
+        return;
+    }
+
+
+    const image =
+        currentGalleryImages[
+            currentGalleryIndex
+        ];
+
+
+    if(!image){
+        return;
+    }
+
+
+    mainImage.src =
+        image.image_url;
+
+
+    /* UPDATE ACTIVE THUMBNAIL */
+
+    document
+        .querySelectorAll(
+            ".gallery-thumb"
+        )
+        .forEach(
+            (thumb,index) => {
+
+                thumb.classList.toggle(
+                    "active",
+                    index === currentGalleryIndex
+                );
+
+            }
+        );
+
 }
 </script>
 
