@@ -1114,6 +1114,289 @@ body{
 .gallery-thumb.active{
     border-color:#f7941d;
 }
+
+/* =====================================
+   PROFESSIONAL FOOTER
+===================================== */
+
+.site-footer{
+
+    background:#171717;
+
+    color:#fff;
+
+    margin-top:60px;
+
+}
+
+
+/* MAIN FOOTER */
+
+.footer-main{
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:45px 35px;
+
+    display:grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        1.3fr;
+
+    gap:45px;
+
+}
+
+
+.footer-column h3{
+
+    margin:0 0 12px;
+
+    font-size:22px;
+
+    font-weight:800;
+
+    color:#f7941d;
+
+}
+
+
+.footer-column h4{
+
+    margin:0 0 18px;
+
+    font-size:14px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+    color:#fff;
+
+}
+
+
+.footer-column p{
+
+    margin:7px 0;
+
+    font-size:12px;
+
+    line-height:1.6;
+
+    color:#bbb;
+
+}
+
+
+.footer-description{
+
+    max-width:260px;
+
+}
+
+
+.footer-column a{
+
+    display:block;
+
+    color:#aaa;
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    margin:10px 0;
+
+    transition:.2s;
+
+}
+
+
+.footer-column a:hover{
+
+    color:#f7941d;
+
+}
+
+
+.footer-column i{
+
+    width:20px;
+
+    color:#f7941d;
+
+}
+
+
+/* CTA */
+
+.footer-cta{
+
+    max-width:1330px;
+
+    margin:0 auto;
+
+    padding:22px 30px;
+
+    border-top:1px solid #333;
+
+    border-bottom:1px solid #333;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+}
+
+
+.footer-cta h3{
+
+    margin:0 0 5px;
+
+    font-size:17px;
+
+}
+
+
+.footer-cta p{
+
+    margin:0;
+
+    font-size:12px;
+
+    color:#aaa;
+
+}
+
+
+.footer-whatsapp{
+
+    background:#25d366;
+
+    color:#fff;
+
+    text-decoration:none;
+
+    padding:11px 18px;
+
+    border-radius:5px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+}
+
+
+.footer-whatsapp:hover{
+
+    background:#20bd5a;
+
+}
+
+
+/* BOTTOM */
+
+.footer-bottom{
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:18px 35px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    font-size:11px;
+
+    color:#888;
+
+}
+
+
+.footer-bottom strong{
+
+    color:#ddd;
+
+}
+
+
+.footer-bottom span:last-child{
+
+    color:#f7941d;
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    .footer-main{
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap:30px;
+
+        padding:35px 25px;
+
+    }
+
+
+    .footer-cta{
+
+        margin:0 20px;
+
+        padding:20px;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+
+    .footer-bottom{
+
+        padding:18px 25px;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+}
+
+
+@media(max-width:500px){
+
+    .footer-main{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
 </style>
 
 </head>
@@ -1415,12 +1698,159 @@ body{
      FOOTER
 ========================= -->
 
-<footer class="footer">
+<footer class="site-footer">
 
-    © 2026
-    <strong>Mattex Company Limited</strong>
+    <div class="footer-main">
 
-    — All Rights Reserved.
+        <!-- COMPANY -->
+        <div class="footer-column footer-about">
+
+            <h3>
+                MAT TEX
+            </h3>
+
+            <p>
+                Find the car, Live the dream.
+            </p>
+
+            <p class="footer-description">
+                Quality vehicles sourced directly from Japan
+                and delivered to Tanzania.
+            </p>
+
+        </div>
+
+
+        <!-- QUICK LINKS -->
+        <div class="footer-column">
+
+            <h4>
+                Quick Links
+            </h4>
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#vehicles">
+                Vehicles
+            </a>
+
+            <a href="#about">
+                About Us
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+        </div>
+
+
+        <!-- SERVICES -->
+        <div class="footer-column">
+
+            <h4>
+                Our Services
+            </h4>
+
+            <a href="#vehicles">
+                Car Importation
+            </a>
+
+            <a href="#vehicles">
+                Vehicle Sourcing
+            </a>
+
+            <a href="#contact">
+                Car Financing
+            </a>
+
+            <a href="#contact">
+                Customer Support
+            </a>
+
+        </div>
+
+
+        <!-- CONTACT -->
+        <div class="footer-column">
+
+            <h4>
+                Contact Us
+            </h4>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                0676 998 549
+            </p>
+
+            <p>
+                <i class="fa-brands fa-whatsapp"></i>
+                0671 567 568
+            </p>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Mwenge, Coca-Cola Road
+            </p>
+
+            <p>
+                Dar es Salaam, Tanzania
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- CTA -->
+    <div class="footer-cta">
+
+        <div>
+
+            <h3>
+                Can't find the car you want?
+            </h3>
+
+            <p>
+                Let us source it directly from Japan for you.
+            </p>
+
+        </div>
+
+
+        <a
+            href="https://wa.me/255671567568"
+            target="_blank"
+            class="footer-whatsapp"
+        >
+
+            <i class="fa-brands fa-whatsapp"></i>
+
+            WhatsApp Us
+
+        </a>
+
+    </div>
+
+
+    <!-- COPYRIGHT -->
+    <div class="footer-bottom">
+
+        <span>
+            © 2026
+            <strong>
+                Mattex Company Limited
+            </strong>
+            — All Rights Reserved.
+        </span>
+
+        <span>
+            Find the car, Live the dream.
+        </span>
+
+    </div>
 
 </footer>
 
