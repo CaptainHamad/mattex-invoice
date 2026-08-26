@@ -2024,13 +2024,15 @@ async function loadVehicles(){
         });
 
 
-    renderVehicles(
-        vehicles
-    );
+ renderVehicles(
+    vehicles
+);
+
+updateMakeOptions();
+
 updateModelOptions();
 
 renderBrandList();
-}
 
 function renderBrandList(){
 
@@ -2430,7 +2432,82 @@ function filterBrandList(){
         });
 
 }
-    
+ function updateMakeOptions(){
+
+    const makeSelect =
+        document.getElementById(
+            "searchMake"
+        );
+
+    if(!makeSelect){
+        return;
+    }
+
+
+    const currentValue =
+        makeSelect.value;
+
+
+    const makes = [
+
+        ...new Set(
+
+            vehicles
+
+            .map(vehicle =>
+                (vehicle.make || "")
+                .trim()
+            )
+
+            .filter(Boolean)
+
+        )
+
+    ];
+
+
+    makes.sort(
+        (a,b) =>
+        a.localeCompare(b)
+    );
+
+
+    makeSelect.innerHTML = `
+        <option value="">
+            Make
+        </option>
+    `;
+
+
+    makes.forEach(make => {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value = make;
+
+        option.textContent = make;
+
+        makeSelect.appendChild(
+            option
+        );
+
+    });
+
+
+    if(
+        currentValue &&
+        makes.includes(currentValue)
+    ){
+
+        makeSelect.value =
+            currentValue;
+
+    }
+
+}   
 function updateModelOptions(){
 
     const makeSelect =
