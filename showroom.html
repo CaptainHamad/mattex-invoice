@@ -3661,7 +3661,20 @@ const matchesYearTo =
         });
 
 
-    renderVehicles(results);
+    const sortSelect =
+    document.getElementById(
+        "sortVehicles"
+    );
+
+if(sortSelect){
+
+    sortSelect.value =
+        "default";
+
+}
+
+
+renderVehicles(results);
 
 
     document.getElementById("vehicles")
