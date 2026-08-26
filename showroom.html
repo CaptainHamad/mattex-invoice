@@ -1397,6 +1397,103 @@ body{
     }
 
 }
+
+/* =====================================
+   VEHICLE SORTING
+===================================== */
+
+.vehicles-toolbar{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+.sort-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+
+.sort-box label{
+
+    font-size:12px;
+
+    color:#777;
+
+    white-space:nowrap;
+
+}
+
+
+.sort-box select{
+
+    padding:9px 12px;
+
+    border:1px solid #ddd;
+
+    border-radius:5px;
+
+    background:#fff;
+
+    color:#333;
+
+    font-size:12px;
+
+    outline:none;
+
+    cursor:pointer;
+
+}
+
+
+.sort-box select:focus{
+
+    border-color:#f7941d;
+
+}
+
+
+@media(max-width:700px){
+
+    .section-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+
+    .vehicles-toolbar{
+
+        width:100%;
+
+        justify-content:space-between;
+
+    }
+
+
+    .sort-box{
+
+        flex:1;
+
+        justify-content:flex-end;
+
+    }
+
+}
 </style>
 
 </head>
@@ -1579,31 +1676,75 @@ body{
     id="vehicles">
 
 
-    <div class="section-header">
+<div class="section-header">
 
-        <div class="section-title">
+    <div class="section-title">
 
-            <h2>
-                Featured Vehicles
-            </h2>
+        <h2>
+            Featured Vehicles
+        </h2>
 
-            <p>
-                Explore vehicles currently available
-                through Mattex Motors.
-            </p>
+        <p>
+            Explore vehicles currently available
+            through Mattex Motors.
+        </p>
 
-        </div>
+    </div>
+
+
+    <div class="vehicles-toolbar">
 
         <div
             class="result-count"
             id="resultCount">
 
-            8 vehicles
+            Loading vehicles...
+
+        </div>
+
+
+        <div class="sort-box">
+
+            <label for="sortVehicles">
+                Sort by:
+            </label>
+
+            <select
+                id="sortVehicles"
+                onchange="sortVehicleResults()"
+            >
+
+                <option value="default">
+                    Newest Added
+                </option>
+
+                <option value="price-low">
+                    Price: Low to High
+                </option>
+
+                <option value="price-high">
+                    Price: High to Low
+                </option>
+
+                <option value="year-new">
+                    Year: Newest First
+                </option>
+
+                <option value="year-old">
+                    Year: Oldest First
+                </option>
+
+                <option value="mileage-low">
+                    Mileage: Low to High
+                </option>
+
+            </select>
 
         </div>
 
     </div>
 
+</div>
 
 <div class="showroom-layout">
 
@@ -1880,6 +2021,9 @@ let currentGalleryImages = [];
 let currentGalleryIndex = 0;
 
 let vehicles = [];
+
+let currentVehicleResults = [];
+    
 async function loadVehicles(){
 
     const grid =
@@ -2636,17 +2780,28 @@ function money(value){
 
 function renderVehicles(list){
 
+    currentVehicleResults =
+        [...list];
+
+
     const grid =
-        document.getElementById("vehicleGrid");
+        document.getElementById(
+            "vehicleGrid"
+        );
+
 
     const count =
-        document.getElementById("resultCount");
+        document.getElementById(
+            "resultCount"
+        );
 
-    count.innerText =
-        list.length +
-        (list.length === 1
-        ? " vehicle"
-        : " vehicles");
+
+    if(count){
+
+        count.innerText =
+            `Showing ${list.length} of ${vehicles.length} vehicles`;
+
+    }
 
 
     if(list.length === 0){
@@ -2837,6 +2992,140 @@ function renderVehicles(list){
 
 }
 
+/* =====================================
+   SORT VEHICLE RESULTS
+===================================== */
+
+function sortVehicleResults(){
+
+    const sortSelect =
+        document.getElementById(
+            "sortVehicles"
+        );
+
+
+    if(!sortSelect){
+        return;
+    }
+
+
+    const sortValue =
+        sortSelect.value;
+
+
+    let sortedVehicles =
+        [...currentVehicleResults];
+
+
+    /* =====================
+       PRICE LOW → HIGH
+    ===================== */
+
+    if(sortValue === "price-low"){
+
+        sortedVehicles.sort(
+            (a,b) =>
+                Number(a.price || 0)
+                -
+                Number(b.price || 0)
+        );
+
+    }
+
+
+    /* =====================
+       PRICE HIGH → LOW
+    ===================== */
+
+    else if(sortValue === "price-high"){
+
+        sortedVehicles.sort(
+            (a,b) =>
+                Number(b.price || 0)
+                -
+                Number(a.price || 0)
+        );
+
+    }
+
+
+    /* =====================
+       NEWEST YEAR
+    ===================== */
+
+    else if(sortValue === "year-new"){
+
+        sortedVehicles.sort(
+            (a,b) =>
+                Number(b.year || 0)
+                -
+                Number(a.year || 0)
+        );
+
+    }
+
+
+    /* =====================
+       OLDEST YEAR
+    ===================== */
+
+    else if(sortValue === "year-old"){
+
+        sortedVehicles.sort(
+            (a,b) =>
+                Number(a.year || 0)
+                -
+                Number(b.year || 0)
+        );
+
+    }
+
+
+    /* =====================
+       LOWEST MILEAGE
+    ===================== */
+
+    else if(sortValue === "mileage-low"){
+
+        sortedVehicles.sort(
+            (a,b) =>
+                Number(a.mileage || 0)
+                -
+                Number(b.mileage || 0)
+        );
+
+    }
+
+
+    /* =====================
+       NEWEST ADDED
+    ===================== */
+
+    else if(sortValue === "default"){
+
+        sortedVehicles.sort(
+            (a,b) =>
+                new Date(b.created_at || 0)
+                -
+                new Date(a.created_at || 0)
+        );
+
+    }
+
+
+    /* =====================
+       RENDER SORTED LIST
+    ===================== */
+
+    currentVehicleResults =
+        sortedVehicles;
+
+
+    renderVehicles(
+        sortedVehicles
+    );
+
+}
 
 /* =====================================
    OPEN VEHICLE
