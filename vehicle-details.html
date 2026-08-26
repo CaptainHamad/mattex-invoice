@@ -646,6 +646,102 @@ body{
 
 }
 
+/* =========================
+   GALLERY NAVIGATION
+========================= */
+
+.main-image-wrapper{
+
+    position:relative;
+
+}
+
+
+.gallery-arrow{
+
+    position:absolute;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:48px;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(0,0,0,.55);
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    z-index:5;
+
+    transition:.2s;
+
+}
+
+
+.gallery-arrow:hover{
+
+    background:#f7941d;
+
+}
+
+
+.gallery-prev{
+
+    left:18px;
+
+}
+
+
+.gallery-next{
+
+    right:18px;
+
+}
+
+
+@media(max-width:600px){
+
+    .gallery-arrow{
+
+        width:40px;
+
+        height:40px;
+
+        font-size:15px;
+
+    }
+
+
+    .gallery-prev{
+
+        left:10px;
+
+    }
+
+
+    .gallery-next{
+
+        right:10px;
+
+    }
+
+}
 </style>
 
 </head>
@@ -786,7 +882,9 @@ const params =
 const vehicleId =
     params.get("id");
 
+let currentVehicleImages = [];
 
+let currentVehicleImageIndex = 0;
 
 /* =========================
    LOAD VEHICLE
@@ -876,7 +974,22 @@ function renderVehicle(vehicle){
             a.sort_order - b.sort_order
         );
 
+currentVehicleImages = images;
 
+
+currentVehicleImageIndex =
+
+    images.findIndex(
+        image =>
+        image.is_main === true
+    );
+
+
+if(currentVehicleImageIndex < 0){
+
+    currentVehicleImageIndex = 0;
+
+}
     const mainImage =
 
         images.find(
@@ -983,12 +1096,53 @@ function renderVehicle(vehicle){
                     ?
 
                     `
-                    <img
-                        id="mainVehicleImage"
-                        class="main-image"
-                        src="${imageURL}"
-                        alt="${vehicle.make} ${vehicle.model}"
-                    >
+                    <div class="main-image-wrapper">
+
+    <img
+        id="mainVehicleImage"
+        class="main-image"
+        src="${imageURL}"
+        alt="${vehicle.make} ${vehicle.model}"
+    >
+
+
+    ${
+        images.length > 1
+
+        ?
+
+        `
+
+        <button
+            class="gallery-arrow gallery-prev"
+            onclick="previousVehicleImage()"
+            aria-label="Previous image"
+        >
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+        </button>
+
+
+        <button
+            class="gallery-arrow gallery-next"
+            onclick="nextVehicleImage()"
+            aria-label="Next image"
+        >
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+        </button>
+
+        `
+
+        :
+
+        ""
+
+    }
+
+</div>
                     `
 
                     :
@@ -1018,25 +1172,25 @@ function renderVehicle(vehicle){
                     ${
 
                         images.map(
-                            (image,index) => `
+    (image,index) => `
 
-                            <img
-                                src="${image.image_url}"
-                                class="thumbnail ${
-                                    index === 0
-                                    ? "active"
-                                    : ""
-                                }"
-                                onclick="
-                                    changeImage(
-                                        '${image.image_url}',
-                                        this
-                                    )
-                                "
-                            >
+        <img
+            src="${image.image_url}"
 
-                        `
-                        ).join("")
+            class="thumbnail ${
+                index === currentVehicleImageIndex
+                ? "active"
+                : ""
+            }"
+
+            onclick="
+                changeVehicleImage(${index})
+            "
+
+        >
+
+    `
+).join("")
 
                     }
 
@@ -1228,10 +1382,19 @@ function spec(
    IMAGE
 ========================= */
 
-function changeImage(
-    url,
-    element
-){
+function changeVehicleImage(index){
+
+    if(
+        index < 0 ||
+        index >= currentVehicleImages.length
+    ){
+        return;
+    }
+
+
+    currentVehicleImageIndex =
+        index;
+
 
     const main =
         document.getElementById(
@@ -1241,29 +1404,88 @@ function changeImage(
 
     if(main){
 
-        main.src = url;
+        main.src =
+            currentVehicleImages[
+                currentVehicleImageIndex
+            ].image_url;
 
     }
 
 
     document
-        .querySelectorAll(".thumbnail")
+        .querySelectorAll(
+            ".thumbnail"
+        )
         .forEach(
-            img =>
-            img.classList.remove(
-                "active"
-            )
+            (thumbnail,index) => {
+
+                thumbnail.classList.toggle(
+                    "active",
+
+                    index ===
+                    currentVehicleImageIndex
+                );
+
+            }
         );
 
+}
 
-    element.classList.add(
-        "active"
+function nextVehicleImage(){
+
+    if(
+        currentVehicleImages.length <= 1
+    ){
+        return;
+    }
+
+
+    currentVehicleImageIndex++;
+
+
+    if(
+        currentVehicleImageIndex >=
+        currentVehicleImages.length
+    ){
+
+        currentVehicleImageIndex = 0;
+
+    }
+
+
+    changeVehicleImage(
+        currentVehicleImageIndex
     );
 
 }
 
+function previousVehicleImage(){
+
+    if(
+        currentVehicleImages.length <= 1
+    ){
+        return;
+    }
 
 
+    currentVehicleImageIndex--;
+
+
+    if(
+        currentVehicleImageIndex < 0
+    ){
+
+        currentVehicleImageIndex =
+            currentVehicleImages.length - 1;
+
+    }
+
+
+    changeVehicleImage(
+        currentVehicleImageIndex
+    );
+
+}
 /* =========================
    WHATSAPP
 ========================= */
