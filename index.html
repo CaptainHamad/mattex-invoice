@@ -1266,6 +1266,10 @@ border-left:5px solid #6c63ff;
    SHIPPING TOOLTIP
 ========================================= */
 
+/* =========================================
+   SHIPPING TOOLTIP
+========================================= */
+
 .shipping-tooltip{
 
     position:absolute !important;
@@ -1298,7 +1302,9 @@ border-left:5px solid #6c63ff;
 
     top:50% !important;
 
-    transform:translate(-50%, -50%) !important;
+    transform:
+        translate(-50%, -50%)
+        translateY(-100%) !important;
 
     font-size:11px !important;
 
@@ -1309,7 +1315,36 @@ border-left:5px solid #6c63ff;
 }
 
 
-/* SHOW WHEN HOVERING SHIPPING */
+/* =========================================
+   ARROW POINTING TO THE ROW
+========================================= */
+
+.shipping-tooltip::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:-7px;
+
+    transform:translateX(-50%);
+
+    width:0;
+
+    height:0;
+
+    border-left:7px solid transparent;
+
+    border-right:7px solid transparent;
+
+    border-top:8px solid #2f80d1;
+
+}
+
+
+/* SHOW */
 
 .customer-orders-table
 td:has(.shipping-summary):hover
@@ -1339,7 +1374,7 @@ td:has(.shipping-summary):hover
 }
 
 
-/* EACH LINE */
+/* DETAILS */
 
 .shipping-tooltip div{
 
@@ -1358,8 +1393,6 @@ td:has(.shipping-summary):hover
 }
 
 
-/* LABELS */
-
 .shipping-tooltip b{
 
     display:inline !important;
@@ -1369,8 +1402,6 @@ td:has(.shipping-summary):hover
     font-weight:600;
 
     font-size:11px;
-
-    margin:0;
 
 }
 /* SHOW ON HOVER */
