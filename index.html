@@ -1222,35 +1222,110 @@ border-left:5px solid #6c63ff;
 }
 
 
+/* =========================================
+   SHIPPING HOVER CARD
+========================================= */
+
 .shipping-tooltip{
 
     position:absolute;
 
     display:none;
 
-    background:#222;
+    width:190px;
 
-    color:white;
+    min-height:150px;
 
-    padding:12px 14px;
+    box-sizing:border-box;
 
-    border-radius:8px;
+    background:linear-gradient(
+        145deg,
+        #ff9f1c,
+        #f47c00
+    );
 
-    min-width:190px;
+    color:#ffffff;
 
-    font-size:12px;
+    padding:16px;
 
-    line-height:1.7;
+    border-radius:12px;
 
     box-shadow:
-        0 8px 25px rgba(0,0,0,.25);
+        0 12px 30px rgba(0,0,0,.28);
 
     z-index:99999;
 
     pointer-events:none;
 
+    left:50%;
+
+    top:50%;
+
+    transform:translate(-50%, -50%);
+
 }
 
+
+/* TITLE */
+
+.shipping-tooltip strong{
+
+    display:block;
+
+    color:#ffffff;
+
+    font-size:12px;
+
+    letter-spacing:.7px;
+
+    margin-bottom:12px;
+
+    padding-bottom:8px;
+
+    border-bottom:1px solid
+        rgba(255,255,255,.35);
+
+}
+
+
+/* DETAILS */
+
+.shipping-tooltip div{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:2px;
+
+    margin-bottom:8px;
+
+    font-size:11px;
+
+}
+
+
+.shipping-tooltip b{
+
+    color:rgba(255,255,255,.75);
+
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+
+.shipping-tooltip div{
+
+    color:#ffffff;
+
+}
+
+
+/* SHOW ON HOVER */
 
 .customer-orders-table td:has(.shipping-summary){
 
@@ -1263,26 +1338,6 @@ border-left:5px solid #6c63ff;
 .shipping-tooltip{
 
     display:block;
-
-}
-
-
-.shipping-tooltip strong{
-
-    display:block;
-
-    color:#f7941d;
-
-    margin-bottom:5px;
-
-    font-size:11px;
-
-}
-
-
-.shipping-tooltip b{
-
-    color:#ddd;
 
 }
 
