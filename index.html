@@ -1066,7 +1066,225 @@ border-left:5px solid #6c63ff;
     background:#ddd !important;
 
 }
+/* =========================================
+   CUSTOMER ORDERS TABLE
+========================================= */
 
+.customer-orders-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    table-layout:fixed;
+
+}
+
+
+.customer-orders-table th,
+.customer-orders-table td{
+
+    padding:5px 6px;
+
+    font-size:11px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+
+/* CUSTOMER NAME */
+
+.customer-orders-table th:nth-child(3),
+.customer-orders-table td:nth-child(3){
+
+    width:115px;
+
+}
+
+
+/* PHONE */
+
+.customer-orders-table th:nth-child(4),
+.customer-orders-table td:nth-child(4){
+
+    width:85px;
+
+}
+
+
+/* TIN */
+
+.customer-orders-table th:nth-child(5),
+.customer-orders-table td:nth-child(5){
+
+    width:80px;
+
+}
+
+
+/* REGION */
+
+.customer-orders-table th:nth-child(6),
+.customer-orders-table td:nth-child(6){
+
+    width:85px;
+
+}
+
+
+/* CAR */
+
+.customer-orders-table th:nth-child(7),
+.customer-orders-table td:nth-child(7){
+
+    width:125px;
+
+}
+
+
+/* STATUS */
+
+.customer-orders-table th:nth-child(11),
+.customer-orders-table td:nth-child(11){
+
+    width:100px;
+
+}
+
+
+/* SHIPPING */
+
+.customer-orders-table th:nth-child(12),
+.customer-orders-table td:nth-child(12){
+
+    width:155px;
+
+}
+
+
+/* COUNTDOWN */
+
+.customer-orders-table th:nth-child(13),
+.customer-orders-table td:nth-child(13){
+
+    width:105px;
+
+}
+
+
+/* ACTION */
+
+.customer-orders-table th:nth-child(14),
+.customer-orders-table td:nth-child(14){
+
+    width:55px;
+
+}
+
+
+/* INVOICE */
+
+.customer-orders-table th:nth-child(15),
+.customer-orders-table td:nth-child(15){
+
+    width:110px;
+
+}
+
+.shipping-summary{
+
+    display:inline-block;
+
+    max-width:150px;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+
+    cursor:pointer;
+
+    color:#333;
+
+}
+
+
+.shipping-summary strong{
+
+    color:#f7941d;
+
+}
+
+
+.shipping-tooltip{
+
+    position:absolute;
+
+    display:none;
+
+    background:#222;
+
+    color:white;
+
+    padding:12px 14px;
+
+    border-radius:8px;
+
+    min-width:190px;
+
+    font-size:12px;
+
+    line-height:1.7;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.25);
+
+    z-index:99999;
+
+    pointer-events:none;
+
+}
+
+
+.customer-orders-table td:has(.shipping-summary){
+
+    position:relative;
+
+}
+
+
+.customer-orders-table td:has(.shipping-summary):hover
+.shipping-tooltip{
+
+    display:block;
+
+}
+
+
+.shipping-tooltip strong{
+
+    display:block;
+
+    color:#f7941d;
+
+    margin-bottom:5px;
+
+    font-size:11px;
+
+}
+
+
+.shipping-tooltip b{
+
+    color:#ddd;
+
+}
 
 
     
@@ -1510,8 +1728,10 @@ onkeyup="searchCustomers()">
 
 <h3>Customer Orders</h3>
 
-<table border="1"
-style="width:100%;border-collapse:collapse;">
+<table
+    class="customer-orders-table"
+    border="1"
+>
 
     <thead style="background:#f7941d;color:white;">
 
@@ -1528,9 +1748,7 @@ style="width:100%;border-collapse:collapse;">
         <th>COLOUR</th>
         <th>SHIPPER</th>
         <th>STATUS</th>
-        <th>DEPARTURE</th>
-        <th>SHIP NAME</th>
-       <th>ETA</th>
+       <th>SHIPPING</th>
        <th>COUNTDOWN</th>
        <th>ACTION</th>
         <th>INVOICE</th>
@@ -2675,14 +2893,60 @@ sortedCustomerData.forEach(record => {
 
 <td>${getStatusBadge(record.status)}</td>
 
-<td>${record.departure || "-"}</td>
+<td>
 
-<td>${record.ship_name || "-"}</td>
+    <div
+        class="shipping-summary"
+        title="Departure: ${record.departure || "-"} | Ship: ${record.ship_name || "-"} | ETA: ${record.eta || "-"}"
+    >
 
-<td>${record.eta || "-"}</td>
+        🚢
+
+        <span>
+            ${record.departure || "-"}
+        </span>
+
+        •
+
+        <strong>
+            ${record.ship_name || "-"}
+        </strong>
+
+        •
+
+        <span>
+            ${record.eta || "-"}
+        </span>
+
+    </div>
+
+
+    <div class="shipping-tooltip">
+
+        <strong>SHIPPING DETAILS</strong>
+
+        <div>
+            <b>Departure:</b>
+            ${record.departure || "-"}
+        </div>
+
+        <div>
+            <b>Ship:</b>
+            ${record.ship_name || "-"}
+        </div>
+
+        <div>
+            <b>ETA:</b>
+            ${record.eta || "-"}
+        </div>
+
+    </div>
+
+</td>
+
 
 <td>
-${getETACountdown(record.eta)}
+    ${getETACountdown(record.eta)}
 </td>
 
 <td>
