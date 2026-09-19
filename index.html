@@ -1032,6 +1032,44 @@ border-left:5px solid #6c63ff;
     }
 
 }
+.edit-action-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:15px;
+
+}
+
+
+.edit-action-buttons button{
+
+    flex:1;
+
+}
+
+
+.cancel-edit-btn{
+
+    background:#eee !important;
+
+    color:#333 !important;
+
+    border:1px solid #ddd !important;
+
+}
+
+
+.cancel-edit-btn:hover{
+
+    background:#ddd !important;
+
+}
+
+
+
+    
 </style>
 
 </head>
@@ -1374,9 +1412,26 @@ Delivered
 
 <input id="editETA" placeholder="ETA"><br>
 
-<button onclick="updateCustomer()">
-Save Changes
-</button>
+<div class="edit-action-buttons">
+
+    <button
+        type="button"
+        onclick="updateCustomer()"
+        class="save-edit-btn"
+    >
+        Save Changes
+    </button>
+
+
+    <button
+        type="button"
+        onclick="cancelEditCustomer()"
+        class="cancel-edit-btn"
+    >
+        Cancel
+    </button>
+
+</div>
 
 <hr>
 
@@ -3059,6 +3114,26 @@ document.getElementById("editCustomerBox")
 renderTimeline(
 data.status || "Inquiry"
 );
+
+}
+
+function cancelEditCustomer(){
+
+    const editBox =
+        document.getElementById(
+            "editCustomerBox"
+        );
+
+
+    if(editBox){
+
+        editBox.style.display =
+            "none";
+
+    }
+
+
+    selectedCustomerId = null;
 
 }
 async function updateCustomer(){
