@@ -1157,16 +1157,6 @@ border-left:5px solid #6c63ff;
 }
 
 
-/* SHIPPING */
-
-.customer-orders-table th:nth-child(12),
-.customer-orders-table td:nth-child(12){
-
-    width:155px;
-
-}
-
-
 /* COUNTDOWN */
 
 .customer-orders-table th:nth-child(13),
@@ -1226,105 +1216,199 @@ border-left:5px solid #6c63ff;
    SHIPPING HOVER CARD
 ========================================= */
 
-.shipping-tooltip{
+/* =========================================
+   SHIPPING COLUMN
+========================================= */
 
-    position:absolute;
+.customer-orders-table th:nth-child(12),
+.customer-orders-table td:nth-child(12){
 
-    display:none;
+    width:80px !important;
 
-    width:190px;
+    max-width:80px !important;
 
-    min-height:150px;
+    padding:4px !important;
 
-    box-sizing:border-box;
-
-    background:linear-gradient(
-        145deg,
-        #ff9f1c,
-        #f47c00
-    );
-
-    color:#ffffff;
-
-    padding:16px;
-
-    border-radius:12px;
-
-    box-shadow:
-        0 12px 30px rgba(0,0,0,.28);
-
-    z-index:99999;
-
-    pointer-events:none;
-
-    left:50%;
-
-    top:50%;
-
-    transform:translate(-50%, -50%);
+    overflow:visible !important;
 
 }
 
 
-/* TITLE */
+/* SUMMARY INSIDE SHIPPING COLUMN */
+
+.shipping-summary{
+
+    width:70px;
+
+    max-width:70px;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+    display:block;
+
+    cursor:pointer;
+
+    font-size:10px;
+
+    color:#555;
+
+}
+
+
+/* =========================================
+   SQUARE SHIPPING CARD
+========================================= */
+
+.shipping-tooltip{
+
+    position:absolute !important;
+
+    display:none;
+
+    width:170px !important;
+
+    height:170px !important;
+
+    min-width:170px !important;
+
+    min-height:170px !important;
+
+    max-width:170px !important;
+
+    max-height:170px !important;
+
+    box-sizing:border-box;
+
+    padding:15px !important;
+
+    margin:0 !important;
+
+    background:linear-gradient(
+        145deg,
+        #ff9f1c 0%,
+        #f57c00 100%
+    ) !important;
+
+    color:#fff !important;
+
+    border-radius:12px !important;
+
+    border:1px solid
+        rgba(255,255,255,.35);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0,0,0,.30);
+
+    z-index:999999 !important;
+
+    left:50% !important;
+
+    top:50% !important;
+
+    transform:translate(-50%, -50%) !important;
+
+    overflow:hidden;
+
+}
+
+
+/* =========================================
+   SHOW CARD
+========================================= */
+
+.customer-orders-table
+td:has(.shipping-summary):hover
+.shipping-tooltip{
+
+    display:block !important;
+
+}
+
+
+/* =========================================
+   CARD TITLE
+========================================= */
 
 .shipping-tooltip strong{
 
     display:block;
 
-    color:#ffffff;
+    color:#fff !important;
 
-    font-size:12px;
+    font-size:11px;
+
+    font-weight:700;
+
+    text-align:center;
 
     letter-spacing:.7px;
 
-    margin-bottom:12px;
-
     padding-bottom:8px;
 
-    border-bottom:1px solid
+    margin-bottom:10px;
+
+    border-bottom:
+        1px solid
         rgba(255,255,255,.35);
 
 }
 
 
-/* DETAILS */
+/* =========================================
+   VERTICAL INFORMATION
+========================================= */
 
 .shipping-tooltip div{
 
-    display:flex;
+    display:block !important;
 
-    flex-direction:column;
+    margin:0 0 9px 0 !important;
 
-    gap:2px;
+    padding:0 !important;
 
-    margin-bottom:8px;
+    font-size:10px;
 
-    font-size:11px;
+    line-height:1.3;
+
+    color:#fff !important;
 
 }
 
+
+/* LABEL */
 
 .shipping-tooltip b{
 
-    color:rgba(255,255,255,.75);
+    display:block;
 
-    font-size:9px;
+    color:
+        rgba(255,255,255,.70) !important;
+
+    font-size:8px;
+
+    font-weight:600;
 
     text-transform:uppercase;
 
-    letter-spacing:.5px;
+    letter-spacing:.6px;
+
+    margin-bottom:2px;
 
 }
 
 
-.shipping-tooltip div{
+/* VALUE */
 
-    color:#ffffff;
+.shipping-tooltip div:not(b){
+
+    color:#fff;
 
 }
-
-
 /* SHOW ON HOVER */
 
 .customer-orders-table td:has(.shipping-summary){
