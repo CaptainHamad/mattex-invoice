@@ -2028,7 +2028,34 @@ td:has(.shipping-summary):hover
     }
 
 }
-    
+
+/* =========================================
+   CUSTOMER REPORT TABLE
+========================================= */
+
+.customer-report .report-table{
+
+    min-width:950px;
+
+}
+
+
+.customer-report
+.report-section{
+
+    overflow-x:auto;
+
+}
+
+
+.customer-report
+.report-table th,
+.customer-report
+.report-table td{
+
+    white-space:nowrap;
+
+}
 </style>
 
 </head>
@@ -5128,6 +5155,14 @@ if(selectedType === "sales"){
 
 }
 
+if(selectedType === "customers"){
+
+    generateCustomerReport(filteredData);
+
+    return;
+
+}
+
     console.log(
         "Selected report:",
         selectedType
@@ -5186,6 +5221,626 @@ if(selectedType === "sales"){
 
 }
 
+    /* =========================================
+   CUSTOMER & PAYMENT REPORT
+========================================= */
+
+function generateCustomerReport(data){
+
+    const preview =
+        document.getElementById(
+            "reportPreview"
+        );
+
+
+    if(!data || data.length === 0){
+
+        preview.innerHTML = `
+
+            <div class="report-empty-state">
+
+                <div class="report-empty-icon">
+                    👥
+                </div>
+
+                <h3>
+                    No Customer Data
+                </h3>
+
+                <p>
+                    There are no customer records
+                    for the selected period.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* =====================================
+       BASIC NUMBERS
+    ===================================== */
+
+    const totalCustomers =
+        data.length;
+
+
+    const delivered =
+        data.filter(
+            x => x.status === "Delivered"
+        ).length;
+
+
+    const active =
+        data.filter(
+            x => x.status !== "Delivered"
+        ).length;
+
+
+    /* =====================================
+       FINANCIAL CALCULATIONS
+    ===================================== */
+
+    let totalExpected = 0;
+
+    let totalFirstInstallment = 0;
+
+    let totalSecondInstallment = 0;
+
+
+    data.forEach(customer => {
+
+        totalExpected +=
+            Number(
+                customer.total_amount
+            ) || 0;
+
+
+        totalFirstInstallment +=
+            Number(
+                customer.first_installment
+            ) || 0;
+
+
+        totalSecondInstallment +=
+            Number(
+                customer.second_installment
+            ) || 0;
+
+    });
+
+
+    const totalRecordedPayments =
+        totalFirstInstallment +
+        totalSecondInstallment;
+
+
+    const outstandingBalance =
+        Math.max(
+            0,
+            totalExpected -
+            totalRecordedPayments
+        );
+
+
+    const collectionRate =
+        totalExpected > 0
+
+        ?
+
+        (
+            totalRecordedPayments /
+            totalExpected
+        ) * 100
+
+        :
+
+        0;
+
+
+    /* =====================================
+       STATUS ANALYSIS
+    ===================================== */
+
+    const statusMap = {};
+
+
+    data.forEach(customer => {
+
+        const status =
+            customer.status ||
+            "Unknown";
+
+
+        if(!statusMap[status]){
+
+            statusMap[status] = 0;
+
+        }
+
+
+        statusMap[status]++;
+
+    });
+
+
+    const statusRanking =
+        Object.entries(statusMap)
+
+        .sort(
+            (a,b) =>
+                b[1] - a[1]
+        );
+
+
+    /* =====================================
+       CUSTOMER VALUE RANKING
+    ===================================== */
+
+    const customerRanking =
+        [...data]
+
+        .sort(
+            (a,b) =>
+                (
+                    Number(b.total_amount) || 0
+                )
+                -
+                (
+                    Number(a.total_amount) || 0
+                )
+        );
+
+
+    /* =====================================
+       FORMAT MONEY
+    ===================================== */
+
+    const money =
+        value => {
+
+            return Number(
+                value || 0
+            ).toLocaleString(
+                "en-TZ"
+            );
+
+        };
+
+
+    /* =====================================
+       STATUS ROWS
+    ===================================== */
+
+    const statusRows =
+        statusRanking
+
+        .map(([status,count]) => `
+
+            <tr>
+
+                <td>
+                    ${status}
+                </td>
+
+                <td>
+                    ${count}
+                </td>
+
+                <td>
+                    ${
+                        totalCustomers > 0
+                        ?
+                        (
+                            (count /
+                            totalCustomers) *
+                            100
+                        ).toFixed(1)
+                        :
+                        0
+                    }%
+                </td>
+
+            </tr>
+
+        `)
+
+        .join("");
+
+
+    /* =====================================
+       CUSTOMER ROWS
+    ===================================== */
+
+    const customerRows =
+        customerRanking
+
+        .slice(0,20)
+
+        .map(customer => {
+
+            const expected =
+                Number(
+                    customer.total_amount
+                ) || 0;
+
+
+            const first =
+                Number(
+                    customer.first_installment
+                ) || 0;
+
+
+            const second =
+                Number(
+                    customer.second_installment
+                ) || 0;
+
+
+            const paid =
+                first + second;
+
+
+            const balance =
+                Math.max(
+                    0,
+                    expected - paid
+                );
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${customer.customer_name || "-"}
+                    </td>
+
+                    <td>
+                        ${customer.make || "-"}
+                        ${customer.model || ""}
+                    </td>
+
+                    <td>
+                        ${customer.year || "-"}
+                    </td>
+
+                    <td>
+                        TZS ${money(expected)}
+                    </td>
+
+                    <td>
+                        TZS ${money(paid)}
+                    </td>
+
+                    <td>
+                        TZS ${money(balance)}
+                    </td>
+
+                    <td>
+                        ${customer.status || "-"}
+                    </td>
+
+                </tr>
+
+            `;
+
+        })
+
+        .join("");
+
+
+    /* =====================================
+       MANAGEMENT ANALYSIS
+    ===================================== */
+
+    let analysisText = "";
+
+
+    analysisText += `
+
+        <p>
+
+            The selected reporting period contains
+            <strong>
+                ${totalCustomers}
+            </strong>
+            customer order record(s).
+
+            Of these,
+            <strong>
+                ${delivered}
+            </strong>
+            have been marked as Delivered,
+            while
+            <strong>
+                ${active}
+            </strong>
+            remain at other stages
+            of the customer order process.
+
+        </p>
+
+    `;
+
+
+    analysisText += `
+
+        <p>
+
+            The recorded value of customer orders
+            is
+            <strong>
+                TZS ${money(totalExpected)}
+            </strong>.
+
+            Recorded first and second installments
+            total
+            <strong>
+                TZS ${money(totalRecordedPayments)}
+            </strong>,
+
+            leaving a calculated outstanding amount
+            of
+            <strong>
+                TZS ${money(outstandingBalance)}
+            </strong>.
+
+        </p>
+
+    `;
+
+
+    analysisText += `
+
+        <p>
+
+            Based on the installment values recorded
+            in the invoice records, the current
+            collection rate is approximately
+            <strong>
+                ${collectionRate.toFixed(1)}%
+            </strong>.
+
+        </p>
+
+    `;
+
+
+    /* =====================================
+       RENDER
+    ===================================== */
+
+    preview.innerHTML = `
+
+        <div class="customer-report">
+
+
+            <div class="report-title">
+
+                <h2>
+                    Customer & Payment Report
+                </h2>
+
+                <p>
+                    Customer orders, recorded
+                    installments and outstanding
+                    balances
+                </p>
+
+            </div>
+
+
+            <!-- SUMMARY -->
+
+            <div class="report-summary-grid">
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        CUSTOMER ORDERS
+                    </small>
+
+                    <strong>
+                        ${totalCustomers}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        ORDER VALUE
+                    </small>
+
+                    <strong>
+                        TZS ${money(totalExpected)}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        RECORDED PAYMENTS
+                    </small>
+
+                    <strong>
+                        TZS ${money(totalRecordedPayments)}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        OUTSTANDING
+                    </small>
+
+                    <strong>
+                        TZS ${money(outstandingBalance)}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        COLLECTION RATE
+                    </small>
+
+                    <strong>
+                        ${collectionRate.toFixed(1)}%
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        DELIVERED
+                    </small>
+
+                    <strong>
+                        ${delivered}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ANALYSIS -->
+
+            <div class="report-section">
+
+                <h3>
+                    Customer & Payment Analysis
+                </h3>
+
+                ${analysisText}
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="report-section">
+
+                <h3>
+                    Customer Order Status
+                </h3>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Customers
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${statusRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- CUSTOMER DETAILS -->
+
+            <div class="report-section">
+
+                <h3>
+                    Customer Financial Overview
+                </h3>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Vehicle
+                            </th>
+
+                            <th>
+                                Year
+                            </th>
+
+                            <th>
+                                Order Value
+                            </th>
+
+                            <th>
+                                Recorded Paid
+                            </th>
+
+                            <th>
+                                Balance
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${customerRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+    `;
+
+}
 
 /* =========================================
    SALES REPORT
