@@ -1453,7 +1453,381 @@ td:has(.shipping-summary):hover
 
 }
 
+/* =========================================
+   REPORTS CENTER
+========================================= */
 
+.reports-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+
+.reports-header h2{
+
+    margin:15px 0 5px;
+
+    font-size:25px;
+
+}
+
+
+.reports-header p{
+
+    margin:0;
+
+    color:#777;
+
+    font-size:13px;
+
+}
+
+
+/* =========================================
+   REPORT CONTROL CARD
+========================================= */
+
+.reports-control-card{
+
+    background:#fff;
+
+    border:1px solid #eee;
+
+    border-radius:12px;
+
+    padding:22px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,.05);
+
+}
+
+
+.reports-control-card h3{
+
+    margin-top:0;
+
+    margin-bottom:18px;
+
+}
+
+
+.report-controls{
+
+    display:grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        auto;
+
+    gap:15px;
+
+    align-items:end;
+
+}
+
+
+.report-field{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:7px;
+
+}
+
+
+.report-field label{
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#555;
+
+}
+
+
+.report-field select,
+.report-field input{
+
+    height:42px;
+
+    padding:0 12px;
+
+    border:1px solid #ddd;
+
+    border-radius:7px;
+
+    background:#fff;
+
+    outline:none;
+
+}
+
+
+.report-field select:focus,
+.report-field input:focus{
+
+    border-color:#f7941d;
+
+}
+
+
+.generate-report-btn{
+
+    height:42px;
+
+    padding:0 20px;
+
+    border:none;
+
+    border-radius:7px;
+
+    background:#f7941d;
+
+    color:white;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+
+.generate-report-btn:hover{
+
+    background:#e9850b;
+
+}
+
+
+/* =========================================
+   QUICK REPORTS
+========================================= */
+
+.quick-reports{
+
+    margin-bottom:25px;
+
+}
+
+
+.quick-reports h3{
+
+    margin-bottom:15px;
+
+}
+
+
+.quick-report-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap:15px;
+
+}
+
+
+.quick-report-card{
+
+    border:1px solid #eee;
+
+    background:#fff;
+
+    border-radius:10px;
+
+    padding:18px;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,.04);
+
+}
+
+
+.quick-report-card:hover{
+
+    border-color:#f7941d;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 7px 20px
+        rgba(0,0,0,.08);
+
+}
+
+
+.quick-report-card span{
+
+    display:block;
+
+    font-size:25px;
+
+    margin-bottom:10px;
+
+}
+
+
+.quick-report-card strong{
+
+    display:block;
+
+    font-size:13px;
+
+    margin-bottom:5px;
+
+}
+
+
+.quick-report-card small{
+
+    display:block;
+
+    color:#777;
+
+    font-size:11px;
+
+    line-height:1.4;
+
+}
+
+
+/* =========================================
+   REPORT PREVIEW
+========================================= */
+
+.report-preview{
+
+    min-height:300px;
+
+    background:#fff;
+
+    border:1px solid #eee;
+
+    border-radius:12px;
+
+    padding:25px;
+
+}
+
+
+.report-empty-state{
+
+    min-height:280px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    color:#777;
+
+}
+
+
+.report-empty-icon{
+
+    font-size:45px;
+
+    margin-bottom:12px;
+
+}
+
+
+.report-empty-state h3{
+
+    margin:0 0 7px;
+
+    color:#333;
+
+}
+
+
+.report-empty-state p{
+
+    margin:0;
+
+    font-size:13px;
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:900px){
+
+    .report-controls{
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+
+    .generate-report-btn{
+
+        width:100%;
+
+    }
+
+
+    .quick-report-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .report-controls{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .quick-report-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
     
 </style>
 
@@ -1740,7 +2114,9 @@ MANAGEMENT
     <button onclick="openVehicleInventory()">
 🚗 Vehicle Inventory
 </button>
-
+<button onclick="openReports()">
+    📊 Reports Center
+</button>
 
     <div
     id="editCustomerBox"
@@ -2836,6 +3212,268 @@ Save Changes
 
 </div>
 
+ <!-- ================= REPORTS CENTER ================= -->
+
+<div
+    id="reportsPage"
+    style="display:none;"
+>
+
+    <div class="reports-header">
+
+        <div>
+
+            <button onclick="backToManagement()">
+                ← Back to Management
+            </button>
+
+            <h2>
+                📊 Reports Center
+            </h2>
+
+            <p>
+                Generate detailed business and sales reports
+                from your management data.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= REPORT CONTROLS ================= -->
+
+    <div class="reports-control-card">
+
+        <h3>
+            Generate Report
+        </h3>
+
+
+        <div class="report-controls">
+
+            <div class="report-field">
+
+                <label>
+                    Report Type
+                </label>
+
+                <select id="reportType">
+
+                    <option value="full">
+                        Full Management Report
+                    </option>
+
+                    <option value="sales">
+                        Sales Performance Report
+                    </option>
+
+                    <option value="vehicles">
+                        Vehicle Performance Report
+                    </option>
+
+                    <option value="customers">
+                        Customer & Payment Report
+                    </option>
+
+                    <option value="market">
+                        Market Trends Report
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="report-field">
+
+                <label>
+                    From
+                </label>
+
+                <input
+                    type="date"
+                    id="reportDateFrom"
+                >
+
+            </div>
+
+
+            <div class="report-field">
+
+                <label>
+                    To
+                </label>
+
+                <input
+                    type="date"
+                    id="reportDateTo"
+                >
+
+            </div>
+
+
+            <button
+                class="generate-report-btn"
+                onclick="generateManagementReport()"
+            >
+
+                <i class="fa-solid fa-file-chart-column"></i>
+
+                Generate Report
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= QUICK REPORTS ================= -->
+
+    <div class="quick-reports">
+
+        <h3>
+            Quick Reports
+        </h3>
+
+
+        <div class="quick-report-grid">
+
+
+            <button
+                onclick="selectReportType('full')"
+                class="quick-report-card"
+            >
+
+                <span>
+                    📊
+                </span>
+
+                <strong>
+                    Full Management
+                </strong>
+
+                <small>
+                    Complete business overview
+                </small>
+
+            </button>
+
+
+            <button
+                onclick="selectReportType('sales')"
+                class="quick-report-card"
+            >
+
+                <span>
+                    📈
+                </span>
+
+                <strong>
+                    Sales Performance
+                </strong>
+
+                <small>
+                    Sales and payment movement
+                </small>
+
+            </button>
+
+
+            <button
+                onclick="selectReportType('vehicles')"
+                class="quick-report-card"
+            >
+
+                <span>
+                    🚗
+                </span>
+
+                <strong>
+                    Vehicle Performance
+                </strong>
+
+                <small>
+                    Vehicle sales and performance
+                </small>
+
+            </button>
+
+
+            <button
+                onclick="selectReportType('customers')"
+                class="quick-report-card"
+            >
+
+                <span>
+                    👥
+                </span>
+
+                <strong>
+                    Customer Report
+                </strong>
+
+                <small>
+                    Customers and payments
+                </small>
+
+            </button>
+
+
+            <button
+                onclick="selectReportType('market')"
+                class="quick-report-card"
+            >
+
+                <span>
+                    🔎
+                </span>
+
+                <strong>
+                    Market Trends
+                </strong>
+
+                <small>
+                    Models, makes and market movement
+                </small>
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= REPORT PREVIEW ================= -->
+
+    <div
+        id="reportPreview"
+        class="report-preview"
+    >
+
+        <div class="report-empty-state">
+
+            <div class="report-empty-icon">
+                📄
+            </div>
+
+            <h3>
+                No Report Generated
+            </h3>
+
+            <p>
+                Select a report type and date range,
+                then click Generate Report.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>   
+    
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = "https://xpgtietajegnttonthxm.supabase.co";
