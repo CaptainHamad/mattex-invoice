@@ -2085,6 +2085,62 @@ td:has(.shipping-summary):hover
     white-space:nowrap;
 
 }
+
+/* =========================================
+   FULL MANAGEMENT REPORT
+========================================= */
+
+.full-management-report{
+
+    width:100%;
+
+}
+
+
+.full-management-report
+.report-section{
+
+    margin-bottom:30px;
+
+}
+
+
+.full-management-report
+.report-section h3{
+
+    margin-bottom:15px;
+
+}
+
+
+.full-management-report
+.report-note{
+
+    background:#f8f9fa;
+
+    border-left:4px solid #f28c28;
+
+    padding:18px 20px;
+
+}
+
+
+.full-management-report
+.report-table{
+
+    width:100%;
+
+    min-width:700px;
+
+}
+
+
+.full-management-report
+.report-section{
+
+    overflow-x:auto;
+
+}
 </style>
 
 </head>
@@ -5209,6 +5265,14 @@ if(selectedType === "market"){
 
 }
 
+if(selectedType === "full"){
+
+    generateFullManagementReport(filteredData);
+
+    return;
+
+}
+
     console.log(
         "Selected report:",
         selectedType
@@ -7488,6 +7552,1257 @@ function generateMarketReport(data){
                     </tbody>
 
                 </table>
+
+            </div>
+
+
+        </div>
+
+    `;
+
+}
+
+/* =========================================
+   FULL MANAGEMENT REPORT
+   SALES + VEHICLES + MARKET
+   NO CUSTOMER PAYMENT
+   NO EXPENSES
+========================================= */
+
+function generateFullManagementReport(data){
+
+    const preview =
+        document.getElementById(
+            "reportPreview"
+        );
+
+
+    if(!data || data.length === 0){
+
+        preview.innerHTML = `
+
+            <div class="report-empty-state">
+
+                <div class="report-empty-icon">
+                    📊
+                </div>
+
+                <h3>
+                    No Management Data
+                </h3>
+
+                <p>
+                    There are no records available
+                    for the selected reporting period.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* =====================================
+       BASIC MANAGEMENT NUMBERS
+    ===================================== */
+
+    const totalOrders =
+        data.length;
+
+
+    const delivered =
+        data.filter(
+            x => x.status === "Delivered"
+        ).length;
+
+
+    const shipping =
+        data.filter(
+            x => x.status === "Shipping"
+        ).length;
+
+
+    const active =
+        data.filter(
+            x => x.status !== "Delivered"
+        ).length;
+
+
+    const totalRecordedValue =
+        data.reduce(
+            (sum,item) => {
+
+                return sum +
+                    (
+                        Number(
+                            item.total_amount
+                        ) || 0
+                    );
+
+            },
+            0
+        );
+
+
+    const averageVehicleValue =
+        totalOrders > 0
+        ?
+        totalRecordedValue /
+        totalOrders
+        :
+        0;
+
+
+    /* =====================================
+       MAKE ANALYSIS
+    ===================================== */
+
+    const makeMap = {};
+
+
+    data.forEach(item => {
+
+        const make =
+            (
+                item.make ||
+                "Unknown"
+            ).trim();
+
+
+        if(!makeMap[make]){
+
+            makeMap[make] = {
+
+                orders:0,
+
+                value:0
+
+            };
+
+        }
+
+
+        makeMap[make].orders++;
+
+
+        makeMap[make].value +=
+            Number(
+                item.total_amount
+            ) || 0;
+
+    });
+
+
+    const makeRanking =
+        Object.entries(makeMap)
+
+        .sort(
+            (a,b) =>
+                b[1].orders -
+                a[1].orders
+        );
+
+
+    /* =====================================
+       MODEL ANALYSIS
+    ===================================== */
+
+    const modelMap = {};
+
+
+    data.forEach(item => {
+
+        const make =
+            (
+                item.make ||
+                ""
+            ).trim();
+
+
+        const model =
+            (
+                item.model ||
+                "Unknown"
+            ).trim();
+
+
+        const name =
+            make
+            ?
+            `${make} ${model}`
+            :
+            model;
+
+
+        if(!modelMap[name]){
+
+            modelMap[name] = {
+
+                orders:0,
+
+                value:0
+
+            };
+
+        }
+
+
+        modelMap[name].orders++;
+
+
+        modelMap[name].value +=
+            Number(
+                item.total_amount
+            ) || 0;
+
+    });
+
+
+    const modelRanking =
+        Object.entries(modelMap)
+
+        .sort(
+            (a,b) =>
+                b[1].orders -
+                a[1].orders
+        );
+
+
+    /* =====================================
+       YEAR ANALYSIS
+    ===================================== */
+
+    const yearMap = {};
+
+
+    data.forEach(item => {
+
+        const year =
+            String(
+                item.year ||
+                "Unknown"
+            ).trim();
+
+
+        if(!yearMap[year]){
+
+            yearMap[year] = 0;
+
+        }
+
+
+        yearMap[year]++;
+
+    });
+
+
+    const yearRanking =
+        Object.entries(yearMap)
+
+        .sort(
+            (a,b) =>
+                b[1] -
+                a[1]
+        );
+
+
+    /* =====================================
+       STATUS ANALYSIS
+    ===================================== */
+
+    const statusMap = {};
+
+
+    data.forEach(item => {
+
+        const status =
+            (
+                item.status ||
+                "Unknown"
+            ).trim();
+
+
+        if(!statusMap[status]){
+
+            statusMap[status] = 0;
+
+        }
+
+
+        statusMap[status]++;
+
+    });
+
+
+    const statusRanking =
+        Object.entries(statusMap)
+
+        .sort(
+            (a,b) =>
+                b[1] -
+                a[1]
+        );
+
+
+    /* =====================================
+       MONTHLY MOVEMENT
+    ===================================== */
+
+    const monthlyMap = {};
+
+
+    data.forEach(item => {
+
+        if(!item.invoice_date){
+
+            return;
+
+        }
+
+
+        const parts =
+            item.invoice_date.split("/");
+
+
+        if(parts.length !== 3){
+
+            return;
+
+        }
+
+
+        const day =
+            parts[0];
+
+
+        const month =
+            parts[1];
+
+
+        const year =
+            parts[2];
+
+
+        const key =
+            `${year}-${month}`;
+
+
+        if(!monthlyMap[key]){
+
+            monthlyMap[key] = {
+
+                orders:0,
+
+                value:0
+
+            };
+
+        }
+
+
+        monthlyMap[key].orders++;
+
+
+        monthlyMap[key].value +=
+            Number(
+                item.total_amount
+            ) || 0;
+
+    });
+
+
+    const monthlyRanking =
+        Object.entries(monthlyMap)
+
+        .sort(
+            (a,b) =>
+                a[0].localeCompare(
+                    b[0]
+                )
+        );
+
+
+    /* =====================================
+       TOP MAKE / MODEL
+    ===================================== */
+
+    const topMake =
+        makeRanking.length
+        ?
+        makeRanking[0]
+        :
+        null;
+
+
+    const topModel =
+        modelRanking.length
+        ?
+        modelRanking[0]
+        :
+        null;
+
+
+    const topYear =
+        yearRanking.length
+        ?
+        yearRanking[0]
+        :
+        null;
+
+
+    /* =====================================
+       MONEY FORMAT
+    ===================================== */
+
+    const money =
+        value =>
+            Number(
+                value || 0
+            ).toLocaleString(
+                "en-TZ"
+            );
+
+
+    /* =====================================
+       MAKE ROWS
+    ===================================== */
+
+    const makeRows =
+        makeRanking
+
+        .slice(0,10)
+
+        .map(
+            ([make,stats]) => `
+
+                <tr>
+
+                    <td>
+                        ${make}
+                    </td>
+
+                    <td>
+                        ${stats.orders}
+                    </td>
+
+                    <td>
+
+                        ${
+                            totalOrders > 0
+                            ?
+                            (
+                                stats.orders /
+                                totalOrders *
+                                100
+                            ).toFixed(1)
+                            :
+                            0
+                        }%
+
+                    </td>
+
+                    <td>
+                        TZS ${money(
+                            stats.value
+                        )}
+                    </td>
+
+                </tr>
+
+            `
+        )
+
+        .join("");
+
+
+    /* =====================================
+       MODEL ROWS
+    ===================================== */
+
+    const modelRows =
+        modelRanking
+
+        .slice(0,10)
+
+        .map(
+            ([model,stats]) => `
+
+                <tr>
+
+                    <td>
+                        ${model}
+                    </td>
+
+                    <td>
+                        ${stats.orders}
+                    </td>
+
+                    <td>
+
+                        ${
+                            totalOrders > 0
+                            ?
+                            (
+                                stats.orders /
+                                totalOrders *
+                                100
+                            ).toFixed(1)
+                            :
+                            0
+                        }%
+
+                    </td>
+
+                    <td>
+                        TZS ${money(
+                            stats.value
+                        )}
+                    </td>
+
+                </tr>
+
+            `
+        )
+
+        .join("");
+
+
+    /* =====================================
+       YEAR ROWS
+    ===================================== */
+
+    const yearRows =
+        yearRanking
+
+        .slice(0,10)
+
+        .map(
+            ([year,count]) => `
+
+                <tr>
+
+                    <td>
+                        ${year}
+                    </td>
+
+                    <td>
+                        ${count}
+                    </td>
+
+                    <td>
+
+                        ${
+                            totalOrders > 0
+                            ?
+                            (
+                                count /
+                                totalOrders *
+                                100
+                            ).toFixed(1)
+                            :
+                            0
+                        }%
+
+                    </td>
+
+                </tr>
+
+            `
+        )
+
+        .join("");
+
+
+    /* =====================================
+       STATUS ROWS
+    ===================================== */
+
+    const statusRows =
+        statusRanking
+
+        .map(
+            ([status,count]) => `
+
+                <tr>
+
+                    <td>
+                        ${status}
+                    </td>
+
+                    <td>
+                        ${count}
+                    </td>
+
+                    <td>
+
+                        ${
+                            totalOrders > 0
+                            ?
+                            (
+                                count /
+                                totalOrders *
+                                100
+                            ).toFixed(1)
+                            :
+                            0
+                        }%
+
+                    </td>
+
+                </tr>
+
+            `
+        )
+
+        .join("");
+
+
+    /* =====================================
+       MONTH ROWS
+    ===================================== */
+
+    const monthRows =
+        monthlyRanking
+
+        .map(
+            ([month,stats]) => `
+
+                <tr>
+
+                    <td>
+                        ${month}
+                    </td>
+
+                    <td>
+                        ${stats.orders}
+                    </td>
+
+                    <td>
+                        TZS ${money(
+                            stats.value
+                        )}
+                    </td>
+
+                </tr>
+
+            `
+        )
+
+        .join("");
+
+
+    /* =====================================
+       MANAGEMENT INTERPRETATION
+    ===================================== */
+
+    let interpretation = "";
+
+
+    if(topMake){
+
+        interpretation += `
+
+            <p>
+
+                <strong>
+                    ${topMake[0]}
+                </strong>
+                recorded the highest number of
+                vehicle orders in the selected
+                dataset, with
+                <strong>
+                    ${topMake[1].orders}
+                </strong>
+                order(s), representing
+                <strong>
+                    ${
+                        (
+                            topMake[1].orders /
+                            totalOrders *
+                            100
+                        ).toFixed(1)
+                    }%
+                </strong>
+                of all recorded orders.
+
+            </p>
+
+        `;
+
+    }
+
+
+    if(topModel){
+
+        interpretation += `
+
+            <p>
+
+                The most frequently recorded
+                make-model combination was
+                <strong>
+                    ${topModel[0]}
+                </strong>
+                with
+                <strong>
+                    ${topModel[1].orders}
+                </strong>
+                order(s).
+
+            </p>
+
+        `;
+
+    }
+
+
+    if(topYear){
+
+        interpretation += `
+
+            <p>
+
+                Vehicle year
+                <strong>
+                    ${topYear[0]}
+                </strong>
+                had the largest number of records
+                within the selected dataset, with
+                <strong>
+                    ${topYear[1]}
+                </strong>
+                vehicle(s).
+
+            </p>
+
+        `;
+
+    }
+
+
+    interpretation += `
+
+        <p>
+
+            The system recorded
+            <strong>
+                ${totalOrders}
+            </strong>
+            vehicle order(s) with a combined
+            recorded value of
+            <strong>
+                TZS ${money(
+                    totalRecordedValue
+                )}
+            </strong>.
+
+            The average recorded vehicle value
+            was approximately
+            <strong>
+                TZS ${money(
+                    averageVehicleValue
+                )}
+            </strong>.
+
+        </p>
+
+
+        <p>
+
+            Of the recorded orders,
+            <strong>
+                ${delivered}
+            </strong>
+            were marked as Delivered,
+            <strong>
+                ${shipping}
+            </strong>
+            were at Shipping stage,
+            and
+            <strong>
+                ${active}
+            </strong>
+            were not yet marked as Delivered.
+
+        </p>
+
+
+        <p>
+
+            The market observations in this
+            report represent activity recorded
+            inside the management system during
+            the selected period. They should not
+            be interpreted as a complete measure
+            of the entire automobile market.
+
+        </p>
+
+    `;
+
+
+    /* =====================================
+       RENDER FULL REPORT
+    ===================================== */
+
+    preview.innerHTML = `
+
+        <div class="full-management-report">
+
+
+            <!-- =========================
+                 REPORT HEADER
+            ========================= -->
+
+            <div class="report-title">
+
+                <h2>
+                    Full Management Report
+                </h2>
+
+                <p>
+                    Sales, vehicle performance
+                    and observed market trends
+                </p>
+
+            </div>
+
+
+            <!-- =========================
+                 EXECUTIVE SUMMARY
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Executive Summary
+                </h3>
+
+
+                <div class="report-summary-grid">
+
+
+                    <div class="report-summary-card">
+
+                        <small>
+                            VEHICLE ORDERS
+                        </small>
+
+                        <strong>
+                            ${totalOrders}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="report-summary-card">
+
+                        <small>
+                            RECORDED SALES VALUE
+                        </small>
+
+                        <strong>
+                            TZS ${money(
+                                totalRecordedValue
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="report-summary-card">
+
+                        <small>
+                            AVERAGE VEHICLE VALUE
+                        </small>
+
+                        <strong>
+                            TZS ${money(
+                                averageVehicleValue
+                            )}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="report-summary-card">
+
+                        <small>
+                            DELIVERED
+                        </small>
+
+                        <strong>
+                            ${delivered}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="report-summary-card">
+
+                        <small>
+                            SHIPPING
+                        </small>
+
+                        <strong>
+                            ${shipping}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="report-summary-card">
+
+                        <small>
+                            ACTIVE ORDERS
+                        </small>
+
+                        <strong>
+                            ${active}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 MANAGEMENT ANALYSIS
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Management Analysis
+                </h3>
+
+                ${interpretation}
+
+            </div>
+
+
+            <!-- =========================
+                 SALES PERFORMANCE
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Sales Performance
+                </h3>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Make
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Share
+                            </th>
+
+                            <th>
+                                Recorded Value
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${makeRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =========================
+                 VEHICLE PERFORMANCE
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Vehicle Performance
+                </h3>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Vehicle
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Share
+                            </th>
+
+                            <th>
+                                Recorded Value
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${modelRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =========================
+                 VEHICLE YEAR DISTRIBUTION
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Vehicle Year Distribution
+                </h3>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Year
+                            </th>
+
+                            <th>
+                                Vehicles
+                            </th>
+
+                            <th>
+                                Share
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${yearRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =========================
+                 ORDER STATUS
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Order Status Distribution
+                </h3>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Share
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${statusRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =========================
+                 MARKET TRENDS
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Market Trends
+                </h3>
+
+
+                <p>
+
+                    The following section presents
+                    the observed vehicle movement
+                    recorded in the system by
+                    make and model.
+
+                </p>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Make
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Share
+                            </th>
+
+                            <th>
+                                Recorded Value
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${makeRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =========================
+                 MONTHLY MOVEMENT
+            ========================= -->
+
+            <div class="report-section">
+
+                <h3>
+                    Monthly Vehicle Movement
+                </h3>
+
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Month
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Recorded Value
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${monthRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =========================
+                 REPORT NOTE
+            ========================= -->
+
+            <div class="report-section report-note">
+
+                <h3>
+                    Report Interpretation Note
+                </h3>
+
+                <p>
+
+                    This report is generated from
+                    records available in the management
+                    system for the selected reporting
+                    period.
+
+                    Market observations therefore
+                    describe recorded business activity
+                    and should not be treated as a
+                    complete representation of the
+                    wider automobile market.
+
+                </p>
 
             </div>
 
