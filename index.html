@@ -5,7 +5,7 @@
 <title>Mattex Invoice Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -2238,7 +2238,7 @@ td:has(.shipping-summary):hover
 
 }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -5369,17 +5369,29 @@ if(selectedType === "full"){
 
 }
 
-    console.log(
-        "Selected report:",
-        selectedType
-    );
+    /* =========================================
+   FULL MANAGEMENT REPORT
+========================================= */
 
+if(selectedType === "full"){
 
-    console.log(
-        "Filtered report data:",
+    generateFullManagementReport(
         filteredData
     );
 
+    return;
+
+}
+
+
+/* =========================================
+   FULL MANAGEMENT REPORT
+========================================= */
+
+let fullReportCharts = [];
+
+
+function generateFullManagementReport(data){
 
     const preview =
         document.getElementById(
@@ -5387,46 +5399,737 @@ if(selectedType === "full"){
         );
 
 
+    /* ================================
+       NO DATA
+    ================================= */
+
+    if(!data || data.length === 0){
+
+        preview.innerHTML = `
+
+            <div class="report-empty-state">
+
+                <div class="report-empty-icon">
+                    📊
+                </div>
+
+                <h3>
+                    No Management Data
+                </h3>
+
+                <p>
+                    There are no records available
+                    for the selected period.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* ================================
+       CLEAR OLD CHARTS
+    ================================= */
+
+    fullReportCharts.forEach(chart => {
+
+        try{
+
+            chart.destroy();
+
+        }catch(e){}
+
+    });
+
+
+    fullReportCharts = [];
+
+
+    /* ================================
+       MAKE DATA
+    ================================= */
+
+    const makeData = {};
+
+
+    data.forEach(item => {
+
+        const make =
+            String(
+                item.make ||
+                "Unknown"
+            ).trim();
+
+
+        makeData[make] =
+            (makeData[make] || 0) + 1;
+
+    });
+
+
+    const makeEntries =
+        Object.entries(makeData)
+        .sort(
+            (a,b) => b[1] - a[1]
+        )
+        .slice(0,10);
+
+
+    /* ================================
+       MODEL DATA
+    ================================= */
+
+    const modelData = {};
+
+
+    data.forEach(item => {
+
+        const model =
+            String(
+                item.model ||
+                "Unknown"
+            ).trim();
+
+
+        modelData[model] =
+            (modelData[model] || 0) + 1;
+
+    });
+
+
+    const modelEntries =
+        Object.entries(modelData)
+        .sort(
+            (a,b) => b[1] - a[1]
+        )
+        .slice(0,10);
+
+
+    /* ================================
+       YEAR DATA
+    ================================= */
+
+    const yearData = {};
+
+
+    data.forEach(item => {
+
+        const year =
+            item.year ||
+            "Unknown";
+
+
+        yearData[year] =
+            (yearData[year] || 0) + 1;
+
+    });
+
+
+    const yearEntries =
+        Object.entries(yearData)
+        .sort(
+            (a,b) =>
+                String(a[0])
+                .localeCompare(
+                    String(b[0])
+                )
+        );
+
+
+    /* ================================
+       STATUS DATA
+    ================================= */
+
+    const statusData = {};
+
+
+    data.forEach(item => {
+
+        const status =
+            String(
+                item.status ||
+                "Unknown"
+            ).trim();
+
+
+        statusData[status] =
+            (statusData[status] || 0) + 1;
+
+    });
+
+
+    const statusEntries =
+        Object.entries(statusData)
+        .sort(
+            (a,b) => b[1] - a[1]
+        );
+
+
+    /* ================================
+       TOTAL VALUE
+    ================================= */
+
+    const totalValue =
+        data.reduce(
+            (sum,item) => {
+
+                return sum +
+                    (
+                        Number(
+                            item.total_amount
+                        ) || 0
+                    );
+
+            },
+            0
+        );
+
+
+    /* ================================
+       RENDER REPORT
+    ================================= */
+
     preview.innerHTML = `
 
-        <div style="
-            padding:25px;
-        ">
+        <div class="full-management-report">
 
-            <h3>
-                Report Data Loaded
-            </h3>
 
-            <p>
-                Report type:
-                <strong>
-                    ${selectedType}
-                </strong>
-            </p>
+            <div class="report-title">
 
-            <p>
-                Records:
-                <strong>
-                    ${filteredData.length}
-                </strong>
-            </p>
+                <h2>
+                    Full Management Report
+                </h2>
 
-            <p style="
-                color:#777;
-                font-size:13px;
-            ">
+                <p>
+                    Detailed overview of recorded
+                    business activity and market movement
+                </p>
 
-                Detailed analysis will be
-                generated in the next step.
+            </div>
 
-            </p>
+
+            <!-- =========================
+                 SUMMARY
+            ========================== -->
+
+            <div class="report-summary-grid">
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        TOTAL RECORDS
+                    </small>
+
+                    <strong>
+                        ${data.length}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        DIFFERENT MAKES
+                    </small>
+
+                    <strong>
+                        ${makeEntries.length}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        DIFFERENT MODELS
+                    </small>
+
+                    <strong>
+                        ${modelEntries.length}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        RECORDED VALUE
+                    </small>
+
+                    <strong>
+                        TZS ${money(totalValue)}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =========================
+                 VISUAL ANALYTICS
+            ========================== -->
+
+            <div class="report-section">
+
+                <h3>
+                    Visual Business Analytics
+                </h3>
+
+
+                <div class="management-chart-grid">
+
+
+                    <div class="management-chart-card">
+
+                        <div class="management-chart-header">
+
+                            <strong>
+                                Vehicle Orders by Make
+                            </strong>
+
+                            <small>
+                                Number of recorded vehicles
+                            </small>
+
+                        </div>
+
+                        <div class="management-chart-wrapper">
+
+                            <canvas
+                                id="fullMakeChart"
+                            ></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="management-chart-card">
+
+                        <div class="management-chart-header">
+
+                            <strong>
+                                Top Vehicle Models
+                            </strong>
+
+                            <small>
+                                Most frequently recorded models
+                            </small>
+
+                        </div>
+
+                        <div class="management-chart-wrapper">
+
+                            <canvas
+                                id="fullModelChart"
+                            ></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="management-chart-card">
+
+                        <div class="management-chart-header">
+
+                            <strong>
+                                Vehicle Year Distribution
+                            </strong>
+
+                            <small>
+                                Recorded vehicles by year
+                            </small>
+
+                        </div>
+
+                        <div class="management-chart-wrapper">
+
+                            <canvas
+                                id="fullYearChart"
+                            ></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="management-chart-card">
+
+                        <div class="management-chart-header">
+
+                            <strong>
+                                Order Status
+                            </strong>
+
+                            <small>
+                                Current recorded stages
+                            </small>
+
+                        </div>
+
+                        <div class="management-chart-wrapper">
+
+                            <canvas
+                                id="fullStatusChart"
+                            ></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
 
         </div>
 
     `;
 
-}
 
+    /* ================================
+       CREATE CHARTS AFTER HTML EXISTS
+    ================================= */
+
+    setTimeout(() => {
+
+
+        /* ============================
+           MAKE CHART
+        ============================ */
+
+        const makeCanvas =
+            document.getElementById(
+                "fullMakeChart"
+            );
+
+
+        if(makeCanvas){
+
+            fullReportCharts.push(
+
+                new Chart(
+                    makeCanvas,
+                    {
+
+                        type:"bar",
+
+                        data:{
+
+                            labels:
+                                makeEntries
+                                .map(
+                                    item =>
+                                        item[0]
+                                ),
+
+                            datasets:[{
+
+                                label:
+                                    "Vehicles",
+
+                                data:
+                                    makeEntries
+                                    .map(
+                                        item =>
+                                            item[1]
+                                    )
+
+                            }]
+
+                        },
+
+                        options:{
+
+                            responsive:true,
+
+                            maintainAspectRatio:false,
+
+                            plugins:{
+
+                                legend:{
+
+                                    display:false
+
+                                }
+
+                            },
+
+                            scales:{
+
+                                y:{
+
+                                    beginAtZero:true,
+
+                                    ticks:{
+
+                                        precision:0
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                )
+
+            );
+
+        }
+
+
+        /* ============================
+           MODEL CHART
+        ============================ */
+
+        const modelCanvas =
+            document.getElementById(
+                "fullModelChart"
+            );
+
+
+        if(modelCanvas){
+
+            fullReportCharts.push(
+
+                new Chart(
+                    modelCanvas,
+                    {
+
+                        type:"bar",
+
+                        data:{
+
+                            labels:
+                                modelEntries
+                                .map(
+                                    item =>
+                                        item[0]
+                                ),
+
+                            datasets:[{
+
+                                label:
+                                    "Vehicles",
+
+                                data:
+                                    modelEntries
+                                    .map(
+                                        item =>
+                                            item[1]
+                                    )
+
+                            }]
+
+                        },
+
+                        options:{
+
+                            indexAxis:"y",
+
+                            responsive:true,
+
+                            maintainAspectRatio:false,
+
+                            plugins:{
+
+                                legend:{
+
+                                    display:false
+
+                                }
+
+                            },
+
+                            scales:{
+
+                                x:{
+
+                                    beginAtZero:true,
+
+                                    ticks:{
+
+                                        precision:0
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                )
+
+            );
+
+        }
+
+
+        /* ============================
+           YEAR CHART
+        ============================ */
+
+        const yearCanvas =
+            document.getElementById(
+                "fullYearChart"
+            );
+
+
+        if(yearCanvas){
+
+            fullReportCharts.push(
+
+                new Chart(
+                    yearCanvas,
+                    {
+
+                        type:"doughnut",
+
+                        data:{
+
+                            labels:
+                                yearEntries
+                                .map(
+                                    item =>
+                                        item[0]
+                                ),
+
+                            datasets:[{
+
+                                label:
+                                    "Vehicles",
+
+                                data:
+                                    yearEntries
+                                    .map(
+                                        item =>
+                                            item[1]
+                                    )
+
+                            }]
+
+                        },
+
+                        options:{
+
+                            responsive:true,
+
+                            maintainAspectRatio:false,
+
+                            plugins:{
+
+                                legend:{
+
+                                    position:"right"
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                )
+
+            );
+
+        }
+
+
+        /* ============================
+           STATUS CHART
+        ============================ */
+
+        const statusCanvas =
+            document.getElementById(
+                "fullStatusChart"
+            );
+
+
+        if(statusCanvas){
+
+            fullReportCharts.push(
+
+                new Chart(
+                    statusCanvas,
+                    {
+
+                        type:"doughnut",
+
+                        data:{
+
+                            labels:
+                                statusEntries
+                                .map(
+                                    item =>
+                                        item[0]
+                                ),
+
+                            datasets:[{
+
+                                label:
+                                    "Orders",
+
+                                data:
+                                    statusEntries
+                                    .map(
+                                        item =>
+                                            item[1]
+                                    )
+
+                            }]
+
+                        },
+
+                        options:{
+
+                            responsive:true,
+
+                            maintainAspectRatio:false,
+
+                            plugins:{
+
+                                legend:{
+
+                                    position:"right"
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                )
+
+            );
+
+        }
+
+
+    }, 150);
+
+}
     /* =========================================
    CUSTOMER & PAYMENT REPORT
 ========================================= */
