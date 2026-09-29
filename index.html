@@ -1828,6 +1828,206 @@ td:has(.shipping-summary):hover
     }
 
 }
+
+/* =========================================
+   SALES REPORT
+========================================= */
+
+.sales-report{
+
+    color:#222;
+
+}
+
+
+.report-title{
+
+    margin-bottom:25px;
+
+}
+
+
+.report-title h2{
+
+    margin:0 0 5px;
+
+    font-size:22px;
+
+}
+
+
+.report-title p{
+
+    margin:0;
+
+    color:#777;
+
+    font-size:12px;
+
+}
+
+
+/* SUMMARY */
+
+.report-summary-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+
+    margin-bottom:30px;
+
+}
+
+
+.report-summary-card{
+
+    background:#fff;
+
+    border:1px solid #eee;
+
+    border-radius:10px;
+
+    padding:16px;
+
+    box-shadow:
+        0 3px 10px
+        rgba(0,0,0,.04);
+
+}
+
+
+.report-summary-card small{
+
+    display:block;
+
+    color:#777;
+
+    font-size:9px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+    margin-bottom:7px;
+
+}
+
+
+.report-summary-card strong{
+
+    display:block;
+
+    font-size:17px;
+
+    color:#f7941d;
+
+}
+
+
+/* SECTIONS */
+
+.report-section{
+
+    margin-bottom:30px;
+
+}
+
+
+.report-section h3{
+
+    font-size:16px;
+
+    margin-bottom:12px;
+
+    padding-bottom:8px;
+
+    border-bottom:2px solid #f7941d;
+
+}
+
+
+.report-section p{
+
+    font-size:13px;
+
+    line-height:1.7;
+
+    color:#555;
+
+}
+
+
+/* TABLE */
+
+.report-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:#fff;
+
+}
+
+
+.report-table th{
+
+    background:#f7941d;
+
+    color:#fff;
+
+    padding:10px;
+
+    text-align:left;
+
+    font-size:11px;
+
+}
+
+
+.report-table td{
+
+    padding:10px;
+
+    border-bottom:1px solid #eee;
+
+    font-size:11px;
+
+}
+
+
+.report-table tr:hover{
+
+    background:#fafafa;
+
+}
+
+
+@media(max-width:800px){
+
+    .report-summary-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+
+@media(max-width:500px){
+
+    .report-summary-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
     
 </style>
 
@@ -4916,7 +5116,17 @@ function generateManagementReport(){
 
     const filteredData =
         getFilteredReportData();
+/* =========================================
+   SALES REPORT ANALYSIS
+========================================= */
 
+if(selectedType === "sales"){
+
+    generateSalesReport(filteredData);
+
+    return;
+
+}
 
     console.log(
         "Selected report:",
@@ -4969,6 +5179,748 @@ function generateManagementReport(){
                 generated in the next step.
 
             </p>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================
+   SALES REPORT
+========================================= */
+
+function generateSalesReport(data){
+
+    const preview =
+        document.getElementById(
+            "reportPreview"
+        );
+
+
+    if(!data || data.length === 0){
+
+        preview.innerHTML = `
+
+            <div class="report-empty-state">
+
+                <div class="report-empty-icon">
+                    📊
+                </div>
+
+                <h3>
+                    No Sales Data
+                </h3>
+
+                <p>
+                    There are no sales records
+                    for the selected period.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* =====================================
+       BASIC SALES NUMBERS
+    ===================================== */
+
+    const totalOrders =
+        data.length;
+
+
+    const delivered =
+        data.filter(
+            x => x.status === "Delivered"
+        ).length;
+
+
+    const shipping =
+        data.filter(
+            x => x.status === "Shipping"
+        ).length;
+
+
+    const pending =
+        data.filter(
+            x => x.status !== "Delivered" &&
+                 x.status !== "Shipping"
+        ).length;
+
+
+    const totalSales =
+        data.reduce(
+            (sum, x) => {
+
+                return sum +
+                    (Number(x.total_amount) || 0);
+
+            },
+            0
+        );
+
+
+    const averageSale =
+        totalOrders > 0
+        ? totalSales / totalOrders
+        : 0;
+
+
+    /* =====================================
+       MAKE ANALYSIS
+    ===================================== */
+
+    const makeMap = {};
+
+
+    data.forEach(vehicle => {
+
+        const make =
+            (vehicle.make || "Unknown")
+            .trim();
+
+
+        if(!makeMap[make]){
+
+            makeMap[make] = {
+
+                count:0,
+
+                value:0
+
+            };
+
+        }
+
+
+        makeMap[make].count++;
+
+
+        makeMap[make].value +=
+            Number(
+                vehicle.total_amount
+            ) || 0;
+
+    });
+
+
+    const makeRanking =
+        Object.entries(makeMap)
+
+        .sort(
+            (a,b) =>
+                b[1].count -
+                a[1].count
+        );
+
+
+    /* =====================================
+       MODEL ANALYSIS
+    ===================================== */
+
+    const modelMap = {};
+
+
+    data.forEach(vehicle => {
+
+        const model =
+            (vehicle.model || "Unknown")
+            .trim();
+
+
+        if(!modelMap[model]){
+
+            modelMap[model] = {
+
+                count:0,
+
+                value:0
+
+            };
+
+        }
+
+
+        modelMap[model].count++;
+
+
+        modelMap[model].value +=
+            Number(
+                vehicle.total_amount
+            ) || 0;
+
+    });
+
+
+    const modelRanking =
+        Object.entries(modelMap)
+
+        .sort(
+            (a,b) =>
+                b[1].count -
+                a[1].count
+        );
+
+
+    /* =====================================
+       MONTHLY ANALYSIS
+    ===================================== */
+
+    const monthlyMap = {};
+
+
+    data.forEach(record => {
+
+        if(!record.invoice_date){
+
+            return;
+
+        }
+
+
+        const parts =
+            record.invoice_date
+            .split("/");
+
+
+        if(parts.length !== 3){
+
+            return;
+
+        }
+
+
+        const month =
+            parseInt(parts[1]);
+
+
+        const year =
+            parseInt(parts[2]);
+
+
+        if(
+            !month ||
+            !year
+        ){
+
+            return;
+
+        }
+
+
+        const key =
+            `${year}-${String(month)
+                .padStart(2,"0")}`;
+
+
+        if(!monthlyMap[key]){
+
+            monthlyMap[key] = {
+
+                count:0,
+
+                value:0
+
+            };
+
+        }
+
+
+        monthlyMap[key].count++;
+
+
+        monthlyMap[key].value +=
+            Number(
+                record.total_amount
+            ) || 0;
+
+    });
+
+
+    const monthlyRanking =
+        Object.entries(monthlyMap)
+
+        .sort(
+            (a,b) =>
+                a[0].localeCompare(b[0])
+        );
+
+
+    /* =====================================
+       MARKET SHARE
+    ===================================== */
+
+    const topMake =
+        makeRanking.length > 0
+        ? makeRanking[0]
+        : null;
+
+
+    const topModel =
+        modelRanking.length > 0
+        ? modelRanking[0]
+        : null;
+
+
+    /* =====================================
+       FORMAT MONEY
+    ===================================== */
+
+    const money =
+        value => {
+
+            return Number(
+                value || 0
+            ).toLocaleString(
+                "en-TZ"
+            );
+
+        };
+
+
+    /* =====================================
+       MAKE ROWS
+    ===================================== */
+
+    const makeRows =
+        makeRanking
+
+        .slice(0,10)
+
+        .map(([make, stats]) => `
+
+            <tr>
+
+                <td>
+                    ${make}
+                </td>
+
+                <td>
+                    ${stats.count}
+                </td>
+
+                <td>
+                    TZS ${money(stats.value)}
+                </td>
+
+            </tr>
+
+        `)
+
+        .join("");
+
+
+    /* =====================================
+       MODEL ROWS
+    ===================================== */
+
+    const modelRows =
+        modelRanking
+
+        .slice(0,10)
+
+        .map(([model, stats]) => `
+
+            <tr>
+
+                <td>
+                    ${model}
+                </td>
+
+                <td>
+                    ${stats.count}
+                </td>
+
+                <td>
+                    TZS ${money(stats.value)}
+                </td>
+
+            </tr>
+
+        `)
+
+        .join("");
+
+
+    /* =====================================
+       MONTHLY ROWS
+    ===================================== */
+
+    const monthlyRows =
+        monthlyRanking
+
+        .map(([month, stats]) => `
+
+            <tr>
+
+                <td>
+                    ${month}
+                </td>
+
+                <td>
+                    ${stats.count}
+                </td>
+
+                <td>
+                    TZS ${money(stats.value)}
+                </td>
+
+            </tr>
+
+        `)
+
+        .join("");
+
+
+    /* =====================================
+       MANAGEMENT INTERPRETATION
+    ===================================== */
+
+    let analysisText = "";
+
+
+    if(topMake){
+
+        analysisText += `
+
+            <p>
+
+                <strong>
+                    ${topMake[0]}
+                </strong>
+                recorded the highest number
+                of vehicle orders during the
+                selected reporting period,
+                with
+                <strong>
+                    ${topMake[1].count}
+                </strong>
+                recorded order(s).
+
+            </p>
+
+        `;
+
+    }
+
+
+    if(topModel){
+
+        analysisText += `
+
+            <p>
+
+                The most frequently recorded
+                vehicle model was
+                <strong>
+                    ${topModel[0]}
+                </strong>,
+                with
+                <strong>
+                    ${topModel[1].count}
+                </strong>
+                order(s).
+
+            </p>
+
+        `;
+
+    }
+
+
+    analysisText += `
+
+        <p>
+
+            The system recorded
+            <strong>
+                ${totalOrders}
+            </strong>
+            vehicle order(s) during the
+            selected period.
+
+            Total recorded sales value was
+            <strong>
+                TZS ${money(totalSales)}
+            </strong>,
+
+            giving an average recorded
+            order value of
+            <strong>
+                TZS ${money(averageSale)}
+            </strong>.
+
+        </p>
+
+
+        <p>
+
+            Of the recorded orders,
+            <strong>
+                ${delivered}
+            </strong>
+            were marked as Delivered,
+            <strong>
+                ${shipping}
+            </strong>
+            were marked as Shipping,
+            and
+            <strong>
+                ${pending}
+            </strong>
+            were in other statuses.
+
+        </p>
+
+    `;
+
+
+    /* =====================================
+       RENDER REPORT
+    ===================================== */
+
+    preview.innerHTML = `
+
+        <div class="sales-report">
+
+            <div class="report-title">
+
+                <h2>
+                    Sales Performance Report
+                </h2>
+
+                <p>
+                    Detailed analysis of recorded
+                    vehicle sales
+                </p>
+
+            </div>
+
+
+            <!-- SUMMARY -->
+
+            <div class="report-summary-grid">
+
+                <div class="report-summary-card">
+
+                    <small>
+                        TOTAL ORDERS
+                    </small>
+
+                    <strong>
+                        ${totalOrders}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        SALES VALUE
+                    </small>
+
+                    <strong>
+                        TZS ${money(totalSales)}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        DELIVERED
+                    </small>
+
+                    <strong>
+                        ${delivered}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        SHIPPING
+                    </small>
+
+                    <strong>
+                        ${shipping}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        OTHER STATUS
+                    </small>
+
+                    <strong>
+                        ${pending}
+                    </strong>
+
+                </div>
+
+
+                <div class="report-summary-card">
+
+                    <small>
+                        AVERAGE ORDER
+                    </small>
+
+                    <strong>
+                        TZS ${money(averageSale)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ANALYSIS -->
+
+            <div class="report-section">
+
+                <h3>
+                    Sales Analysis
+                </h3>
+
+                ${analysisText}
+
+            </div>
+
+
+            <!-- MAKES -->
+
+            <div class="report-section">
+
+                <h3>
+                    Sales by Make
+                </h3>
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Make
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Sales Value
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${makeRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- MODELS -->
+
+            <div class="report-section">
+
+                <h3>
+                    Sales by Model
+                </h3>
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Model
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Sales Value
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${modelRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- MONTHLY -->
+
+            <div class="report-section">
+
+                <h3>
+                    Monthly Sales Movement
+                </h3>
+
+                <table class="report-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Month
+                            </th>
+
+                            <th>
+                                Orders
+                            </th>
+
+                            <th>
+                                Sales Value
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${monthlyRows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
