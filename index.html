@@ -4697,6 +4697,309 @@ document.getElementById("managementPage")
 
 }
 
+/* =========================================
+   REPORTS CENTER
+========================================= */
+
+let reportData = [];
+
+
+function openReports(){
+
+    document.getElementById("managementPage")
+        .style.display = "none";
+
+
+    document.getElementById("leadsPage")
+        .style.display = "none";
+
+
+    document.getElementById("savingsPage")
+        .style.display = "none";
+
+
+    document.getElementById("customerDetailsPage")
+        .style.display = "none";
+
+
+    document.getElementById("reportsPage")
+        .style.display = "block";
+
+
+    loadReportData();
+
+}
+
+/* =========================================
+   LOAD REPORT DATA
+========================================= */
+
+async function loadReportData(){
+
+    try{
+
+        const { data, error } =
+            await supabaseClient
+
+            .from("invoices")
+
+            .select("*")
+
+            .order(
+                "id",
+                {
+                    ascending:false
+                }
+            );
+
+
+        if(error){
+
+            console.error(
+                "Report data error:",
+                error
+            );
+
+            alert(
+                "Unable to load report data: " +
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        reportData =
+            Array.isArray(data)
+            ? data
+            : [];
+
+
+        console.log(
+            "Report data loaded:",
+            reportData
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Report loading failed:",
+            error
+        );
+
+        alert(
+            "Failed to load report data."
+        );
+
+    }
+
+}
+
+/* =========================================
+   REPORT DATE FILTER
+========================================= */
+
+function getFilteredReportData(){
+
+    const from =
+        document.getElementById(
+            "reportDateFrom"
+        ).value;
+
+
+    const to =
+        document.getElementById(
+            "reportDateTo"
+        ).value;
+
+
+    let filtered =
+        [...reportData];
+
+
+    if(!from && !to){
+
+        return filtered;
+
+    }
+
+
+    filtered =
+        filtered.filter(record => {
+
+            if(!record.invoice_date){
+
+                return false;
+
+            }
+
+
+            const parts =
+                record.invoice_date.split("/");
+
+
+            if(parts.length !== 3){
+
+                return false;
+
+            }
+
+
+            const recordDate =
+                new Date(
+                    parseInt(parts[2]),
+                    parseInt(parts[1]) - 1,
+                    parseInt(parts[0])
+                );
+
+
+            if(from){
+
+                const fromDate =
+                    new Date(from);
+
+
+                if(recordDate < fromDate){
+
+                    return false;
+
+                }
+
+            }
+
+
+            if(to){
+
+                const toDate =
+                    new Date(to);
+
+
+                toDate.setHours(
+                    23,
+                    59,
+                    59,
+                    999
+                );
+
+
+                if(recordDate > toDate){
+
+                    return false;
+
+                }
+
+            }
+
+
+            return true;
+
+        });
+
+
+    return filtered;
+
+}
+
+/* =========================================
+   GENERATE REPORT
+========================================= */
+
+function generateManagementReport(){
+
+    const selectedType =
+        document.getElementById(
+            "reportType"
+        ).value;
+
+
+    const filteredData =
+        getFilteredReportData();
+
+
+    console.log(
+        "Selected report:",
+        selectedType
+    );
+
+
+    console.log(
+        "Filtered report data:",
+        filteredData
+    );
+
+
+    const preview =
+        document.getElementById(
+            "reportPreview"
+        );
+
+
+    preview.innerHTML = `
+
+        <div style="
+            padding:25px;
+        ">
+
+            <h3>
+                Report Data Loaded
+            </h3>
+
+            <p>
+                Report type:
+                <strong>
+                    ${selectedType}
+                </strong>
+            </p>
+
+            <p>
+                Records:
+                <strong>
+                    ${filteredData.length}
+                </strong>
+            </p>
+
+            <p style="
+                color:#777;
+                font-size:13px;
+            ">
+
+                Detailed analysis will be
+                generated in the next step.
+
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+/* =========================================
+   QUICK REPORT SELECTION
+========================================= */
+
+function selectReportType(type){
+
+    const reportType =
+        document.getElementById(
+            "reportType"
+        );
+
+
+    reportType.value = type;
+
+
+    document
+        .getElementById(
+            "reportPreview"
+        )
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
 function viewNotes(notes){
 
 alert(notes || "No notes available");
