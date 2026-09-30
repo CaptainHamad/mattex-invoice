@@ -5799,7 +5799,379 @@ function generateFullManagementReport(data){
             },
             0
         );
+/* =========================================
+   SALES PERFORMANCE DATA
+========================================= */
 
+const totalSales =
+    data.reduce(
+        (sum,item) =>
+            sum +
+            (Number(item.total_amount) || 0),
+        0
+    );
+
+
+const averageSale =
+    data.length > 0
+    ? totalSales / data.length
+    : 0;
+
+
+const deliveredSales =
+    data.filter(
+        item => item.status === "Delivered"
+    ).length;
+
+
+const shippingSales =
+    data.filter(
+        item => item.status === "Shipping"
+    ).length;
+
+
+const otherSales =
+    data.length -
+    deliveredSales -
+    shippingSales;
+
+
+/* =========================================
+   SALES BY MAKE
+========================================= */
+
+const salesByMake = {};
+
+data.forEach(item => {
+
+    const make =
+        String(
+            item.make ||
+            "Unknown"
+        ).trim();
+
+
+    if(!salesByMake[make]){
+
+        salesByMake[make] = {
+            orders:0,
+            value:0
+        };
+
+    }
+
+
+    salesByMake[make].orders++;
+
+    salesByMake[make].value +=
+        Number(
+            item.total_amount
+        ) || 0;
+
+});
+
+
+const salesMakeRanking =
+    Object.entries(
+        salesByMake
+    )
+    .sort(
+        (a,b) =>
+            b[1].value -
+            a[1].value
+    );
+
+
+/* =========================================
+   SALES BY MODEL
+========================================= */
+
+const salesByModel = {};
+
+data.forEach(item => {
+
+    const model =
+        `${item.make || ""} ${item.model || "Unknown"}`
+        .trim();
+
+
+    if(!salesByModel[model]){
+
+        salesByModel[model] = {
+            orders:0,
+            value:0
+        };
+
+    }
+
+
+    salesByModel[model].orders++;
+
+    salesByModel[model].value +=
+        Number(
+            item.total_amount
+        ) || 0;
+
+});
+
+
+const salesModelRanking =
+    Object.entries(
+        salesByModel
+    )
+    .sort(
+        (a,b) =>
+            b[1].value -
+            a[1].value
+    );
+
+
+/* =========================================
+   MONTHLY SALES
+========================================= */
+
+const monthlySales = {};
+
+data.forEach(item => {
+
+    if(!item.invoice_date)
+        return;
+
+
+    const parts =
+        item.invoice_date.split("/");
+
+
+    if(parts.length !== 3)
+        return;
+
+
+    const monthKey =
+        `${parts[2]}-${String(parts[1]).padStart(2,"0")}`;
+
+
+    if(!monthlySales[monthKey]){
+
+        monthlySales[monthKey] = {
+            orders:0,
+            value:0
+        };
+
+    }
+
+
+    monthlySales[monthKey].orders++;
+
+    monthlySales[monthKey].value +=
+        Number(
+            item.total_amount
+        ) || 0;
+
+});
+
+
+const monthlySalesRanking =
+    Object.entries(
+        monthlySales
+    )
+    .sort(
+        (a,b) =>
+            a[0].localeCompare(b[0])
+    );
+
+
+/* =========================================
+   MARKET DATA
+========================================= */
+
+const marketMakes = {};
+
+const marketModels = {};
+
+const marketYears = {};
+
+
+data.forEach(item => {
+
+    const make =
+        String(
+            item.make ||
+            "Unknown"
+        ).trim();
+
+
+    const model =
+        `${item.make || ""} ${item.model || "Unknown"}`
+        .trim();
+
+
+    const year =
+        item.year ||
+        "Unknown";
+
+
+    marketMakes[make] =
+        (marketMakes[make] || 0) + 1;
+
+
+    marketModels[model] =
+        (marketModels[model] || 0) + 1;
+
+
+    marketYears[year] =
+        (marketYears[year] || 0) + 1;
+
+});
+
+
+const marketMakeRanking =
+    Object.entries(
+        marketMakes
+    )
+    .sort(
+        (a,b) => b[1] - a[1]
+    );
+
+
+const marketModelRanking =
+    Object.entries(
+        marketModels
+    )
+    .sort(
+        (a,b) => b[1] - a[1]
+    );
+
+
+const marketYearRanking =
+    Object.entries(
+        marketYears
+    )
+    .sort(
+        (a,b) => b[1] - a[1]
+    );
+
+
+/* =========================================
+   MARKET INTERPRETATION
+========================================= */
+
+let marketInterpretation = "";
+
+
+if(marketMakeRanking.length){
+
+    const topMake =
+        marketMakeRanking[0];
+
+
+    const share =
+        (
+            topMake[1] /
+            data.length *
+            100
+        ).toFixed(1);
+
+
+    marketInterpretation += `
+
+        <p>
+
+            <strong>
+                ${topMake[0]}
+            </strong>
+
+            accounted for
+
+            <strong>
+                ${topMake[1]}
+            </strong>
+
+            of the recorded vehicle orders,
+            representing approximately
+
+            <strong>
+                ${share}%
+            </strong>
+
+            of the selected dataset.
+
+        </p>
+
+    `;
+
+}
+
+
+if(marketModelRanking.length){
+
+    const topModel =
+        marketModelRanking[0];
+
+
+    marketInterpretation += `
+
+        <p>
+
+            The most frequently recorded
+            vehicle model was
+
+            <strong>
+                ${topModel[0]}
+            </strong>
+
+            with
+
+            <strong>
+                ${topModel[1]}
+            </strong>
+
+            recorded order(s).
+
+        </p>
+
+    `;
+
+}
+
+
+if(monthlySalesRanking.length){
+
+    const latestMonth =
+        monthlySalesRanking[
+            monthlySalesRanking.length - 1
+        ];
+
+
+    marketInterpretation += `
+
+        <p>
+
+            During
+
+            <strong>
+                ${latestMonth[0]}
+            </strong>,
+
+            the system recorded
+
+            <strong>
+                ${latestMonth[1].orders}
+            </strong>
+
+            vehicle order(s) with a recorded
+            value of
+
+            <strong>
+                TZS ${money(
+                    latestMonth[1].value
+                )}
+            </strong>.
+
+        </p>
+
+    `;
+
+}
 
     /* ================================
        RENDER REPORT
@@ -6053,6 +6425,593 @@ function generateFullManagementReport(data){
                 </div>
 
             </div>
+
+        <!-- =========================================
+     SALES PERFORMANCE
+========================================= -->
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Sales Performance
+    </h3>
+
+
+    <p>
+
+        During the selected reporting period,
+        the system recorded
+
+        <strong>
+            ${data.length}
+        </strong>
+
+        vehicle order(s) with a total recorded
+        sales value of
+
+        <strong>
+            TZS ${money(totalSales)}
+        </strong>.
+
+        The average recorded order value was
+
+        <strong>
+            TZS ${money(averageSale)}
+        </strong>.
+
+    </p>
+
+
+    <div class="report-summary-grid">
+
+        <div class="report-summary-card">
+
+            <small>
+                TOTAL SALES VALUE
+            </small>
+
+            <strong>
+                TZS ${money(totalSales)}
+            </strong>
+
+        </div>
+
+
+        <div class="report-summary-card">
+
+            <small>
+                AVERAGE ORDER
+            </small>
+
+            <strong>
+                TZS ${money(averageSale)}
+            </strong>
+
+        </div>
+
+
+        <div class="report-summary-card">
+
+            <small>
+                DELIVERED
+            </small>
+
+            <strong>
+                ${deliveredSales}
+            </strong>
+
+        </div>
+
+
+        <div class="report-summary-card">
+
+            <small>
+                SHIPPING
+            </small>
+
+            <strong>
+                ${shippingSales}
+            </strong>
+
+        </div>
+
+
+        <div class="report-summary-card">
+
+            <small>
+                OTHER STATUS
+            </small>
+
+            <strong>
+                ${otherSales}
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Sales by Make
+    </h3>
+
+
+    <table class="report-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Make
+                </th>
+
+                <th>
+                    Orders
+                </th>
+
+                <th>
+                    Share
+                </th>
+
+                <th>
+                    Sales Value
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            ${
+                salesMakeRanking
+                .slice(0,15)
+                .map(
+                    ([make,stats]) => `
+
+                    <tr>
+
+                        <td>
+                            ${make}
+                        </td>
+
+                        <td>
+                            ${stats.orders}
+                        </td>
+
+                        <td>
+
+                            ${
+                                data.length
+                                ?
+                                (
+                                    stats.orders /
+                                    data.length *
+                                    100
+                                ).toFixed(1)
+                                :
+                                0
+                            }%
+
+                        </td>
+
+                        <td>
+                            TZS ${money(
+                                stats.value
+                            )}
+                        </td>
+
+                    </tr>
+
+                    `
+                )
+                .join("")
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Sales by Model
+    </h3>
+
+
+    <table class="report-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Vehicle Model
+                </th>
+
+                <th>
+                    Orders
+                </th>
+
+                <th>
+                    Sales Value
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            ${
+                salesModelRanking
+                .slice(0,20)
+                .map(
+                    ([model,stats]) => `
+
+                    <tr>
+
+                        <td>
+                            ${model}
+                        </td>
+
+                        <td>
+                            ${stats.orders}
+                        </td>
+
+                        <td>
+                            TZS ${money(
+                                stats.value
+                            )}
+                        </td>
+
+                    </tr>
+
+                    `
+                )
+                .join("")
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Monthly Sales Movement
+    </h3>
+
+
+    <table class="report-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Month
+                </th>
+
+                <th>
+                    Orders
+                </th>
+
+                <th>
+                    Sales Value
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            ${
+                monthlySalesRanking
+                .map(
+                    ([month,stats]) => `
+
+                    <tr>
+
+                        <td>
+                            ${month}
+                        </td>
+
+                        <td>
+                            ${stats.orders}
+                        </td>
+
+                        <td>
+                            TZS ${money(
+                                stats.value
+                            )}
+                        </td>
+
+                    </tr>
+
+                    `
+                )
+                .join("")
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- =========================================
+     MARKET TRENDS
+========================================= -->
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Market Trends & Observed Vehicle Movement
+    </h3>
+
+
+    ${marketInterpretation}
+
+
+    <p>
+
+        The market information below represents
+        vehicle activity recorded in the Mattex
+        management system during the selected
+        reporting period.
+
+        It should be interpreted as observed
+        business activity rather than a complete
+        representation of the wider automobile
+        market.
+
+    </p>
+
+</div>
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Market Distribution by Make
+    </h3>
+
+
+    <table class="report-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Make
+                </th>
+
+                <th>
+                    Recorded Orders
+                </th>
+
+                <th>
+                    Market Share
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            ${
+                marketMakeRanking
+                .slice(0,20)
+                .map(
+                    ([make,count]) => `
+
+                    <tr>
+
+                        <td>
+                            ${make}
+                        </td>
+
+                        <td>
+                            ${count}
+                        </td>
+
+                        <td>
+
+                            ${
+                                data.length
+                                ?
+                                (
+                                    count /
+                                    data.length *
+                                    100
+                                ).toFixed(1)
+                                :
+                                0
+                            }%
+
+                        </td>
+
+                    </tr>
+
+                    `
+                )
+                .join("")
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Market Distribution by Model
+    </h3>
+
+
+    <table class="report-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Vehicle Model
+                </th>
+
+                <th>
+                    Recorded Orders
+                </th>
+
+                <th>
+                    Share
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            ${
+                marketModelRanking
+                .slice(0,20)
+                .map(
+                    ([model,count]) => `
+
+                    <tr>
+
+                        <td>
+                            ${model}
+                        </td>
+
+                        <td>
+                            ${count}
+                        </td>
+
+                        <td>
+
+                            ${
+                                data.length
+                                ?
+                                (
+                                    count /
+                                    data.length *
+                                    100
+                                ).toFixed(1)
+                                :
+                                0
+                            }%
+
+                        </td>
+
+                    </tr>
+
+                    `
+                )
+                .join("")
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="report-section pdf-page-section">
+
+    <h3>
+        Vehicle Year Distribution
+    </h3>
+
+
+    <table class="report-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Vehicle Year
+                </th>
+
+                <th>
+                    Recorded Vehicles
+                </th>
+
+                <th>
+                    Share
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            ${
+                yearEntries
+                .map(
+                    ([year,count]) => `
+
+                    <tr>
+
+                        <td>
+                            ${year}
+                        </td>
+
+                        <td>
+                            ${count}
+                        </td>
+
+                        <td>
+
+                            ${
+                                data.length
+                                ?
+                                (
+                                    count /
+                                    data.length *
+                                    100
+                                ).toFixed(1)
+                                :
+                                0
+                            }%
+
+                        </td>
+
+                    </tr>
+
+                    `
+                )
+                .join("")
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
 <div class="pdf-report-footer">
 
     <strong>
