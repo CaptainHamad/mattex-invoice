@@ -4167,7 +4167,193 @@ Save Changes
         >
 
     </div>
+<div style="
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+">
 
+    <h3 style="margin-top:0;">
+        📝 Daily Staff Activity
+    </h3>
+
+    <div style="
+        display:grid;
+        grid-template-columns:
+        repeat(auto-fit,minmax(180px,1fr));
+        gap:12px;
+    ">
+
+        <!-- STAFF -->
+
+        <div>
+
+            <label>
+                Staff
+            </label>
+
+            <select id="activityStaff"
+                    style="width:100%;padding:10px;">
+
+                <option value="">
+                    Select Staff
+                </option>
+
+                <option value="SYLVIA">
+                    SYLVIA
+                </option>
+
+                <option value="FRANK">
+                    FRANK
+                </option>
+
+                <option value="HAMAD">
+                    HAMAD
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- DATE -->
+
+        <div>
+
+            <label>
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="activityDate"
+                style="width:100%;padding:10px;"
+            >
+
+        </div>
+
+
+        <!-- POSTS -->
+
+        <div>
+
+            <label>
+                Cars Posted
+            </label>
+
+            <input
+                type="number"
+                id="activityPosts"
+                min="0"
+                value="0"
+                style="width:100%;padding:10px;"
+            >
+
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div>
+
+            <label>
+                Content Created
+            </label>
+
+            <input
+                type="number"
+                id="activityContent"
+                min="0"
+                value="0"
+                style="width:100%;padding:10px;"
+            >
+
+        </div>
+
+
+        <!-- LEADS -->
+
+        <div>
+
+            <label>
+                Leads Handled
+            </label>
+
+            <input
+                type="number"
+                id="activityLeads"
+                min="0"
+                value="0"
+                style="width:100%;padding:10px;"
+            >
+
+        </div>
+
+
+        <!-- OFFICE -->
+
+        <div>
+
+            <label>
+                Office / CRM Tasks
+            </label>
+
+            <input
+                type="number"
+                id="activityOffice"
+                min="0"
+                value="0"
+                style="width:100%;padding:10px;"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div style="margin-top:15px;">
+
+        <label>
+            Notes
+        </label>
+
+        <textarea
+            id="activityNotes"
+            placeholder="Describe today's work..."
+            style="
+                width:100%;
+                min-height:70px;
+                padding:10px;
+                box-sizing:border-box;
+            "
+        ></textarea>
+
+    </div>
+
+
+    <div style="margin-top:15px;">
+
+        <button
+            type="button"
+            onclick="saveStaffActivity()"
+            style="
+                background:#f7941d;
+                color:white;
+                border:none;
+                padding:10px 20px;
+                border-radius:6px;
+                cursor:pointer;
+                font-weight:bold;
+            "
+        >
+            💾 Save Daily Activity
+        </button>
+
+    </div>
+
+</div>
 
     <!-- SUMMARY -->
 
@@ -5538,10 +5724,101 @@ function openStaffPerformance(){
 loadStaffPerformance();
 }
 
+async function saveStaffActivity(){
+
+    const staff = document.getElementById("activityStaff").value;
+    const date = document.getElementById("activityDate").value;
+    const posts = Number(document.getElementById("activityPosts").value || 0);
+    const content = Number(document.getElementById("activityContent").value || 0);
+    const leads = Number(document.getElementById("activityLeads").value || 0);
+    const office = Number(document.getElementById("activityOffice").value || 0);
+    const notes = document.getElementById("activityNotes").value.trim();
+
+    // Validation
+    if(!staff){
+        alert("Please select staff member.");
+        return;
+    }
+
+    if(!date){
+        alert("Please select activity date.");
+        return;
+    }
+
+    const button = document.querySelector(
+        'button[onclick="saveStaffActivity()"]'
+    );
+
+    if(button){
+        button.disabled = true;
+        button.innerText = "Saving...";
+    }
+
+    try {
+
+        const { data, error } = await supabase
+            .from("staff_daily_activity")
+            .insert([{
+                staff_name: staff,
+                activity_date: date,
+                posts_done: posts,
+                content_done: content,
+                leads_done: leads,
+                office_done: office,
+                notes: notes
+            }])
+            .select();
+
+        if(error){
+            console.error("Save Staff Activity Error:", error);
+            alert("Failed to save daily activity:\n" + error.message);
+            return;
+        }
+
+        alert("Daily activity saved successfully ✅");
+
+        // Clear form
+        document.getElementById("activityPosts").value = 0;
+        document.getElementById("activityContent").value = 0;
+        document.getElementById("activityLeads").value = 0;
+        document.getElementById("activityOffice").value = 0;
+        document.getElementById("activityNotes").value = "";
+
+        // Refresh performance data
+        if(typeof loadStaffPerformance === "function"){
+            await loadStaffPerformance();
+        }
+
+    } catch(err){
+
+        console.error("Unexpected Error:", err);
+        alert("Something went wrong while saving activity.");
+
+    } finally {
+
+        if(button){
+            button.disabled = false;
+            button.innerText = "💾 Save Daily Activity";
+        }
+    }
+}
+
+
+function getWeekEndDate(weekStart){
+
+    const date = new Date(weekStart);
+
+    date.setDate(
+        date.getDate() + 6
+    );
+
+    return date
+        .toISOString()
+        .split("T")[0];
+}
 async function loadStaffPerformance(){
 
-    const weekInput =
-        document.getElementById("performanceWeek");
+const weekInput = document.getElementById("staffPerformanceWeek");
 
     if(!weekInput){
         console.error("performanceWeek input not found");
@@ -5575,16 +5852,21 @@ async function loadStaffPerformance(){
 
     try{
 
-        const { data, error } =
+                const { data: activities, error } =
             await supabaseClient
 
-            .from("staff_performance")
+            .from("staff_daily_activity")
 
             .select("*")
 
-            .eq(
-                "week_start",
+            .gte(
+                "activity_date",
                 weekStart
+            )
+
+            .lte(
+                "activity_date",
+                getWeekEndDate(weekStart)
             )
 
             .order(
@@ -5608,7 +5890,100 @@ async function loadStaffPerformance(){
 
             return;
         }
+        // GROUP DAILY ACTIVITIES BY STAFF
+        const staffData = {};
 
+        (activities || []).forEach(activity => {
+
+            const staffName = activity.staff_name;
+
+            if(!staffData[staffName]){
+
+                staffData[staffName] = {
+
+                    staff_name: staffName,
+
+                    posts_done: 0,
+
+                    content_done: 0,
+
+                    leads_done: 0,
+
+                    office_done: 0
+
+                };
+
+            }
+
+            staffData[staffName].posts_done +=
+                Number(activity.posts_done || 0);
+
+            staffData[staffName].content_done +=
+                Number(activity.content_done || 0);
+
+            staffData[staffName].leads_done +=
+                Number(activity.leads_done || 0);
+
+            staffData[staffName].office_done +=
+                Number(activity.office_done || 0);
+
+        });
+
+        const data = Object.values(staffData);
+
+                // WEEKLY TARGETS
+        const POSTING_TARGET = 25;
+        const CONTENT_TARGET = 5;
+        const LEADS_TARGET = 10;
+        const OFFICE_TARGET = 5;
+
+        // CALCULATE PERFORMANCE
+        data.forEach(staff => {
+
+            const postingScore =
+                Math.min(
+                    staff.posts_done / POSTING_TARGET,
+                    1
+                ) * 40;
+
+            const contentScore =
+                Math.min(
+                    staff.content_done / CONTENT_TARGET,
+                    1
+                ) * 20;
+
+            const leadsScore =
+                Math.min(
+                    staff.leads_done / LEADS_TARGET,
+                    1
+                ) * 20;
+
+            const officeScore =
+                Math.min(
+                    staff.office_done / OFFICE_TARGET,
+                    1
+                ) * 10;
+
+            // Creativity is manually rated for now
+            const creativityScore = 10;
+
+            staff.posting_target = POSTING_TARGET;
+            staff.content_target = CONTENT_TARGET;
+            staff.leads_target = LEADS_TARGET;
+            staff.office_target = OFFICE_TARGET;
+
+            staff.creativity_score = creativityScore;
+
+            staff.performance_score =
+                postingScore +
+                contentScore +
+                leadsScore +
+                officeScore +
+                creativityScore;
+
+        });
+
+        
         const tbody =
             document.getElementById(
                 "staffPerformanceBody"
