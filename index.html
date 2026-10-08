@@ -2732,7 +2732,9 @@ MANAGEMENT
 <button onclick="openReports()">
     📊 Reports Center
 </button>
-
+<button onclick="openStaffPerformance()">
+    👨‍💼 Staff Performance
+</button>
     <div
     id="editCustomerBox"
     style="display:none;"
@@ -4097,7 +4099,193 @@ Save Changes
 
     </div>
 
-</div>   
+</div> 
+<!-- ================= STAFF PERFORMANCE ================= -->
+
+<div id="staffPerformancePage" style="display:none;">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+        flex-wrap:wrap;
+        gap:10px;
+    ">
+
+        <div>
+            <h2 style="margin:0;">
+                👨‍💼 Staff Performance
+            </h2>
+
+            <p style="
+                margin:5px 0 0;
+                color:#777;
+                font-size:13px;
+            ">
+                Weekly staff activity, performance and commission
+            </p>
+        </div>
+
+        <button onclick="backToManagement()">
+            ← Back to Management
+        </button>
+
+    </div>
+
+
+    <!-- WEEK SELECTOR -->
+
+    <div style="
+        background:#fff;
+        padding:15px;
+        border-radius:10px;
+        box-shadow:0 3px 12px rgba(0,0,0,.06);
+        margin-bottom:20px;
+    ">
+
+        <label style="
+            display:block;
+            font-size:12px;
+            font-weight:bold;
+            color:#555;
+            margin-bottom:6px;
+        ">
+            Performance Week
+        </label>
+
+        <input
+            type="week"
+            id="staffPerformanceWeek"
+            style="
+                width:220px;
+                padding:10px;
+                border:1px solid #ddd;
+                border-radius:7px;
+                box-sizing:border-box;
+            "
+        >
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="stats-container">
+
+        <div class="stat-card">
+            <h2 id="staffTotalPosts">0</h2>
+            <p>📱 Total Car Posts</p>
+        </div>
+
+        <div class="stat-card">
+            <h2 id="staffTotalContent">0</h2>
+            <p>🎬 Content Created</p>
+        </div>
+
+        <div class="stat-card">
+            <h2 id="staffTotalLeads">0</h2>
+            <p>📞 Lead Activities</p>
+        </div>
+
+        <div class="stat-card">
+            <h2 id="staffCarsSold">0</h2>
+            <p>🚗 Cars Sold</p>
+        </div>
+
+    </div>
+
+
+    <!-- STAFF PERFORMANCE TABLE -->
+
+    <div style="
+        background:#fff;
+        padding:20px;
+        border-radius:12px;
+        box-shadow:0 3px 15px rgba(0,0,0,.06);
+        overflow-x:auto;
+    ">
+
+        <h3 style="margin-top:0;">
+            Weekly Performance
+        </h3>
+
+        <table
+            style="
+                width:100%;
+                border-collapse:collapse;
+                min-width:900px;
+            "
+        >
+
+            <thead>
+
+                <tr style="
+                    background:#f7941d;
+                    color:white;
+                ">
+
+                    <th style="padding:10px;">
+                        Staff
+                    </th>
+
+                    <th style="padding:10px;">
+                        Posting
+                    </th>
+
+                    <th style="padding:10px;">
+                        Content
+                    </th>
+
+                    <th style="padding:10px;">
+                        Leads
+                    </th>
+
+                    <th style="padding:10px;">
+                        Office
+                    </th>
+
+                    <th style="padding:10px;">
+                        Creativity
+                    </th>
+
+                    <th style="padding:10px;">
+                        Performance
+                    </th>
+
+                    <th style="padding:10px;">
+                        Cars Sold
+                    </th>
+
+                    <th style="padding:10px;">
+                        Commission
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="staffPerformanceBody">
+
+                <tr>
+
+                    <td colspan="9" style="
+                        text-align:center;
+                        padding:30px;
+                        color:#777;
+                    ">
+                        No performance data yet
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -5322,6 +5510,39 @@ document.getElementById("managementPage")
 
 }
 
+
+function openStaffPerformance(){
+
+    // Hide management sections
+    document.getElementById("managementPage").style.display = "none";
+
+    const pages = [
+        "vehicleInventoryPage",
+        "leadsPage",
+        "savingsPage",
+        "reportsPage",
+        "staffPerformancePage"
+    ];
+
+    pages.forEach(id => {
+
+        const el = document.getElementById(id);
+
+        if(el){
+            el.style.display = "none";
+        }
+
+    });
+
+    // Show Staff Performance
+    const staffPage =
+        document.getElementById("staffPerformancePage");
+
+    if(staffPage){
+        staffPage.style.display = "block";
+    }
+
+}
 /* =========================================
    REPORTS CENTER
 ========================================= */
