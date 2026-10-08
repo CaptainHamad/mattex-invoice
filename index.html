@@ -4265,21 +4265,15 @@ Save Changes
 
             </thead>
 
-            <tbody id="staffPerformanceBody">
+         <tbody id="staffPerformanceBody">
 
-                <tr>
+<tr>
+    <td colspan="9" style="text-align:center; padding:30px;">
+        No performance data available for this week.
+    </td>
+</tr>
 
-                    <td colspan="9" style="
-                        text-align:center;
-                        padding:30px;
-                        color:#777;
-                    ">
-                        No performance data yet
-                    </td>
-
-                </tr>
-
-            </tbody>
+</tbody>
 
         </table>
 
@@ -5540,6 +5534,268 @@ function openStaffPerformance(){
 
     if(staffPage){
         staffPage.style.display = "block";
+    }
+loadStaffPerformance();
+}
+
+async function loadStaffPerformance(){
+
+    const weekInput =
+        document.getElementById("performanceWeek");
+
+    if(!weekInput){
+        console.error("performanceWeek input not found");
+        return;
+    }
+
+    let weekStart = weekInput.value;
+
+    if(!weekStart){
+
+        const today = new Date();
+
+        const day = today.getDay();
+
+        const diff =
+            day === 0
+            ? -6
+            : 1 - day;
+
+        today.setDate(
+            today.getDate() + diff
+        );
+
+        weekStart =
+            today.toISOString()
+                .split("T")[0];
+
+        weekInput.value =
+            weekStart;
+    }
+
+    try{
+
+        const { data, error } =
+            await supabaseClient
+
+            .from("staff_performance")
+
+            .select("*")
+
+            .eq(
+                "week_start",
+                weekStart
+            )
+
+            .order(
+                "staff_name",
+                {
+                    ascending:true
+                }
+            );
+
+        if(error){
+
+            console.error(
+                "Staff performance error:",
+                error
+            );
+
+            alert(
+                "Unable to load staff performance: " +
+                error.message
+            );
+
+            return;
+        }
+
+        const tbody =
+            document.getElementById(
+                "staffPerformanceBody"
+            );
+
+        if(!tbody){
+            return;
+        }
+
+        tbody.innerHTML = "";
+
+        if(!data || data.length === 0){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9"
+                        style="
+                            text-align:center;
+                            padding:30px;
+                        ">
+
+                        No performance records
+                        for this week.
+
+                    </td>
+                </tr>
+            `;
+
+            updateStaffPerformanceSummary([]);
+
+            return;
+        }
+
+        data.forEach(staff => {
+
+            const score =
+                Number(
+                    staff.performance_score || 0
+                );
+
+            const commission =
+                Number(
+                    staff.commission_amount || 0
+                );
+
+            tbody.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${staff.staff_name}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${staff.posts_done || 0}
+                        /
+                        ${staff.posting_target || 0}
+                    </td>
+
+                    <td>
+                        ${staff.content_done || 0}
+                        /
+                        ${staff.content_target || 0}
+                    </td>
+
+                    <td>
+                        ${staff.leads_done || 0}
+                        /
+                        ${staff.leads_target || 0}
+                    </td>
+
+                    <td>
+                        ${staff.office_done || 0}
+                        /
+                        ${staff.office_target || 0}
+                    </td>
+
+                    <td>
+                        ${staff.creativity_score || 0}/10
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${score.toFixed(1)}%
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${staff.cars_sold || 0}
+                    </td>
+
+                    <td>
+                        <strong>
+                            TZS
+                            ${commission.toLocaleString()}
+                        </strong>
+                    </td>
+
+                </tr>
+
+            `;
+        });
+
+        updateStaffPerformanceSummary(data);
+
+    }catch(error){
+
+        console.error(
+            "Staff performance loading failed:",
+            error
+        );
+
+    }
+}
+
+function updateStaffPerformanceSummary(data){
+
+    const totalPosts =
+        data.reduce(
+            (sum, x) =>
+                sum + Number(x.posts_done || 0),
+            0
+        );
+
+    const totalContent =
+        data.reduce(
+            (sum, x) =>
+                sum + Number(x.content_done || 0),
+            0
+        );
+
+    const totalLeads =
+        data.reduce(
+            (sum, x) =>
+                sum + Number(x.leads_done || 0),
+            0
+        );
+
+    const totalCarsSold =
+        data.reduce(
+            (sum, x) =>
+                sum + Number(x.cars_sold || 0),
+            0
+        );
+
+
+    const postsEl =
+        document.getElementById(
+            "staffTotalPosts"
+        );
+
+    const contentEl =
+        document.getElementById(
+            "staffTotalContent"
+        );
+
+    const leadsEl =
+        document.getElementById(
+            "staffTotalLeads"
+        );
+
+    const carsEl =
+        document.getElementById(
+            "staffCarsSold"
+        );
+
+
+    if(postsEl){
+        postsEl.innerHTML =
+            totalPosts;
+    }
+
+    if(contentEl){
+        contentEl.innerHTML =
+            totalContent;
+    }
+
+    if(leadsEl){
+        leadsEl.innerHTML =
+            totalLeads;
+    }
+
+    if(carsEl){
+        carsEl.innerHTML =
+            totalCarsSold;
     }
 
 }
