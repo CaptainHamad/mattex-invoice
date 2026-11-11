@@ -2444,6 +2444,208 @@ td:has(.shipping-summary):hover
     }
 
 }
+
+
+/* =========================================
+   MATTEX STAFF PERFORMANCE - MODERN UI
+========================================= */
+
+#staffPerformancePage {
+    --sp-orange: #f7941d;
+    --sp-dark: #172337;
+    --sp-muted: #64748b;
+    --sp-border: #e5eaf0;
+    --sp-bg: #f5f7fb;
+
+    background: var(--sp-bg) !important;
+    padding: 24px !important;
+    min-height: 100vh;
+    box-sizing: border-box;
+    color: var(--sp-dark);
+}
+
+#staffPerformancePage *,
+#staffPerformancePage *::before,
+#staffPerformancePage *::after {
+    box-sizing: border-box;
+}
+
+#staffPerformancePage > div {
+    max-width: 100%;
+}
+
+/* Section panels */
+#staffPerformancePage .sp-panel {
+    background: #fff;
+    border: 1px solid var(--sp-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(20, 35, 55, .05);
+}
+
+#staffPerformancePage .sp-panel h3 {
+    color: var(--sp-dark);
+    margin: 0 0 20px;
+    font-size: 19px;
+    font-weight: 700;
+    border-left: 4px solid var(--sp-orange);
+    padding-left: 12px;
+}
+
+/* Form grid */
+#staffPerformancePage .sp-form-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px !important;
+    width: 100%;
+}
+
+#staffPerformancePage .sp-form-grid > div {
+    min-width: 0;
+    width: 100%;
+}
+
+/* Inputs */
+#staffPerformancePage label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+#staffPerformancePage label small {
+    font-size: 11px;
+    font-weight: 400;
+    color: #8994a5 !important;
+    margin-top: 4px;
+}
+
+#staffPerformancePage input,
+#staffPerformancePage select,
+#staffPerformancePage textarea {
+    width: 100% !important;
+    max-width: 100%;
+    min-height: 44px;
+    padding: 11px 13px !important;
+    border: 1px solid #d9e1eb !important;
+    border-radius: 9px !important;
+    background: #fff !important;
+    color: #172337;
+    font-size: 14px;
+    outline: none;
+    transition: .2s ease;
+}
+
+#staffPerformancePage textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+#staffPerformancePage input:focus,
+#staffPerformancePage select:focus,
+#staffPerformancePage textarea:focus {
+    border-color: var(--sp-orange) !important;
+    box-shadow: 0 0 0 3px rgba(247,148,29,.12);
+}
+
+/* Notes fields */
+#staffPerformancePage .sp-full-width {
+    grid-column: 1 / -1;
+}
+
+/* Save button */
+#staffPerformancePage button[onclick="saveStaffActivity()"] {
+    background: var(--sp-orange) !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 13px 25px !important;
+    border-radius: 9px !important;
+    font-weight: 700;
+    cursor: pointer;
+    width: auto;
+}
+
+#staffPerformancePage button:hover {
+    filter: brightness(.96);
+}
+
+/* Summary cards */
+#staffPerformancePage .sp-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#staffPerformancePage .sp-summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 13px;
+    border: 1px solid var(--sp-border);
+    border-top: 4px solid var(--sp-orange);
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+/* Tables */
+#staffPerformancePage .sp-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+#staffPerformancePage table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+#staffPerformancePage th {
+    background: #172337;
+    color: #fff;
+    padding: 14px;
+    text-align: left;
+}
+
+#staffPerformancePage td {
+    padding: 13px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+#staffPerformancePage tbody tr:hover {
+    background: #fff8ef;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    #staffPerformancePage .sp-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #staffPerformancePage .sp-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    #staffPerformancePage {
+        padding: 12px !important;
+    }
+
+    #staffPerformancePage .sp-panel {
+        padding: 16px;
+    }
+
+    #staffPerformancePage .sp-form-grid,
+    #staffPerformancePage .sp-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #staffPerformancePage button[onclick="saveStaffActivity()"] {
+        width: 100%;
+    }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
