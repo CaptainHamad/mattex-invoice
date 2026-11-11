@@ -4369,6 +4369,49 @@ Save Changes
         >
 
     </div>
+
+<!-- GM WEEKLY COMPANY SALES -->
+
+<div class="sp-panel" id="gmWeeklySalesPanel" style="display:none;">
+
+    <h3>Weekly Company Sales</h3>
+
+    <p style="color:#64748b;font-size:13px;">
+        General Manager: Enter the total number
+        of vehicles sold by Mattex this week.
+    </p>
+
+    <div class="sp-form-grid">
+
+        <div>
+            <label>Cars Sold This Week</label>
+
+            <input
+                type="number"
+                id="weeklyCarsSold"
+                min="0"
+                step="1"
+                placeholder="Enter number of cars"
+            >
+        </div>
+
+        <div style="display:flex;align-items:end;">
+            <button
+                type="button"
+                onclick="saveWeeklyCompanySales()"
+            >
+                Save Weekly Sales
+            </button>
+        </div>
+
+    </div>
+
+    <p id="weeklySalesMessage"
+       style="font-size:13px;margin-top:12px;">
+    </p>
+
+</div>
+
 <div style="
     background:white;
     padding:20px;
@@ -5993,9 +6036,133 @@ function openStaffPerformance(){
     if(staffPage){
         staffPage.style.display = "block";
     }
+
+
 loadStaffPerformance();
+initializeGMWeeklySales();
+loadWeeklyCompanySales();
+
+
+
+const GM_USER_ID = "55b6ce98-9f2e-4408-865a-42bd3baf0002";
+
+async function initializeGMWeeklySales() {
+    const panel = document.getElementById("gmWeeklySalesPanel");
+    if (!panel) return;
+
+    panel.style.display = "none";
+
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    if (error || !data?.user) return;
+
+    if (data.user.id === GM_USER_ID) {
+        panel.style.display = "block";
+    }
 }
 
+
+async function loadWeeklyCompanySales() {
+
+    const weekValue =
+        document.getElementById("staffPerformanceWeek")?.value;
+
+    const weekStart = getMondayFromWeek(weekValue);
+
+    const input =
+        document.getElementById("weeklyCarsSold");
+
+    const message =
+        document.getElementById("weeklySalesMessage");
+
+    if (!weekStart || !input) return;
+
+    input.value = "";
+    if (message) message.textContent = "";
+
+    try {
+        const carsSold =
+            await getWeeklyCompanySales(weekStart);
+
+        if (carsSold !== null) {
+            input.value = carsSold;
+        }
+    } catch (error) {
+        if (message) {
+            message.textContent =
+                "Could not load weekly sales.";
+            message.style.color = "#dc2626";
+        }
+    }
+}
+
+    
+async function saveWeeklyCompanySales() {
+
+    const weekValue =
+        document.getElementById("staffPerformanceWeek")?.value;
+
+    const carsInput =
+        document.getElementById("weeklyCarsSold");
+
+    const message =
+        document.getElementById("weeklySalesMessage");
+
+    const weekStart = getMondayFromWeek(weekValue);
+    const rawCars = carsInput?.value?.trim();
+
+    if (!weekStart) {
+        alert("Please select a performance week.");
+        return;
+    }
+
+    if (
+        rawCars === "" ||
+        !Number.isSafeInteger(Number(rawCars)) ||
+        Number(rawCars) < 0
+    ) {
+        alert("Enter a valid number of cars sold.");
+        return;
+    }
+
+    const { data: authData, error: authError } =
+        await supabaseClient.auth.getUser();
+
+    if (
+        authError ||
+        authData?.user?.id !== GM_USER_ID
+    ) {
+        alert("Only the General Manager can update sales.");
+        return;
+    }
+
+    message.textContent = "Saving weekly sales...";
+
+    const { error } = await supabaseClient
+        .from("staff_weekly_sales")
+        .upsert({
+            week_start: weekStart,
+            cars_sold: Number(rawCars),
+            updated_at: new Date().toISOString(),
+            updated_by: authData.user.id
+        }, {
+            onConflict: "week_start"
+        });
+
+    if (error) {
+        console.error("Weekly sales error:", error);
+        message.textContent = "Error: " + error.message;
+        message.style.color = "#dc2626";
+        return;
+    }
+
+    message.textContent = "Weekly sales saved successfully.";
+    message.style.color = "#16a34a";
+
+    if (typeof loadStaffPerformance === "function") {
+        await loadStaffPerformance();
+    }
+}
 
 async function saveStaffActivity(){
 
@@ -6168,6 +6335,24 @@ function getMondayFromWeek(weekValue) {
     return monday.toISOString().slice(0, 10);
 }
 
+
+async function getWeeklyCompanySales(weekStart) {
+
+    const { data, error } = await supabaseClient
+        .from("staff_weekly_sales")
+        .select("cars_sold")
+        .eq("week_start", weekStart)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Weekly sales error:", error);
+        throw error;
+    }
+
+    return data ? Number(data.cars_sold) : null;
+}
+
+    
 async function loadStaffPerformance(){
 
 const weekInput = document.getElementById("staffPerformanceWeek");
@@ -6313,6 +6498,9 @@ const CREATIVITY_TARGET = 3;
 const OFFICE_TARGET = 5;
 
 
+const companyCarsSold =
+    await getWeeklyCompanySales(weekStart);
+
         
 // CALCULATE WEEKLY PERFORMANCE
 
@@ -6371,8 +6559,20 @@ data.forEach(staff => {
         creativityScore +
         officeScore;
 
-    // COMMISSION WILL BE CONNECTED LATER
-    staff.commission_amount = 0;
+
+// COMPANY WEEKLY SALES
+staff.cars_sold = companyCarsSold ?? 0;
+
+// PERFORMANCE-BASED COMMISSION
+staff.commission_amount =
+    companyCarsSold === null
+        ? 0
+        : Math.round(
+            companyCarsSold *
+            50000 *
+            (staff.performance_score / 100)
+        );
+
 
 });
 
