@@ -4250,7 +4250,9 @@ Save Changes
                 value="0"
                 style="width:100%;padding:10px;"
             >
-
+<small style="display:block;color:#777;">
+    Weekly Target: 20 Cars
+</small>
         </div>
 
 
@@ -4269,7 +4271,9 @@ Save Changes
                 value="0"
                 style="width:100%;padding:10px;"
             >
-
+<small style="display:block;color:#777;">
+    Weekly Target: 7 Contents
+</small>
         </div>
 
 
@@ -4278,8 +4282,11 @@ Save Changes
         <div>
 
             <label>
-                Leads Handled
-            </label>
+    Serious Leads Generated
+    <small style="display:block;color:#777;">
+        Weekly Target: 2 Qualified Leads
+    </small>
+</label>
 
             <input
                 type="number"
@@ -4292,13 +4299,35 @@ Save Changes
         </div>
 
 
+        <!-- MARKET RESEARCH & CREATIVITY -->
+
+<div>
+    <label>
+        Market Research & Creativity
+        <small style="display:block;color:#777;">
+            Weekly Target: 3 Outputs
+        </small>
+    </label>
+
+    <input
+        type="number"
+        id="activityCreativity"
+        min="0"
+        step="1"
+        value="0"
+        style="width:100%;padding:10px;"
+    >
+</div>
         <!-- OFFICE -->
 
         <div>
 
-            <label>
-                Office / CRM Tasks
-            </label>
+           <label>
+    Office Responsibilities (Extra Miles)
+    <small style="display:block;color:#777;">
+        Additional responsibilities completed
+    </small>
+</label>
 
             <input
                 type="number"
@@ -4331,7 +4360,48 @@ Save Changes
         ></textarea>
 
     </div>
+<!-- CREATIVITY DETAILS -->
 
+<div style="margin-top:15px;">
+
+    <label>
+        Market Research & Creativity Details
+    </label>
+
+    <textarea
+        id="activityCreativityNotes"
+        placeholder="Describe market findings, creative ideas or strategies developed..."
+        style="
+            width:100%;
+            min-height:75px;
+            padding:10px;
+            box-sizing:border-box;
+        "
+    ></textarea>
+
+</div>
+
+
+<!-- EXTRA MILES DETAILS -->
+
+<div style="margin-top:15px;">
+
+    <label>
+        Office Extra Miles Details
+    </label>
+
+    <textarea
+        id="activityOfficeNotes"
+        placeholder="Describe additional responsibilities completed..."
+        style="
+            width:100%;
+            min-height:75px;
+            padding:10px;
+            box-sizing:border-box;
+        "
+    ></textarea>
+
+</div>
 
     <div style="margin-top:15px;">
 
@@ -5724,24 +5794,61 @@ function openStaffPerformance(){
 loadStaffPerformance();
 }
 
+
 async function saveStaffActivity(){
 
-    const staff = document.getElementById("activityStaff").value;
-    const date = document.getElementById("activityDate").value;
-    const posts = Number(document.getElementById("activityPosts").value || 0);
-    const content = Number(document.getElementById("activityContent").value || 0);
-    const leads = Number(document.getElementById("activityLeads").value || 0);
-    const office = Number(document.getElementById("activityOffice").value || 0);
-    const notes = document.getElementById("activityNotes").value.trim();
+    const staff = document.getElementById("activityStaff")?.value;
+    const date = document.getElementById("activityDate")?.value;
 
-    // Validation
-    if(!staff){
-        alert("Please select staff member.");
+    const posts = Number(
+        document.getElementById("activityPosts")?.value || 0
+    );
+
+    const content = Number(
+        document.getElementById("activityContent")?.value || 0
+    );
+
+    const leads = Number(
+        document.getElementById("activityLeads")?.value || 0
+    );
+
+    const creativity = Number(
+        document.getElementById("activityCreativity")?.value || 0
+    );
+
+    const office = Number(
+        document.getElementById("activityOffice")?.value || 0
+    );
+
+    const notes = document.getElementById("activityNotes")?.value.trim() || "";
+
+    const creativityNotes =
+        document.getElementById("activityCreativityNotes")?.value.trim() || "";
+
+    const officeNotes =
+        document.getElementById("activityOfficeNotes")?.value.trim() || "";
+
+    // VALIDATION
+
+    if(!staff || !date){
+        alert("Please select staff and activity date.");
         return;
     }
 
-    if(!date){
-        alert("Please select activity date.");
+    const quantities = [posts, content, leads, creativity, office];
+
+    if(quantities.some(n => !Number.isInteger(n) || n < 0)){
+        alert("Activity quantities must be non-negative whole numbers.");
+        return;
+    }
+
+    if(creativity > 0 && !creativityNotes){
+        alert("Please describe the market research or creative outputs.");
+        return;
+    }
+
+    if(office > 0 && !officeNotes){
+        alert("Please describe the extra-mile responsibilities.");
         return;
     }
 
@@ -5751,12 +5858,12 @@ async function saveStaffActivity(){
 
     if(button){
         button.disabled = true;
-        button.innerText = "Saving...";
+        button.textContent = "Saving...";
     }
 
-    try {
+    try{
 
-        const { data, error } = await supabase
+        const { error } = await supabaseClient
             .from("staff_daily_activity")
             .insert([{
                 staff_name: staff,
@@ -5764,41 +5871,56 @@ async function saveStaffActivity(){
                 posts_done: posts,
                 content_done: content,
                 leads_done: leads,
+                creativity_done: creativity,
                 office_done: office,
-                notes: notes
-            }])
-            .select();
+                notes: notes,
+                creativity_notes: creativityNotes,
+                office_notes: officeNotes,
+                verified: false
+            }]);
 
         if(error){
-            console.error("Save Staff Activity Error:", error);
-            alert("Failed to save daily activity:\n" + error.message);
+            console.error("Staff Activity Save Error:", error);
+            alert("Failed to save activity: " + error.message);
             return;
         }
 
-        alert("Daily activity saved successfully ✅");
+        alert("Daily Staff Activity saved successfully!");
 
-        // Clear form
-        document.getElementById("activityPosts").value = 0;
-        document.getElementById("activityContent").value = 0;
-        document.getElementById("activityLeads").value = 0;
-        document.getElementById("activityOffice").value = 0;
-        document.getElementById("activityNotes").value = "";
+        [
+            "activityPosts",
+            "activityContent",
+            "activityLeads",
+            "activityCreativity",
+            "activityOffice"
+        ].forEach(id => {
+            const input = document.getElementById(id);
+            if(input) input.value = 0;
+        });
 
-        // Refresh performance data
+        [
+            "activityNotes",
+            "activityCreativityNotes",
+            "activityOfficeNotes"
+        ].forEach(id => {
+            const input = document.getElementById(id);
+            if(input) input.value = "";
+        });
+
         if(typeof loadStaffPerformance === "function"){
             await loadStaffPerformance();
         }
 
-    } catch(err){
+    }catch(error){
 
-        console.error("Unexpected Error:", err);
+        console.error("Unexpected Staff Activity Error:", error);
         alert("Something went wrong while saving activity.");
 
-    } finally {
+    }finally{
 
         if(button){
             button.disabled = false;
-            button.innerText = "💾 Save Daily Activity";
+            button.textContent = "💾 Save Daily Activity";
         }
     }
 }
